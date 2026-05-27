@@ -16,6 +16,17 @@ package knt.hud.weapons
    
    public class WeaponReticleWidget extends BaseControl
    {
+      private static const SHOW_RADIAL_AMMO:Boolean = false;
+      
+      private static const SHOW_SPREAD_RING:Boolean = false;
+      
+      private static const SHOW_AGENCY_BAR:Boolean = false;
+      
+      private static const SHOW_RELOAD_UI:Boolean = false;
+      
+      private static const SHOW_HIT_MARKERS:Boolean = false;
+      
+      private static const SHOW_ILLEGAL_INDICATOR:Boolean = false;
       
       public static const TYPE_HANDGUN:int = 1;
       
@@ -138,6 +149,11 @@ package knt.hud.weapons
                this.setAgency();
             }
          }
+         if(!SHOW_RELOAD_UI)
+         {
+            this.m_view.reload_prompt_mc.visible = false;
+            return;
+         }
          if(param1.ReloadPromptData.aElements.length > 0)
          {
             if(this.m_reloadPromptIconId != param1.ReloadPromptData.aElements[0].iconId)
@@ -239,6 +255,7 @@ package knt.hud.weapons
          Animate.kill(this.m_view.reload_progressbar_mc.bar_mc);
          this.m_view.reload_progressbar_mc.visible = false;
          this.m_view.reload_progressbar_mc.y = this.m_view.warning_mc.y + 12;
+         this.m_reticle.ammo_mc.visible = SHOW_RADIAL_AMMO || SHOW_SPREAD_RING || SHOW_AGENCY_BAR;
          this.m_reticle.ammo_mc.spread_circle_container_mc.alpha = 0;
          if(this.m_reticle.posts_mc)
          {
@@ -248,6 +265,8 @@ package knt.hud.weapons
          this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_0.inner_mc.x = this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_1.inner_mc.x = this.m_ironSightsOffsetX;
          this.m_reticle.hit_mc.alpha = 0;
          this.m_reticle.hit_kill_mc.alpha = 0;
+         this.m_reticle.hit_mc.visible = SHOW_HIT_MARKERS;
+         this.m_reticle.hit_kill_mc.visible = SHOW_HIT_MARKERS;
          this.m_reticle.crosshair_mc.visible = false;
          this.m_reticle.illegal_mc.visible = false;
          MenuUtils.removeColor(this.m_view.holstered_crosshair_mc,true);
@@ -317,6 +336,10 @@ package knt.hud.weapons
       
       private function setAgency() : void
       {
+         if(!SHOW_AGENCY_BAR)
+         {
+            return;
+         }
          this.m_focusAimBarMaskSprite.rotation = -90 - this.m_agencyBarAngleSpan / -2 - this.m_currentAgency / this.m_maximumAgency * this.m_agencyBarAngleSpan;
       }
       
@@ -326,6 +349,16 @@ package knt.hud.weapons
          var _loc5_:Number = NaN;
          var _loc6_:WeaponReticleAmmoView = null;
          var _loc7_:int = 0;
+         if(!SHOW_RADIAL_AMMO && !SHOW_SPREAD_RING && !SHOW_AGENCY_BAR && !SHOW_RELOAD_UI)
+         {
+            this.m_previousAmmoRemaining = param1;
+            this.m_ammoInClip = param2;
+            this.m_previousType = this.m_currentType;
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.reload_progressbar_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
+            return;
+         }
          if(this.m_currentType != this.m_previousType || this.m_ammoInClip != param2 || this.m_ammoDotArray.length == 0)
          {
             switch(this.m_currentType)
@@ -526,6 +559,13 @@ package knt.hud.weapons
       public function reloadCalled(param1:Number) : void
       {
          var fReloadDuration:Number = param1;
+         if(!SHOW_RELOAD_UI)
+         {
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.reload_progressbar_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
+            return;
+         }
          if(!this.m_reloadingNotificationActive)
          {
             if(this.m_warningPulsating)
@@ -558,6 +598,13 @@ package knt.hud.weapons
       
       public function abortReloadCalled() : void
       {
+         if(!SHOW_RELOAD_UI)
+         {
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.reload_progressbar_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
+            return;
+         }
          if(this.m_reloadingNotificationActive)
          {
             if(this.m_warningPulsating)
@@ -576,6 +623,12 @@ package knt.hud.weapons
       
       private function setWarningNotification(param1:String, param2:int, param3:Boolean) : void
       {
+         if(!SHOW_RELOAD_UI)
+         {
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
+            return;
+         }
          MenuUtils.setupText(this.m_view.warning_mc.reload_txt,param1,18,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
          this.m_view.warning_mc.reload_txt.autoSize = "left";
          this.m_view.warning_mc.reload_txt.setTextFormat(this.m_newFormat);
@@ -592,6 +645,12 @@ package knt.hud.weapons
       private function pulsateWarning(param1:Boolean) : void
       {
          var start:Boolean = param1;
+         if(!SHOW_RELOAD_UI)
+         {
+            this.m_warningPulsating = false;
+            this.m_view.warning_mc.alpha = 0;
+            return;
+         }
          Animate.kill(this.m_view.warning_mc);
          this.m_view.warning_mc.alpha = 0;
          if(start)
@@ -673,8 +732,8 @@ package knt.hud.weapons
                Animate.kill(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_1.inner_mc);
                if(this.m_hasTarget)
                {
-                  Animate.to(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_0.inner_mc,0.3,0,{"x":(param2 ? this.m_ironSightsTargetOffsetX : this.m_ironSightsIllegalTargetOffsetX)},Animate.ExpoOut);
-                  Animate.to(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_1.inner_mc,0.3,0,{"x":(param2 ? this.m_ironSightsTargetOffsetX : this.m_ironSightsIllegalTargetOffsetX)},Animate.ExpoOut);
+                  Animate.to(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_0.inner_mc,0.3,0,{"x":(!SHOW_ILLEGAL_INDICATOR || param2 ? this.m_ironSightsTargetOffsetX : this.m_ironSightsIllegalTargetOffsetX)},Animate.ExpoOut);
+                  Animate.to(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_1.inner_mc,0.3,0,{"x":(!SHOW_ILLEGAL_INDICATOR || param2 ? this.m_ironSightsTargetOffsetX : this.m_ironSightsIllegalTargetOffsetX)},Animate.ExpoOut);
                   this.setIllegalStateReticle();
                }
                else
@@ -704,6 +763,11 @@ package knt.hud.weapons
       
       public function triggerHit() : void
       {
+         if(!SHOW_HIT_MARKERS)
+         {
+            this.m_reticle.hit_mc.alpha = 0;
+            return;
+         }
          Animate.kill(this.m_reticle.hit_mc);
          this.m_reticle.hit_mc.alpha = 1;
          Animate.fromTo(this.m_reticle.hit_mc,0.2,0,{"frames":1},{"frames":25},Animate.QuartOut,function():void
@@ -718,6 +782,12 @@ package knt.hud.weapons
       
       public function triggerKill() : void
       {
+         if(!SHOW_HIT_MARKERS)
+         {
+            this.m_reticle.hit_mc.alpha = 0;
+            this.m_reticle.hit_kill_mc.alpha = 0;
+            return;
+         }
          Animate.kill(this.m_reticle.hit_mc);
          this.m_reticle.hit_mc.alpha = 0;
          Animate.kill(this.m_reticle.hit_kill_mc.hit_kill_inner_mc);
@@ -757,6 +827,12 @@ package knt.hud.weapons
       
       private function setIllegalStateReticle() : void
       {
+         if(!SHOW_ILLEGAL_INDICATOR)
+         {
+            this.m_reticle.illegal_mc.visible = false;
+            MenuUtils.removeColor(this.m_reticle.ironsight_mc,true);
+            return;
+         }
          if(!this.m_canLethalForceBeUsedOnTarget)
          {
             this.m_reticle.illegal_mc.visible = true;
@@ -771,6 +847,11 @@ package knt.hud.weapons
       
       private function setIllegalStateHolstered() : void
       {
+         if(!SHOW_ILLEGAL_INDICATOR)
+         {
+            MenuUtils.removeColor(this.m_view.holstered_crosshair_mc,true);
+            return;
+         }
          if(!this.m_canLethalForceBeUsedOnTarget)
          {
             MenuUtils.setColor(this.m_view.holstered_crosshair_mc,MenuConstantsKnt.COLOR_RED);
@@ -783,6 +864,10 @@ package knt.hud.weapons
       
       private function drawAgencyBar() : void
       {
+         if(!SHOW_AGENCY_BAR)
+         {
+            return;
+         }
          this.m_focusAimBgSprite.graphics.clear();
          this.m_focusAimBgSprite.graphics.lineStyle(1,MenuConstantsKnt.COLOR_WHITE,0.3,false,"none","none");
          this.m_focusAimBgSprite.rotation = -90 - this.m_agencyBarAngleSpan / 2;
@@ -808,6 +893,10 @@ package knt.hud.weapons
       
       private function drawSpreadCircle() : void
       {
+         if(!SHOW_SPREAD_RING)
+         {
+            return;
+         }
          this.m_spreadCircleSprite.graphics.clear();
          this.m_spreadCircleSprite.graphics.lineStyle(2,MenuConstantsKnt.COLOR_WHITE,1,false,"none","none");
          this.m_spreadCircleSprite.rotation = -90 - this.m_spreadCircleAngleSpan / 2;
@@ -843,7 +932,7 @@ package knt.hud.weapons
       private function setSpreadCircleRadius(param1:Number) : void
       {
          var _loc2_:Number = NaN;
-         if(this.m_reticle && Boolean(this.m_spreadCircleSprite))
+         if(SHOW_SPREAD_RING && this.m_reticle && Boolean(this.m_spreadCircleSprite))
          {
             _loc2_ = 0.8 - Math.floor(param1 * 100 / this.m_nMaxSpreadRadius) / 200;
             this.m_reticle.ammo_mc.spread_circle_container_mc.alpha = _loc2_;
