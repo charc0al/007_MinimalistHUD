@@ -86,6 +86,8 @@ package knt.hud.buttonprompts
       
       private static const PERF_PARRY_PREBUFFER:Number = 0.01;
       
+      private static const SHOW_PROMPT_HIGHLIGHTS:Boolean = false;
+      
       private const PROMPTS_PER_COMBO:int = 2;
       
       private var m_view:NPCCombatPromptsWidgetView;
@@ -454,6 +456,10 @@ package knt.hud.buttonprompts
       private function promptBackground(param1:int) : void
       {
          var backType:int = param1;
+         if(!SHOW_PROMPT_HIGHLIGHTS && (backType == BACK_TAKEDOWN || backType == BACK_CONFRONT))
+         {
+            backType = BACK_NONE;
+         }
          if(backType == BACK_TAKEDOWN)
          {
             this.m_view.button_mc.anim_mc.visible = true;
@@ -586,6 +592,12 @@ package knt.hud.buttonprompts
       
       private function animatePromptHighlight() : void
       {
+         if(!SHOW_PROMPT_HIGHLIGHTS)
+         {
+            this.m_view.button_mc.highlight_mc.visible = false;
+            this.m_view.button_mc.highlight_mc.circle_mc.visible = false;
+            return;
+         }
          this.m_view.button_mc.highlight_mc.visible = true;
          this.m_view.button_mc.highlight_mc.circle_mc.visible = true;
          this.m_view.button_mc.highlight_mc.circle_mc.scaleX = this.m_view.button_mc.highlight_mc.circle_mc.scaleY = 0.2;

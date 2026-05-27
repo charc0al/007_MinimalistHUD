@@ -14,6 +14,8 @@ package knt.hud.buttonprompts
    public class CloseCombatPromptsWidget extends BaseControl
    {
       
+      private static const SHOW_PROMPT_HIGHLIGHTS:Boolean = false;
+      
       private const MAX_PROMPTS:int = 6;
       
       private var m_view:CloseCombatPromptsWidgetView;
@@ -64,6 +66,7 @@ package knt.hud.buttonprompts
             _loc2_++;
          }
          this.m_view.combo_mc.visible = this.m_view.combo_txt.visible = false;
+         this.m_view.combo_mc.outline_mc.visible = SHOW_PROMPT_HIGHLIGHTS;
          this.m_view.visible = false;
          this.m_view.alpha = 0;
       }
@@ -156,6 +159,13 @@ package knt.hud.buttonprompts
       private function comboButtonBlink(param1:Boolean) : void
       {
          var on:Boolean = param1;
+         if(!SHOW_PROMPT_HIGHLIGHTS)
+         {
+            Animate.kill(this.m_view.combo_mc.outline_mc);
+            this.m_view.combo_mc.outline_mc.visible = false;
+            this.m_view.combo_mc.outline_mc.alpha = 0;
+            return;
+         }
          Animate.to(this.m_view.combo_mc.outline_mc,0.03,0.15,{"alpha":(on ? 1 : 0)},Animate.Linear,function():void
          {
             comboButtonBlink(!on);

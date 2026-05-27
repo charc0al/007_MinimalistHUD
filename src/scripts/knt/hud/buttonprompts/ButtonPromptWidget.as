@@ -35,6 +35,8 @@ package knt.hud.buttonprompts
       
       public static const AGGRESSION_LEVEL_HARD:int = 2;
       
+      private static const SHOW_PROMPT_HIGHLIGHTS:Boolean = false;
+      
       private static const AGILITY_TYPE_VAULT_ATTACK:int = 5;
       
       private static const AGILITY_TYPE_ITEM_QUICK_THROW:int = 23;
@@ -347,7 +349,7 @@ package knt.hud.buttonprompts
                _loc15_ = param1.aElements.length == 1 ? _loc13_ : Boolean(param1.aElements[0].invertColor);
                MenuUtils.addColorFilter(_loc14_,_loc15_ ? [MenuConstantsKnt.COLOR_MATRIX_INVERTED] : []);
             }
-            if(param1.eAgilityType == AGILITY_TYPE_VAULT_ATTACK || param1.eAgilityType == AGILITY_TYPE_ITEM_QUICK_THROW || param1.eAggressionLevel > AGGRESSION_LEVEL_NONE)
+            if(SHOW_PROMPT_HIGHLIGHTS && (param1.eAgilityType == AGILITY_TYPE_VAULT_ATTACK || param1.eAgilityType == AGILITY_TYPE_ITEM_QUICK_THROW || param1.eAggressionLevel > AGGRESSION_LEVEL_NONE))
             {
                MenuUtils.setColor(this.m_view.anim_mc,param1.eAggressionLevel == AGGRESSION_LEVEL_HARD ? uint(MenuConstantsKnt.COLOR_HUD_DANGER_HIGH) : uint(MenuConstantsKnt.COLOR_HUD_DANGER_MED));
                if(!this.m_aggressiveAnimRunning)
