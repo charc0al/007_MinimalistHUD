@@ -1,0 +1,15 @@
+package knt.hud
+{
+   import flash.display.MovieClip;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol328")]
+   public dynamic class ObjectivesIconMainSubobjectiveView extends MovieClip
+   {
+      
+      public function ObjectivesIconMainSubobjectiveView()
+      {
+         super();
+      }
+   }
+}
+
