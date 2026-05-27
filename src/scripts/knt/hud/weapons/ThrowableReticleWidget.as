@@ -9,6 +9,8 @@ package knt.hud.weapons
    public class ThrowableReticleWidget extends BaseControl
    {
       
+      private static const SHOW_SIDE_ARCS:Boolean = false;
+      
       private var m_view:ThrowableReticleWidgetView;
       
       private var m_buttonPrompts:Vector.<ButtonPromptImage>;
@@ -64,22 +66,34 @@ package knt.hud.weapons
          if(param1)
          {
             this.m_view.center_mc.visible = true;
-            this.m_view.frame_mc.visible = true;
-            this.m_view.frame_mc.inner_mc.visible = true;
-            Animate.to(this.m_view.frame_mc,0.4,0,{
-               "alpha":1,
-               "scaleX":1,
-               "scaleY":1
-            },Animate.ExpoOut);
+            if(SHOW_SIDE_ARCS)
+            {
+               this.m_view.frame_mc.visible = true;
+               this.m_view.frame_mc.inner_mc.visible = true;
+               Animate.to(this.m_view.frame_mc,0.4,0,{
+                  "alpha":1,
+                  "scaleX":1,
+                  "scaleY":1
+               },Animate.ExpoOut);
+            }
             Animate.fromTo(this.m_view.center_mc,0.2,0.2,{"frames":0},{"frames":20},Animate.Linear);
             Animate.addTo(this.m_view.center_mc,0.2,0.2,{"alpha":0.8},Animate.ExpoOut);
-            this.loopFrameInnerMc(true);
+            if(SHOW_SIDE_ARCS)
+            {
+               this.loopFrameInnerMc(true);
+            }
          }
       }
       
       private function loopFrameInnerMc(param1:Boolean) : void
       {
          var loop:Boolean = param1;
+         if(!SHOW_SIDE_ARCS)
+         {
+            this.m_view.frame_mc.visible = false;
+            this.m_view.frame_mc.inner_mc.visible = false;
+            return;
+         }
          Animate.kill(this.m_view.frame_mc.inner_mc);
          this.m_view.frame_mc.inner_mc.alpha = 0;
          this.m_view.frame_mc.inner_mc.scaleX = this.m_view.frame_mc.inner_mc.scaleY = 1;
