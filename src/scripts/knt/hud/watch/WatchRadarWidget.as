@@ -4,6 +4,8 @@ package knt.hud.watch
    import glacier.common.BaseControl;
    import glacier.common.menu.MenuUtils;
    import knt.common.menu.MenuConstantsKnt;
+   import knt.hud.eavesdrop.EavesdropWidget;
+   import knt.hud.objectives.ObjectivesMarkerWidget;
    import knt.hud.*;
    
    public class WatchRadarWidget extends BaseControl
@@ -37,6 +39,8 @@ package knt.hud.watch
       
       public function onSetData(param1:Object) : void
       {
+         ObjectivesMarkerWidget.setGlobalWatchState(Boolean(param1.IsAimingWatch));
+         EavesdropWidget.setGlobalWatchState(Boolean(param1.IsAimingWatch));
          this.hideCompass();
          if(param1.HasInfiniteGadgetResources)
          {

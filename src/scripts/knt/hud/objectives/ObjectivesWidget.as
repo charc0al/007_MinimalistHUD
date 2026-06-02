@@ -1,6 +1,7 @@
 package knt.hud.objectives
 {
    import flash.display.Sprite;
+   import flash.events.Event;
    import glacier.common.Animate;
    import glacier.common.BaseControl;
    import knt.hud.eavesdrop.EavesdropWidget;
@@ -55,6 +56,7 @@ package knt.hud.objectives
          this.m_view.visible = false;
          this.m_view.alpha = 0;
          this.m_view.container_mc.visible = false;
+         addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
       }
 
       override public function onSetVisible(param1:Boolean) : void
@@ -361,6 +363,15 @@ package knt.hud.objectives
          this.m_view.x = 0;
          this.m_view.y = 0;
          this.m_view.scaleX = this.m_view.scaleY = OBJECTIVES_SCALE;
+      }
+
+      private function onEnterFrame(param1:Event) : void
+      {
+         if(this.m_isAimingWatch != ObjectivesMarkerWidget.s_isAimingWatchGlobal)
+         {
+            this.m_isAimingWatch = ObjectivesMarkerWidget.s_isAimingWatchGlobal;
+            this.updateVisibility();
+         }
       }
       
       private function hideWidget() : void

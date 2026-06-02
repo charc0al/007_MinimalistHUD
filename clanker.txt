@@ -48,6 +48,8 @@ Changes made so far
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Standard interaction prompts now also reapply that inverted styling when the widget is shown again, which should make checkpoint reloads less likely to leave cached vanilla-looking prompt visuals behind:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Standard interaction prompts now also enforce that inverted styling every frame while visible, because some parent widgets toggle child visibility directly instead of rerunning the prompt setup path:
+  `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
   `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -60,6 +62,11 @@ Changes made so far
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Objectives watch gating now also clamps the root control and inner container visibility, which should make checkpoint reloads less likely to resurrect the vanilla top-left list while not aiming the watch:
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+- Objectives visibility now also resyncs every frame from the shared watch-state feed used by other watch-driven HUD pieces, instead of trusting the objectives data stream alone after checkpoint reloads:
+  `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+- `WatchBaseWidget` and `WatchRadarWidget` now both publish the shared watch-state feed used by `ObjectivesWidget`, `ObjectivesMarkerWidget`, and `EavesdropWidget`:
+  `src/scripts/knt/hud/watch/WatchBaseWidget.as`
+  `src/scripts/knt/hud/watch/WatchRadarWidget.as`
 - 3D objective distance marker now only shows while aiming the watch/QLens:
   `src/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
 - Eavesdrop HUD now only shows while aiming the watch/QLens:

@@ -3,6 +3,8 @@ package knt.hud.watch
    import flash.display.BlendMode;
    import glacier.common.Animate;
    import glacier.common.BaseControl;
+   import knt.hud.eavesdrop.EavesdropWidget;
+   import knt.hud.objectives.ObjectivesMarkerWidget;
    import knt.hud.*;
    
    public class WatchBaseWidget extends BaseControl
@@ -29,6 +31,8 @@ package knt.hud.watch
       
       public function onSetData(param1:Object) : void
       {
+         ObjectivesMarkerWidget.setGlobalWatchState(Boolean(param1.commonData.isAimingWatch));
+         EavesdropWidget.setGlobalWatchState(Boolean(param1.commonData.isAimingWatch));
          if(param1.commonData.hasInfiniteGadgetResources)
          {
             if(!this.m_QlensGodMode)

@@ -1,6 +1,7 @@
 package knt.hud.buttonprompts
 {
    import flash.filters.DropShadowFilter;
+   import flash.events.Event;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
    import glacier.basic.ButtonPromptImage;
@@ -153,6 +154,7 @@ package knt.hud.buttonprompts
          this.m_view.shadows_mc.status_shadow_mc.visible = false;
          this.m_view.shadows_mc.description_shadow_mc.visible = false;
          this.m_newFormat.letterSpacing = 1.3;
+         addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
       }
 
       override public function onSetVisible(param1:Boolean) : void
@@ -724,6 +726,21 @@ package knt.hud.buttonprompts
             return;
          }
          MenuUtils.addColorFilter(param1,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
+      }
+
+      private function onEnterFrame(param1:Event) : void
+      {
+         var _loc2_:int = 0;
+         if(!this.visible)
+         {
+            return;
+         }
+         _loc2_ = 0;
+         while(_loc2_ < this.m_promptInstances.length)
+         {
+            this.applyPromptImageStyle(this.m_promptInstances[_loc2_]);
+            _loc2_++;
+         }
       }
       
       private function releaseAllPromptInstances() : void
