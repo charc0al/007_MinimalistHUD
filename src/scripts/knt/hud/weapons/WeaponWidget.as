@@ -19,6 +19,8 @@ package knt.hud.weapons
       private static const OPEN_ANIM_SPEED:Number = 0.2;
       
       private static const REMOVAL_ANIM_SPEED:Number = 0.1;
+
+      private static const SHOW_AMMO_BAR:Boolean = false;
       
       private var m_view:WeaponWidgetView;
       
@@ -248,9 +250,9 @@ package knt.hud.weapons
                }
                this.m_view.weapon_container_mc.scaleX = this.m_view.weapon_container_mc.scaleY = 1 * this.ICON_SCALE_FACTOR;
                this.loadWeaponImage(this.m_currentWeapon,this.m_imageLoaderPrimary,this.m_view.weapon_container_mc);
-               this.m_view.ammo_bar.visible = true;
+               this.m_view.ammo_bar.visible = SHOW_AMMO_BAR;
                this.m_ammoIcon.gotoAndStop("ammo");
-               this.m_view.gradient_lines_mc.visible = true;
+               this.m_view.gradient_lines_mc.visible = false;
                this.m_view.ammo_info_mc.visible = true;
                this.m_view.ammo_info_mc.alpha = 1;
                this.m_view.ammo_info_mc.infinite_mc.visible = false;
@@ -260,8 +262,11 @@ package knt.hud.weapons
                {
                   this.m_view.ammo_info_mc.infinite_mc.visible = true;
                   this.m_view.ammo_info_mc.ammo_txt_mc.visible = false;
-                  MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.total_amount_txt,this.addLeadingZero(0),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
-                  MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.zero_amount_txt,this.addLeadingZero(0),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
+                  if(SHOW_AMMO_BAR)
+                  {
+                     MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.total_amount_txt,this.addLeadingZero(0),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
+                     MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.zero_amount_txt,this.addLeadingZero(0),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
+                  }
                   this.m_infiniteAmmoTotal = true;
                }
                else
@@ -269,21 +274,27 @@ package knt.hud.weapons
                   this.m_registeredAmmoTotal = data.nTotalAmount;
                   MenuUtils.setupText(this.m_view.ammo_info_mc.ammo_txt_mc.ammo_mc.ammo_txt,this.addLeadingZero(data.nRemainingAmount),80,MenuConstantsKnt.FONT_TYPE_NUMBERS_LIGHT,MenuConstantsKnt.FontColorWhite);
                   MenuUtils.setupText(this.m_view.ammo_info_mc.ammo_txt_mc.ammo_total_mc.ammo_total_txt,this.addLeadingZero(data.nTotalAmount),38,MenuConstantsKnt.FONT_TYPE_NUMBERS,MenuConstantsKnt.FontColorWhite);
-                  MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.total_amount_txt,this.addLeadingZero(data.nMaxAmount),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
-                  MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.zero_amount_txt,this.addLeadingZero(0),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
+                  if(SHOW_AMMO_BAR)
+                  {
+                     MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.total_amount_txt,this.addLeadingZero(data.nMaxAmount),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
+                     MenuUtils.setupText(this.m_view.ammo_bar.numb_mc.zero_amount_txt,this.addLeadingZero(0),16,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorWhite);
+                  }
                   this.m_infiniteAmmoTotal = false;
                }
-               this.drawAmmoBarSegments(data.nMaxAmount,142,90,1);
-               ammoDiff = data.nMaxAmount - data.nRemainingAmount == 0 ? false : true;
-               i = 0;
-               i = 0;
-               while(i < data.nMaxAmount)
+               if(SHOW_AMMO_BAR)
                {
-                  if(ammoDiff && i >= data.nRemainingAmount)
+                  this.drawAmmoBarSegments(data.nMaxAmount,142,90,1);
+                  ammoDiff = data.nMaxAmount - data.nRemainingAmount == 0 ? false : true;
+                  i = 0;
+                  i = 0;
+                  while(i < data.nMaxAmount)
                   {
-                     this.m_ammoBarSegments[i].barSegment.visible = false;
+                     if(ammoDiff && i >= data.nRemainingAmount)
+                     {
+                        this.m_ammoBarSegments[i].barSegment.visible = false;
+                     }
+                     i++;
                   }
-                  i++;
                }
             }
             if(this.m_controllerType != data.nextFirearmPromptData.controllerType || data.nextFirearmPromptData.aElements[0].iconId && data.nextFirearmPromptData.aElements[0].iconId != this.m_currentWeaponSwapPromptIconId)
@@ -484,7 +495,7 @@ package knt.hud.weapons
                      }
                      this.m_reloadInProgress = false;
                   }
-                  if(data.nRemainingAmount != this.m_ammoArrayActiveBulletEnd)
+                  if(SHOW_AMMO_BAR && data.nRemainingAmount != this.m_ammoArrayActiveBulletEnd)
                   {
                      bulletsDecreased = data.nRemainingAmount < this.m_ammoArrayActiveBulletEnd;
                      ammoI = bulletsDecreased ? int(data.nRemainingAmount) : this.m_ammoArrayActiveBulletEnd;
@@ -536,6 +547,7 @@ package knt.hud.weapons
                   }
                   MenuUtils.setColor(this.m_resourceIcon,resourceColor,true);
                   this.m_view.special_ammo_bar.visible = true;
+                  this.m_view.gradient_lines_mc.visible = false;
                   this.m_view.gradient_lines_mc.gotoAndStop("single");
                   this.drawSpecialAmmoBarSegments(data.nResourceMaxAmount,123,90,1.6,resourceColor);
                   specialAmmoDiff = data.nResourceMaxAmount - flooredResourceAmount == 0 ? false : true;
@@ -556,6 +568,7 @@ package knt.hud.weapons
                   this.m_view.ammo_info_mc.ammo_txt_mc.resource_mc.ammo_total_txt.text = "";
                   this.m_view.special_ammo_bar.visible = false;
                   this.m_previousResourceCount = 0;
+                  this.m_view.gradient_lines_mc.visible = false;
                   this.m_view.gradient_lines_mc.gotoAndStop("double");
                   this.m_weaponUsesResource = false;
                }

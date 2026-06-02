@@ -27,6 +27,8 @@ package knt.hud.damagedirection
          addChild(this.m_view);
          this.m_container = new Sprite();
          this.m_view.addChild(this.m_container);
+         this.m_container.visible = false;
+         this.m_container.alpha = 0;
       }
       
       public function onSetData(param1:Array) : void
@@ -111,23 +113,41 @@ package knt.hud.damagedirection
             }
             _loc2_++;
          }
+         this.hideAllIndicators();
       }
       
+      private function hideAllIndicators() : void
+      {
+         var _loc1_:WidgetElement = null;
+         var _loc2_:int = 0;
+         this.m_container.visible = false;
+         this.m_container.alpha = 0;
+         while(_loc2_ < this.m_widgetElements.length)
+         {
+            _loc1_ = this.m_widgetElements[_loc2_];
+            if(_loc1_.view != null)
+            {
+               Animate.kill(_loc1_.view);
+               _loc1_.view.visible = false;
+            }
+            _loc1_.isActive = false;
+            _loc1_.humanoidID = -1;
+            _loc1_.isAttackerOnScreen = true;
+            _loc2_++;
+         }
+      }
+
       private function playMarkerClip(param1:Sprite, param2:int) : void
       {
-         param1.visible = true;
-         param1.alpha = 1;
-         Animate.fromTo(param1,1.2,0,{"frames":1 + param2},{"frames":20 + param2},Animate.ExpoOut);
+         param1.visible = false;
+         param1.alpha = 0;
+         Animate.kill(param1);
       }
       
       private function stopMarkerClip(param1:Sprite, param2:int) : void
       {
-         var mc:Sprite = param1;
-         var frameOffset:int = param2;
-         Animate.fromTo(mc,0.2,0,{"frames":26 + frameOffset},{"frames":36 + frameOffset},Animate.ExpoOut,function():void
-         {
-            mc.visible = false;
-         });
+         Animate.kill(param1);
+         param1.visible = false;
       }
    }
 }

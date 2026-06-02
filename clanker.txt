@@ -31,6 +31,19 @@ Changes made so far
   `src/scripts/knt/hud/watch/WatchRadarWidget.as`
 - Attention indicator arrows removed:
   `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
+- Offscreen enemy direction arrows removed:
+  `src/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as`
+- Offscreen melee/parry direction arrows removed:
+  `src/scripts/knt/hud/damagedirection/OffscreenMeleeDirectionWidget.as`
+- Bluff/lure bottom-strip reduced to prompt glyphs plus availability glow:
+  `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
+  `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
+- Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to half size:
+  `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+- Redundant right-side primary ammo bar removed while keeping numeric ammo digits:
+  `src/scripts/knt/hud/weapons/WeaponWidget.as`
+- NPC watcher overhead indicators now only appear in Q Lens/watch view:
+  `src/scripts/knt/hud/npcstate/NpcStateWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -46,11 +59,50 @@ Likely useful targets for future cleanup
 - Tutorial systems: `src/scripts/knt/hud/tutorial/`
 - Combat prompt backgrounds: `src/scripts/knt/hud/buttonprompts/`
 - Attention wedges/arrows: `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
+- Offscreen enemy/melee direction arrows: `src/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as` and `OffscreenMeleeDirectionWidget.as`
+- Bluff/lure strip: `src/scripts/knt/hud/agency/AgencySelectorWidget.as` and `AgencySelectorWidgetEntry.as`
+- Weapon ammo bar / right-side bullet strip: `src/scripts/knt/hud/weapons/WeaponWidget.as` and `src/scripts/knt/hud/WeaponWidgetView.as`
+- NPC watcher / influenced-by-watcher overhead icons: `src/scripts/knt/hud/npcstate/NpcStateWidget.as`
+
+Notes on bluff/lure strip
+- The bottom bluff/lure widget is the agency selector strip, not the circular agency meter.
+- `AgencySelectorWidget` owns the frame, lines, icon, and chunk count.
+- `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
+- Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
 
 Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
 - Close-combat prompt ring/outline behavior exposed in script is in `CloseCombatPromptsWidget` via `combo_mc` / `combo_mc.outline_mc`.
 - If circles still remain after testing, the remainder is likely baked into the prompt symbol art or `ButtonPromptImage` rendering rather than a separate controller toggle.
+
+Notes on direction arrows
+- `AttentionGainWidget` was already overridden and now hard-hides the wedge-based attention indicators in `onSetData()`.
+- Remaining red directional combat arrows were traced to the damagedirection controllers, not the attentiongain widget.
+- `OffscreenEnemyDirectionWidget` colors a container with `MenuConstantsKnt.COLOR_HUD_DANGER_HIGH` and shows per-enemy indicators when `newCombatant` is true.
+- `OffscreenMeleeDirectionWidget` drives offscreen melee/parry indicators separately.
+- Current mod behavior ports both damagedirection classes into `src/` and keeps their vanilla object/state lifecycle intact while forcing the rendered indicators hidden. This is safer than fully short-circuiting `onSetData()` if combat stability depends on normal widget bookkeeping.
+
+Notes on objectives widget
+- The top-left mission/objectives list is controlled by `ObjectivesWidget`.
+- `ObjectivesWidget` already had watch-state handling through `IsInQLens` / `m_isAimingWatch`.
+- Current mod behavior keeps the objectives list hidden unless the watch/QLens is being aimed, and scales the whole widget to `0.85`.
+
+Notes on NPC watcher indicators
+- The white overhead watcher dot/icon is driven by `NpcStateWidget` via `state_mc.watcher_mc`.
+- The influenced-by-watcher icon is also driven there via `state_mc.watcher_influenced_mc`.
+- Vanilla behavior already gated `INFLUENCED_BY_WATCHER` on `m_isInWatchView`, but plain `WATCHER` / `WATCHER_INFLUENCING` did not require watch view.
+- Current mod behavior ports `NpcStateWidget` into `src/` and requires `m_isInWatchView` for watcher-related primary and secondary states, so these overhead watcher icons only appear while using Q Lens/watch view.
+
+Notes on weapon ammo bar
+- The redundant right-side bullet strip is `WeaponWidgetView.ammo_bar`, controlled by `knt.hud.weapons.WeaponWidget`.
+- Primary ammo bar activation happens when a weapon loads:
+  `m_view.ammo_bar.visible = true`
+  `drawAmmoBarSegments(data.nMaxAmount, 142, 90, 1)`
+- Segment visibility is updated through `m_ammoBarSegments[...]` based on `nRemainingAmount`.
+- Related supporting visuals are `gradient_lines_mc`, `ammo_icon_container_mc`, `ammo_info_mc`, and for gadget/resource weapons `special_ammo_bar`.
+- If removing only the redundant bullet strip, `ammo_bar` is the first target. Be careful not to accidentally remove the numeric ammo text in `ammo_info_mc`.
+- Current mod behavior gates the primary ammo bar off in `WeaponWidget` with a `SHOW_AMMO_BAR` constant, so the numeric ammo digits remain but the curved right-side primary ammo bar is no longer shown or updated.
+- The leftover arc/separator visuals next to the removed ammo bar were `gradient_lines_mc`; current mod behavior keeps those hidden as well.
 
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.

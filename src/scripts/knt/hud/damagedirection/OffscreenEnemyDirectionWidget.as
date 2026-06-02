@@ -24,6 +24,8 @@ package knt.hud.damagedirection
          this.m_container = new Sprite();
          this.m_view.addChild(this.m_container);
          MenuUtils.setColor(this.m_container,MenuConstantsKnt.COLOR_HUD_DANGER_HIGH,false);
+         this.m_container.visible = false;
+         this.m_container.alpha = 0;
       }
       
       public function onSetData(param1:Array) : void
@@ -47,7 +49,7 @@ package knt.hud.damagedirection
                this.m_childWidgets.push(_loc3_);
             }
             _loc4_ = param1[_loc2_];
-            _loc3_.visible = _loc4_.newCombatant;
+            _loc3_.visible = false;
             _loc2_++;
          }
          _loc2_ = int(param1.length);
@@ -57,7 +59,21 @@ package knt.hud.damagedirection
             _loc5_.visible = false;
             _loc2_++;
          }
+         this.hideAllIndicators();
+      }
+      
+      private function hideAllIndicators() : void
+      {
+         var _loc1_:DisplayObject = null;
+         var _loc2_:int = 0;
+         this.m_container.visible = false;
+         this.m_container.alpha = 0;
+         while(_loc2_ < this.m_childWidgets.length)
+         {
+            _loc1_ = this.m_childWidgets[_loc2_];
+            _loc1_.visible = false;
+            _loc2_++;
+         }
       }
    }
 }
-
