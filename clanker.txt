@@ -217,3 +217,8 @@ Notes on weapon reticle
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.
 - If a HUD element still appears, search `src_vanilla/` for the controller first, then port only the needed file into `src/`.
+
+Notes on menu-side objective notifications
+- The menu SWF also contains duplicate objective-notification classes that can override or outlive gameplay-side HUD changes: `knt.hud.objectives.ObjectivesNotificationWidget` and `ObjectivesNotificationItemWidget`.
+- `MenuObjectivesNotification` and `MenuObjectivesNotificationItem` in the menu SWF instantiate those duplicate HUD classes.
+- Current mod behavior ports both menu-side notification widgets into `src_menu/` and scales them to `0.5` as well, so center-screen objective/tutorial-style banners from the menu SWF follow the same reduced-size treatment.
