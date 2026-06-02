@@ -44,6 +44,8 @@ Changes made so far
   `src/scripts/knt/hud/weapons/WeaponWidget.as`
 - NPC watcher overhead indicators now only appear in Q Lens/watch view:
   `src/scripts/knt/hud/npcstate/NpcStateWidget.as`
+- Weapon reticle idle visibility stabilized by forcing the inner ironsight alpha back on during setup/show:
+  `src/scripts/knt/hud/weapons/WeaponReticleWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -103,6 +105,10 @@ Notes on weapon ammo bar
 - If removing only the redundant bullet strip, `ammo_bar` is the first target. Be careful not to accidentally remove the numeric ammo text in `ammo_info_mc`.
 - Current mod behavior gates the primary ammo bar off in `WeaponWidget` with a `SHOW_AMMO_BAR` constant, so the numeric ammo digits remain but the curved right-side primary ammo bar is no longer shown or updated.
 - The leftover arc/separator visuals next to the removed ammo bar were `gradient_lines_mc`; current mod behavior keeps those hidden as well.
+
+Notes on weapon reticle
+- `WeaponReticleWidget` can appear to lose the idle aiming reticle if `ironsight_inner_mc` is left at a low/default alpha while the widened firing state still animates it back on.
+- Current mod behavior explicitly restores `m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 1` during reticle setup and when `shouldShowReticle(true, ...)` is called.
 
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.

@@ -262,6 +262,7 @@ package knt.hud.weapons
             this.m_reticle.posts_mc.alpha = 0;
          }
          this.m_reticle.ironsight_mc.alpha = 1;
+         this.m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 1;
          this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_0.inner_mc.x = this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_1.inner_mc.x = this.m_ironSightsOffsetX;
          this.m_reticle.hit_mc.alpha = 0;
          this.m_reticle.hit_kill_mc.alpha = 0;
@@ -679,6 +680,8 @@ package knt.hud.weapons
          {
             this.setIllegalStateReticle();
             this.m_reticle.visible = true;
+            this.m_reticle.ironsight_mc.alpha = 1;
+            this.m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 1;
             this.m_view.holstered_crosshair_mc.visible = false;
             this.m_view.reload_prompt_mc.visible = this.m_reloadNotificationActive ? true : false;
             if(this.m_reloadNotificationActive)
