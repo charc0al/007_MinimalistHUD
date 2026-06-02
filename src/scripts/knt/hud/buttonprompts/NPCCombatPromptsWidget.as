@@ -70,6 +70,8 @@ package knt.hud.buttonprompts
       
       public static const BACK_PERFECT_PARRY:int = 6;
       
+      private static const TAKEDOWN_TEXT_COLOR:String = "#FF8888";
+      
       private static const TEXT_X_POS:Number = 22;
       
       private static const TEXT_X_POS_BLOCKED:Number = 38;
@@ -159,7 +161,7 @@ package knt.hud.buttonprompts
       
       public function onSetData(param1:Object) : void
       {
-         if(!param1.m_prompts.length || !param1.m_prompts[0].m_promptData.length || !param1.m_prompts[0].isVisible || param1.m_prompts[0].m_promptType == TYPE_PERFECT_PARRY || param1.m_prompts[0].m_promptType == TYPE_PARTIAL_PARRY)
+         if(!param1.m_prompts.length || !param1.m_prompts[0].m_promptData.length || !param1.m_prompts[0].isVisible || param1.m_prompts[0].m_promptType == TYPE_PERFECT_PARRY || param1.m_prompts[0].m_promptType == TYPE_PARTIAL_PARRY || param1.m_prompts[0].m_promptType == TYPE_COMBAT_RUSH)
          {
             this.m_view.visible = false;
             this.m_view.alpha = 0;
@@ -224,6 +226,7 @@ package knt.hud.buttonprompts
          var _loc15_:MovieClip = null;
          var _loc16_:int = 0;
          var _loc17_:String = null;
+         var _loc18_:String = null;
          var _loc11_:* = param1.aElements.length > 0;
          var _loc12_:Boolean = param7 != null && param7 != "" && param7 != " ";
          var _loc13_:Boolean = param9 != "" && param3 != TYPE_CONFRONTATION_OPT_IN;
@@ -324,9 +327,10 @@ package knt.hud.buttonprompts
          if(_loc12_ || param6 || _loc13_)
          {
             this.m_promptBackCanBeAligned = true;
+            _loc18_ = this.getPromptTextColor(param3);
             if(_loc12_)
             {
-               MenuUtils.setupText(this.m_view.button_mc.title_txt,param7,21,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorWhite);
+               MenuUtils.setupText(this.m_view.button_mc.title_txt,param7,21,MenuConstantsKnt.FONT_TYPE_MEDIUM,_loc18_);
                this.m_view.button_mc.title_txt.alpha = param1.isEnabled ? 1 : 0.6;
                this.m_view.button_mc.shadows_mc.title_shadow_mc.width = this.m_view.button_mc.title_txt.textWidth + TITLE_SHADOW_EXTRA_WIDTH;
                this.m_view.button_mc.shadows_mc.title_shadow_mc.x = this.m_view.button_mc.title_txt.x + this.m_view.button_mc.title_txt.textWidth / 2;
@@ -357,7 +361,7 @@ package knt.hud.buttonprompts
             this.m_view.button_mc.blocked_mc.visible = this.m_isBlocked;
             if(this.m_hasDescription)
             {
-               MenuUtils.setupText(this.m_view.button_mc.status_txt,_loc17_,18,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
+               MenuUtils.setupText(this.m_view.button_mc.status_txt,_loc17_,18,MenuConstantsKnt.FONT_TYPE_NORMAL,_loc18_);
                this.m_view.button_mc.shadows_mc.status_shadow_mc.width = this.m_view.button_mc.status_txt.textWidth + DESC_SHADOW_EXTRA_WIDTH;
                this.m_view.button_mc.shadows_mc.status_shadow_mc.x = this.m_view.button_mc.status_txt.x + this.m_view.button_mc.status_txt.textWidth / 2;
                this.m_view.button_mc.shadows_mc.status_shadow_mc.visible = true;
@@ -366,7 +370,7 @@ package knt.hud.buttonprompts
             }
             else
             {
-               MenuUtils.setupText(this.m_view.button_mc.status_txt,"",18,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
+               MenuUtils.setupText(this.m_view.button_mc.status_txt,"",18,MenuConstantsKnt.FONT_TYPE_NORMAL,_loc18_);
                this.m_view.button_mc.status_txt.visible = false;
                this.m_view.button_mc.shadows_mc.status_shadow_mc.visible = false;
                this.m_view.button_mc.title_txt.y = -15;
@@ -497,6 +501,15 @@ package knt.hud.buttonprompts
             this.m_view.button_mc.parry_mc.visible = false;
          }
          this.m_view.x = backType == BACK_COMBO || backType == BACK_COMBO_AGENCY ? 16 : 0;
+      }
+      
+      private function getPromptTextColor(param1:int) : String
+      {
+         if(param1 == TYPE_SILENT_TAKEDOWN || param1 == TYPE_MELEE_FINISHER || param1 == TYPE_FAKE_SURRENDER_MELEE_FINISHER)
+         {
+            return TAKEDOWN_TEXT_COLOR;
+         }
+         return MenuConstantsKnt.FontColorWhite;
       }
       
       public function setPromptAlignment(param1:String) : void
