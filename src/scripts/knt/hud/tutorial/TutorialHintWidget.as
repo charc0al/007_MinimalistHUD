@@ -35,6 +35,8 @@ package knt.hud.tutorial
       {
          this.m_isActive = false;
          this.killAllAnimations();
+         this.visible = false;
+         this.m_view.visible = false;
          this.m_view.alpha = 0;
       }
       

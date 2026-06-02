@@ -35,121 +35,68 @@ package knt.hud.breadcrumbs
       
       public function onSetData(param1:Object) : void
       {
+         this.hideIndicator();
       }
       
       private function setGrenadeType(param1:String) : void
       {
-         switch(param1)
-         {
-            case "smoke":
-               this.m_view.icon_mc.gotoAndStop("smoke");
-               break;
-            case "electric":
-               this.m_view.icon_mc.gotoAndStop("electric");
-               break;
-            case "explosive":
-               this.m_view.icon_mc.gotoAndStop("frag");
-               break;
-            case "flash":
-               this.m_view.icon_mc.gotoAndStop("flash");
-               break;
-            default:
-               this.m_view.icon_mc.gotoAndStop("default");
-         }
-         this.pulseAnim(true);
-         this.m_view.visible = true;
+         this.hideIndicator();
       }
       
       private function pulseAnim(param1:Boolean) : void
       {
-         var variableSpeed:Number = NaN;
-         var show:Boolean = param1;
          Animate.kill(this.m_view.icon_mc);
          Animate.kill(this.m_view.pulse_mc.rings_mc);
          Animate.kill(this.m_view.pulse_mc.bg_mc);
-         this.m_view.icon_mc.alpha = 1;
-         this.m_view.pulse_mc.rings_mc.gotoAndStop(0);
-         this.m_view.pulse_mc.bg_mc.gotoAndStop(0);
-         if(show)
-         {
-            variableSpeed = FLASH_ANIM_REGULAR_SPEED;
-            if(this.m_fuseDuration - this.m_fuseCountDown <= 0.8)
-            {
-               variableSpeed = FLASH_ANIM_FAST_SPEED;
-            }
-            Animate.to(this.m_view.icon_mc,variableSpeed / 2,0,{"alpha":0.7},Animate.Linear,function():void
-            {
-               m_fuseCountDown += variableSpeed;
-               Animate.to(m_view.icon_mc,variableSpeed / 2,0,{"alpha":1},Animate.Linear);
-            });
-            Animate.fromTo(this.m_view.pulse_mc.rings_mc,variableSpeed,0,{"frames":0},{"frames":60},Animate.Linear);
-            Animate.fromTo(this.m_view.pulse_mc.bg_mc,variableSpeed,0,{"frames":0},{"frames":60},Animate.Linear,function():void
-            {
-               pulseAnim(true);
-            });
-         }
-         else
-         {
-            this.m_fuseCountDown = 0;
-         }
+         this.m_fuseCountDown = 0;
       }
       
       public function activate() : void
       {
-         this.setGrenadeType("flash");
+         this.hideIndicator();
       }
       
       public function activateSmokeNormal() : void
       {
-         this.setGrenadeType("smoke");
+         this.hideIndicator();
       }
       
       public function activateSmokeElectric() : void
       {
-         this.setGrenadeType("electric");
+         this.hideIndicator();
       }
       
       public function activateExplosive() : void
       {
-         this.setGrenadeType("explosive");
+         this.hideIndicator();
       }
       
       public function activateFlash() : void
       {
-         this.setGrenadeType("flash");
+         this.hideIndicator();
       }
       
       public function deactivate() : void
       {
-         this.pulseAnim(false);
-         this.m_view.visible = false;
+         this.hideIndicator();
       }
       
       public function edgeAngle(param1:Number) : void
       {
-         if(param1 < 0)
-         {
-            if(this.m_edgeLocked)
-            {
-               this.m_view.direction_mc.visible = false;
-               this.m_edgeLocked = false;
-            }
-         }
-         else
-         {
-            if(!this.m_edgeLocked)
-            {
-               this.m_view.direction_mc.visible = true;
-               this.m_edgeLocked = true;
-            }
-            this.m_view.direction_mc.rotation = param1;
-         }
+         this.hideIndicator();
       }
       
       public function fuzeDuration(param1:Number) : void
       {
          this.m_fuseDuration = MenuUtils.roundDecimal(param1,2);
       }
+      
+      private function hideIndicator() : void
+      {
+         this.pulseAnim(false);
+         this.m_view.direction_mc.visible = false;
+         this.m_view.visible = false;
+         this.m_edgeLocked = false;
+      }
    }
 }
-

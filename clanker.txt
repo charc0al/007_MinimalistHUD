@@ -38,8 +38,15 @@ Changes made so far
 - Bluff/lure bottom-strip reduced to prompt glyphs plus availability glow:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
-- Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to half size:
+- Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+- Grenade / flashbang breadcrumb indicator disabled:
+  `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
+- Tutorial side hint and simple popup now hard-hidden at the widget root:
+  `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
+  `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
+- Center-screen tutorial notification banner suppressed without affecting non-tutorial item/challenge notifications:
+  `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
 - Redundant right-side primary ammo bar removed while keeping numeric ammo digits:
   `src/scripts/knt/hud/weapons/WeaponWidget.as`
 - NPC watcher overhead indicators now only appear in Q Lens/watch view:
@@ -59,6 +66,7 @@ Likely useful targets for future cleanup
 - Watch danger/status indicator: `src_vanilla/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Top-screen danger/status indicator: `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
 - Tutorial systems: `src/scripts/knt/hud/tutorial/`
+- Grenade / throwable breadcrumbs: `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
 - Combat prompt backgrounds: `src/scripts/knt/hud/buttonprompts/`
 - Attention wedges/arrows: `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
 - Offscreen enemy/melee direction arrows: `src/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as` and `OffscreenMeleeDirectionWidget.as`
@@ -88,6 +96,19 @@ Notes on objectives widget
 - The top-left mission/objectives list is controlled by `ObjectivesWidget`.
 - `ObjectivesWidget` already had watch-state handling through `IsInQLens` / `m_isAimingWatch`.
 - Current mod behavior keeps the objectives list hidden unless the watch/QLens is being aimed, and scales the whole widget to `0.85`.
+- The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
+- Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
+
+Notes on grenade indicator
+- The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.
+- This controller owns the pulse icon plus directional arrow for smoke, electric, explosive, and flash grenade breadcrumbs.
+- Current mod behavior ports `GrenadeBreadcrumb` into `src/` and forces the widget hidden for all activate/deactivate and edge-angle paths.
+
+Notes on tutorial widgets
+- The side-of-screen tutorial info card is `TutorialHintWidget`.
+- The stacked pop-up style tutorial notifier is `TutorialSimplePopUpWidget`.
+- Earlier suppression that only killed animations was not strong enough.
+- Current mod behavior also hides the widget roots/containers so reused state cannot bring them back on-screen.
 
 Notes on NPC watcher indicators
 - The white overhead watcher dot/icon is driven by `NpcStateWidget` via `state_mc.watcher_mc`.

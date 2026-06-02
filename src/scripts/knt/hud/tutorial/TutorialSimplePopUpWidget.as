@@ -59,6 +59,8 @@ package knt.hud.tutorial
          Log.debugData(this,param1);
          this.killAllWidgetAnimations();
          this.hideAllEntries();
+         this.visible = false;
+         this.m_container.visible = false;
       }
       
       private function ShowNotification(param1:String, param2:int) : void
