@@ -38,6 +38,8 @@ Changes made so far
 - Bluff/lure bottom-strip reduced to prompt glyphs plus availability glow:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
+- Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
+  `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Grenade / flashbang breadcrumb indicator disabled:
@@ -47,6 +49,8 @@ Changes made so far
   `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
 - Center-screen tutorial notification banner suppressed without affecting non-tutorial item/challenge notifications:
   `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+- Focus / instinct gain popup disabled:
+  `src/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
 - Redundant right-side primary ammo bar removed while keeping numeric ammo digits:
   `src/scripts/knt/hud/weapons/WeaponWidget.as`
 - NPC watcher overhead indicators now only appear in Q Lens/watch view:
@@ -65,6 +69,7 @@ Likely useful targets for future cleanup
 - Watch compass/radar base: `src/scripts/knt/hud/watch/WatchRadarWidget.as`
 - Watch danger/status indicator: `src_vanilla/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Top-screen danger/status indicator: `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
+- Focus / instinct gain notification: `src/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
 - Tutorial systems: `src/scripts/knt/hud/tutorial/`
 - Grenade / throwable breadcrumbs: `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
 - Combat prompt backgrounds: `src/scripts/knt/hud/buttonprompts/`
@@ -79,6 +84,11 @@ Notes on bluff/lure strip
 - `AgencySelectorWidget` owns the frame, lines, icon, and chunk count.
 - `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
+
+Notes on standard button prompts
+- The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
+- Vanilla behavior uses `ButtonPromptImage` instances with optional per-prompt inversion and platform-specific scaling.
+- Current mod behavior forces prompt images through the inverted color matrix so the buttons render dark with light glyphs, and applies a `0.8` multiplier to the normal prompt icon scale.
 
 Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
@@ -109,6 +119,11 @@ Notes on tutorial widgets
 - The stacked pop-up style tutorial notifier is `TutorialSimplePopUpWidget`.
 - Earlier suppression that only killed animations was not strong enough.
 - Current mod behavior also hides the widget roots/containers so reused state cannot bring them back on-screen.
+
+Notes on focus gain popup
+- The lightning-bolt `+N` popup for gained focus/instinct energy is driven by `knt.hud.notifications.AgencyNotificationWidget`.
+- Vanilla behavior compares `agencyData.currentAgency` against `m_previousValue` and shows a popup when the value increases.
+- Current mod behavior ports `AgencyNotificationWidget` into `src/` and suppresses the popup in `onSetData()` while still updating `m_previousValue` so repeated gains do not accumulate stale deltas.
 
 Notes on NPC watcher indicators
 - The white overhead watcher dot/icon is driven by `NpcStateWidget` via `state_mc.watcher_mc`.

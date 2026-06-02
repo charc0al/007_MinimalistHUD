@@ -57,6 +57,8 @@ package knt.hud.buttonprompts
       
       private static const PROMPT_ICON_SCALE:Number = 30 / 36;
       
+      private static const PROMPT_SCALE_MULTIPLIER:Number = 0.8;
+      
       private static const PROMPT_X_SPACING:Number = 44;
       
       public static const PLAYER_RESOURCETYPE_CHEMICAL:uint = 0;
@@ -328,7 +330,7 @@ package knt.hud.buttonprompts
             _loc14_.x = 0;
             _loc14_.y = 0;
             _loc14_.platform = this.m_platform;
-            this.m_view.promptHolder_mc.scaleX = this.m_view.promptHolder_mc.scaleY = _loc14_.platform == "key" ? 0.75 : PROMPT_ICON_SCALE;
+            this.m_view.promptHolder_mc.scaleX = this.m_view.promptHolder_mc.scaleY = (_loc14_.platform == "key" ? 0.75 : PROMPT_ICON_SCALE) * PROMPT_SCALE_MULTIPLIER;
             if((_loc14_.platform == CommonUtils.CONTROLLER_TYPE_KEY || this.m_iconId == -1) && this.m_actionKeyGlyph != "")
             {
                _loc14_.customKey = this.m_actionKeyGlyph;
@@ -341,13 +343,13 @@ package knt.hud.buttonprompts
             {
                if(param1.aElements.length == 1)
                {
-                  MenuUtils.addColorFilter(_loc14_,param1.aElements[0].invertColor ? [MenuConstantsKnt.COLOR_MATRIX_INVERTED] : []);
+                  MenuUtils.addColorFilter(_loc14_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
                }
             }
             else
             {
                _loc15_ = param1.aElements.length == 1 ? _loc13_ : Boolean(param1.aElements[0].invertColor);
-               MenuUtils.addColorFilter(_loc14_,_loc15_ ? [MenuConstantsKnt.COLOR_MATRIX_INVERTED] : []);
+               MenuUtils.addColorFilter(_loc14_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
             }
             if(SHOW_PROMPT_HIGHLIGHTS && (param1.eAgilityType == AGILITY_TYPE_VAULT_ATTACK || param1.eAgilityType == AGILITY_TYPE_ITEM_QUICK_THROW || param1.eAggressionLevel > AGGRESSION_LEVEL_NONE))
             {
@@ -398,7 +400,7 @@ package knt.hud.buttonprompts
                      {
                         _loc17_.button = _loc18_.iconId;
                      }
-                     MenuUtils.addColorFilter(_loc17_,_loc18_.invertColor ? [MenuConstantsKnt.COLOR_MATRIX_INVERTED] : []);
+                     MenuUtils.addColorFilter(_loc17_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
                      _loc16_++;
                   }
                }
@@ -507,7 +509,7 @@ package knt.hud.buttonprompts
                {
                   _loc20_.button = param1.aElements[1].iconId;
                }
-               MenuUtils.addColorFilter(_loc20_,param1.aElements[1].invertColor ? [MenuConstantsKnt.COLOR_MATRIX_INVERTED] : []);
+               MenuUtils.addColorFilter(_loc20_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
             }
             this.releaseUnusedPromptInstances();
          }
