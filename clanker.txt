@@ -27,6 +27,10 @@ Changes made so far
 - Combat prompt circles reduced/removed at the widget layer:
   `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
   `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
+- Rotating watch compass background removed:
+  `src/scripts/knt/hud/watch/WatchRadarWidget.as`
+- Attention indicator arrows removed:
+  `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -36,10 +40,12 @@ What the top-screen duplicate indicator was
 
 Likely useful targets for future cleanup
 - Watch base visuals: `src/scripts/knt/hud/watch/WatchBaseWidget.as`
+- Watch compass/radar base: `src/scripts/knt/hud/watch/WatchRadarWidget.as`
 - Watch danger/status indicator: `src_vanilla/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Top-screen danger/status indicator: `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
 - Tutorial systems: `src/scripts/knt/hud/tutorial/`
 - Combat prompt backgrounds: `src/scripts/knt/hud/buttonprompts/`
+- Attention wedges/arrows: `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
 
 Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
