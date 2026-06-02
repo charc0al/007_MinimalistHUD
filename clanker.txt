@@ -40,6 +40,10 @@ Changes made so far
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
+  `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
+- NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
+  `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Grenade / flashbang breadcrumb indicator disabled:
@@ -89,6 +93,10 @@ Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
 - Vanilla behavior uses `ButtonPromptImage` instances with optional per-prompt inversion and platform-specific scaling.
 - Current mod behavior forces prompt images through the inverted color matrix so the buttons render dark with light glyphs, and applies a `0.8` multiplier to the normal prompt icon scale.
+- `CloseCombatPromptsWidget` is separate and does not inherit those shared prompt changes automatically.
+- Current mod behavior also forces its `ButtonPromptImage` instances through the inverted color matrix and applies the same `0.8` scale multiplier there.
+- `NPCCombatPromptsWidget` is also separate and directly instantiates its own combat prompt images.
+- Current mod behavior also forces those combat prompt images through the inverted color matrix and applies the same `0.8` scale multiplier there.
 
 Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.

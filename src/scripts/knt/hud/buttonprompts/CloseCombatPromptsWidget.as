@@ -16,6 +16,8 @@ package knt.hud.buttonprompts
       
       private static const SHOW_PROMPT_HIGHLIGHTS:Boolean = false;
       
+      private static const PROMPT_SCALE_MULTIPLIER:Number = 0.8;
+      
       private const MAX_PROMPTS:int = 6;
       
       private var m_view:CloseCombatPromptsWidgetView;
@@ -198,7 +200,7 @@ package knt.hud.buttonprompts
          {
             _loc10_ = param2.prompt.aElements[0];
             _loc7_.prompt.platform = param2.prompt.controllerType;
-            _loc7_.promptHolder_mc.scaleX = _loc7_.promptHolder_mc.scaleY = _loc7_.prompt.platform == "key" ? 0.8 : 1;
+            _loc7_.promptHolder_mc.scaleX = _loc7_.promptHolder_mc.scaleY = (_loc7_.prompt.platform == "key" ? 0.8 : 1) * PROMPT_SCALE_MULTIPLIER;
             if(_loc7_.prompt.platform == "key" || _loc10_.iconId == -1)
             {
                _loc7_.prompt.customKey = _loc10_.keyGlyph;
@@ -207,6 +209,7 @@ package knt.hud.buttonprompts
             {
                _loc7_.prompt.button = _loc10_.iconId;
             }
+            MenuUtils.addColorFilter(_loc7_.prompt,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
             if(!this.isAnyEnabled(param2.labels) && !(_loc10_.invertColor != null ? _loc10_.invertColor : false) && !param3)
             {
                MenuUtils.setTint(_loc7_.promptHolder_mc,MenuConstantsKnt.COLOR_GREY_MEDIUM);

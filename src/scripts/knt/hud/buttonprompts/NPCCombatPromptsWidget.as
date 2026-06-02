@@ -84,6 +84,8 @@ package knt.hud.buttonprompts
       
       private static const PROMPT_ICON_SCALE:Number = 30 / 36;
       
+      private static const PROMPT_SCALE_MULTIPLIER:Number = 0.8;
+      
       private static const PERF_PARRY_PREBUFFER:Number = 0.01;
       
       private static const SHOW_PROMPT_HIGHLIGHTS:Boolean = false;
@@ -250,7 +252,7 @@ package knt.hud.buttonprompts
                {
                   _loc14_ = param1.aElements[_loc16_];
                   _loc15_.prompt.platform = param1.controllerType;
-                  _loc15_.promptHolder_mc.scaleX = _loc15_.promptHolder_mc.scaleY = _loc15_.prompt.platform == "key" ? 0.75 : PROMPT_ICON_SCALE;
+                  _loc15_.promptHolder_mc.scaleX = _loc15_.promptHolder_mc.scaleY = (_loc15_.prompt.platform == "key" ? 0.75 : PROMPT_ICON_SCALE) * PROMPT_SCALE_MULTIPLIER;
                   if((_loc15_.prompt.platform == CommonUtils.CONTROLLER_TYPE_KEY || _loc14_.iconId == -1) && _loc14_.keyGlyph != "")
                   {
                      _loc15_.prompt.customKey = _loc14_.keyGlyph;
@@ -259,6 +261,7 @@ package knt.hud.buttonprompts
                   {
                      _loc15_.prompt.button = _loc14_.iconId;
                   }
+                  MenuUtils.addColorFilter(_loc15_.prompt,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
                   if(_loc14_.showProgress)
                   {
                      if(_loc14_.invertColor)
