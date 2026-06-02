@@ -92,6 +92,15 @@ package knt.hud.npcstate
          {
             return;
          }
+         if(!param1.m_isInWatchView)
+         {
+            this.hideAllStateMcs();
+            this.m_currentPrimary = -1;
+            this.m_currentSecondary = -1;
+            this.m_progressShown = false;
+            this.m_view.progress_mc.visible = false;
+            return;
+         }
          this.m_progressShown = false;
          var _loc2_:int = -1;
          this.m_view.progress_mc.visible = false;

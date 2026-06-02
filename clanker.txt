@@ -93,7 +93,7 @@ Notes on NPC watcher indicators
 - The white overhead watcher dot/icon is driven by `NpcStateWidget` via `state_mc.watcher_mc`.
 - The influenced-by-watcher icon is also driven there via `state_mc.watcher_influenced_mc`.
 - Vanilla behavior already gated `INFLUENCED_BY_WATCHER` on `m_isInWatchView`, but plain `WATCHER` / `WATCHER_INFLUENCING` did not require watch view.
-- Current mod behavior ports `NpcStateWidget` into `src/` and requires `m_isInWatchView` for watcher-related primary and secondary states, so these overhead watcher icons only appear while using Q Lens/watch view.
+- Current mod behavior ports `NpcStateWidget` into `src/` and short-circuits the widget entirely unless `m_isInWatchView` is true, so all NPC overhead state indicators from this widget only appear while using Q Lens/watch view.
 
 Notes on weapon ammo bar
 - The redundant right-side bullet strip is `WeaponWidgetView.ammo_bar`, controlled by `knt.hud.weapons.WeaponWidget`.
