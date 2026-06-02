@@ -14,6 +14,7 @@ package knt.hud.objectives
    
    public class ObjectivesNotificationItemWidget extends BaseControl
    {
+      private static const NOTIFICATION_SCALE:Number = 0.5;
       
       private var m_imageLoader:ImageLoader;
       
@@ -42,6 +43,7 @@ package knt.hud.objectives
          super();
          this.m_view = new ObjectivesNotificationItemWidgetView();
          this.m_view.y = -this.NOTIFICATION_HEIGHT / 2;
+         this.m_view.scaleX = this.m_view.scaleY = NOTIFICATION_SCALE;
          addChild(this.m_view);
          this.m_view.visible = false;
          KntHudUtils.appendOutline(this.m_view.headline_txt);

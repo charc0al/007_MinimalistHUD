@@ -42,6 +42,8 @@ Changes made so far
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Agency selector frame count numbers and divider/frame line art hidden:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
+- Agency selector per-entry numeric cost labels hidden:
+  `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -64,6 +66,11 @@ Changes made so far
   `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
   `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
 - Center-screen tutorial notification banner suppressed without affecting non-tutorial item/challenge notifications:
+  `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+- Remaining center objective/hint notification banners scaled to `0.5` instead of hidden:
+  `src/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
+  `src/scripts/knt/hud/objectives/ObjectivesHintRevealingWidget.as`
+- Tutorial/item notification banner path also scaled to `0.5`:
   `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
 - Focus / instinct gain popup disabled:
   `src/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
@@ -101,7 +108,7 @@ Notes on bluff/lure strip
 - `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
 - The whole bluff/lure widget is currently gated by whether at least one prompt reports `m_promptData[0].isEnabled`, and it also explicitly restores the widget from its hidden state when enabled prompts return.
-- Current mod behavior also forces the frame count, divider lines, corners, and frame background hidden, leaving the prompt glyphs and icon without the chunk count line art.
+- Current mod behavior also disables `frame_mc` entirely, removing the frame icon, frame count, divider lines, corners, background, and residual dot artifacts, and hides the per-entry numeric cost labels, leaving a glyph-only bluff/lure strip.
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
@@ -132,6 +139,10 @@ Notes on objectives widget
 - Current mod behavior keeps the objectives list hidden unless the watch/QLens is being aimed, and scales the whole widget to `0.85`.
 - The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
+- A separate center notification family also exists in `ObjectivesNotificationWidget` and `ObjectivesHintRevealingWidget`.
+- `ObjectivesNotificationWidget` is the one with the shrinking progress bar / countdown fill for untracked opportunities.
+- `ObjectivesNotificationItemWidget` is another center notification path and is also the widget that explicitly handles `ObjectivesData.TYPE_TUTORIAL`.
+- Current mod behavior scales those remaining center objective/hint/tutorial banners to `0.5` instead of hiding them outright.
 - The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
 - Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless watch mode is active. Because the marker payload itself does not reliably carry `IsInQLens`, `ObjectivesWidget` now publishes its watch state through `ObjectivesMarkerWidget.setGlobalWatchState(...)`, and marker instances refresh immediately from that shared flag instead of waiting for the next movement/camera-driven marker update.
 

@@ -339,7 +339,9 @@ package knt.hud.agency
       
       private function hideFrameDecorations() : void
       {
+         this.m_view.frame_mc.visible = false;
          this.m_view.frame_mc.num_mc.visible = false;
+         this.m_view.frame_mc.icon_mc.visible = false;
          this.m_view.frame_mc.line_R_mc.visible = false;
          this.m_view.frame_mc.line_L_mc.visible = false;
          this.m_view.frame_mc.corner_R_mc.visible = false;
