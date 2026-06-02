@@ -58,11 +58,6 @@ package knt.hud.objectives
       
       public function onSetData(param1:Object) : void
       {
-         if(param1 != null && param1.NotificationType == ObjectivesData.TYPE_TUTORIAL)
-         {
-            this.hideNotification();
-            return;
-         }
          if(param1 == null)
          {
             return;
