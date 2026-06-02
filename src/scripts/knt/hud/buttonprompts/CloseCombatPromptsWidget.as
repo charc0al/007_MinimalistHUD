@@ -65,8 +65,10 @@ package knt.hud.buttonprompts
             }
             _loc2_++;
          }
-         this.m_view.combo_mc.visible = this.m_view.combo_txt.visible = false;
-         this.m_view.combo_mc.outline_mc.visible = SHOW_PROMPT_HIGHLIGHTS;
+         this.m_view.combo_mc.visible = false;
+         this.m_view.combo_txt.visible = false;
+         this.m_view.combo_mc.outline_mc.visible = false;
+         this.m_view.combo_mc.alpha = 0;
          this.m_view.visible = false;
          this.m_view.alpha = 0;
       }
@@ -92,7 +94,8 @@ package knt.hud.buttonprompts
          if(this.m_takedown != oData.isTakedownAvailable)
          {
             this.m_takedown = oData.isTakedownAvailable;
-            this.m_view.combo_mc.visible = this.m_view.combo_txt.visible = this.m_takedown;
+            this.m_view.combo_mc.visible = false;
+            this.m_view.combo_txt.visible = false;
             this.m_view.combo_txt.text = Localization.toUpperCase(oData.takedownLabel);
             if(this.m_takedown)
             {
@@ -158,18 +161,9 @@ package knt.hud.buttonprompts
       
       private function comboButtonBlink(param1:Boolean) : void
       {
-         var on:Boolean = param1;
-         if(!SHOW_PROMPT_HIGHLIGHTS)
-         {
-            Animate.kill(this.m_view.combo_mc.outline_mc);
-            this.m_view.combo_mc.outline_mc.visible = false;
-            this.m_view.combo_mc.outline_mc.alpha = 0;
-            return;
-         }
-         Animate.to(this.m_view.combo_mc.outline_mc,0.03,0.15,{"alpha":(on ? 1 : 0)},Animate.Linear,function():void
-         {
-            comboButtonBlink(!on);
-         });
+         Animate.kill(this.m_view.combo_mc.outline_mc);
+         this.m_view.combo_mc.outline_mc.visible = false;
+         this.m_view.combo_mc.outline_mc.alpha = 0;
       }
       
       private function showActionButton(param1:int, param2:Object, param3:Boolean, param4:Boolean = false) : void
@@ -288,4 +282,3 @@ package knt.hud.buttonprompts
       }
    }
 }
-

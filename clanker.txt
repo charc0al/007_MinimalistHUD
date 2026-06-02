@@ -1,0 +1,51 @@
+MinimalistHUD project notes for future Codex agents
+
+Project structure
+- `src_vanilla/` is the full exported vanilla ActionScript source dump.
+- `src/` is the modded source set used for rebuilding/importing. It may contain only the files intentionally overridden.
+- When a needed class exists only in `src_vanilla/`, copy it into the matching path under `src/` before modifying it.
+
+Editing rules that match how this project is being worked on
+- Preserve the watch gameplay widgets unless specifically asked to remove them.
+- Prefer suppressing HUD elements at widget/controller entry points like `onSetData()` instead of ripping out embedded assets.
+- Keep changes scoped to `src/`. Treat `src_vanilla/` as reference only.
+
+Changes made so far
+- Tutorial banners disabled:
+  `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
+  `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
+- Top-of-screen danger/state notification overlay disabled:
+  `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
+  `src/scripts/knt/hud/notifications/StateNotificationWidget.as`
+- Supporting notification classes copied from vanilla into `src/scripts/knt/hud/notifications/`:
+  `DangerNotificationWidgetEntry.as`
+  `DangerNotificationWidgetFlares.as`
+  `DangerNotificationWidgetParticles.as`
+  `DangerNotificationWidgetParticleSingle.as`
+- Watch face background disabled without touching the useful watch overlays:
+  `src/scripts/knt/hud/watch/WatchBaseWidget.as`
+- Combat prompt circles reduced/removed at the widget layer:
+  `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+  `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
+
+What the top-screen duplicate indicator was
+- It is not the watch widget.
+- The duplicate trespass/status glare/banner is driven by `knt.hud.notifications.DangerNotificationWidget`.
+- This controller owns the trespass, soft-trespass, lethal, situation-contained, and reinforcements top-screen states.
+- Related view assets are the `DangerNotificationWidget*` classes and likely correspond to the `knt.hud_i2d3` through `knt.hud_i2f6.dds` images the user mentioned.
+
+Likely useful targets for future cleanup
+- Watch base visuals: `src/scripts/knt/hud/watch/WatchBaseWidget.as`
+- Watch danger/status indicator: `src_vanilla/scripts/knt/hud/watch/WatchDangerWidget.as`
+- Top-screen danger/status indicator: `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
+- Tutorial systems: `src/scripts/knt/hud/tutorial/`
+- Combat prompt backgrounds: `src/scripts/knt/hud/buttonprompts/`
+
+Notes on takedown/throw prompt circles
+- Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
+- Close-combat prompt ring/outline behavior exposed in script is in `CloseCombatPromptsWidget` via `combo_mc` / `combo_mc.outline_mc`.
+- If circles still remain after testing, the remainder is likely baked into the prompt symbol art or `ButtonPromptImage` rendering rather than a separate controller toggle.
+
+Testing notes
+- The agent did not run the game. Rebuild/import and verify in-game after changes.
+- If a HUD element still appears, search `src_vanilla/` for the controller first, then port only the needed file into `src/`.

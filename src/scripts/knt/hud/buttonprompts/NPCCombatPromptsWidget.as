@@ -456,25 +456,11 @@ package knt.hud.buttonprompts
       private function promptBackground(param1:int) : void
       {
          var backType:int = param1;
-         if(!SHOW_PROMPT_HIGHLIGHTS && (backType == BACK_TAKEDOWN || backType == BACK_CONFRONT))
+         this.m_view.button_mc.anim_mc.visible = false;
+         this.m_view.button_mc.anim_mc.gotoAndStop(0);
+         MenuUtils.removeColor(this.m_view.button_mc.anim_mc);
+         if(backType == BACK_PARTIAL_PARRY)
          {
-            backType = BACK_NONE;
-         }
-         if(backType == BACK_TAKEDOWN)
-         {
-            this.m_view.button_mc.anim_mc.visible = true;
-            MenuUtils.setColor(this.m_view.button_mc.anim_mc,MenuConstantsKnt.COLOR_RED);
-            this.m_view.button_mc.anim_mc.gotoAndPlay("anim");
-         }
-         else if(backType == BACK_CONFRONT)
-         {
-            this.m_view.button_mc.anim_mc.visible = true;
-            MenuUtils.setColor(this.m_view.button_mc.anim_mc,MenuConstantsKnt.COLOR_WHITE);
-            this.m_view.button_mc.anim_mc.gotoAndPlay("anim");
-         }
-         else if(backType == BACK_PARTIAL_PARRY)
-         {
-            this.m_view.button_mc.anim_mc.visible = false;
             this.m_view.button_mc.parry_mc.visible = true;
             this.m_view.button_mc.parry_mc.parryTimingRing_mc.visible = false;
             this.m_view.button_mc.parry_mc.back_mc.scaleX = this.m_view.button_mc.parry_mc.back_mc.scaleY = 0.45;
@@ -501,13 +487,11 @@ package knt.hud.buttonprompts
                });
             }
             this.m_view.button_mc.parry_mc.scaleX = this.m_view.button_mc.parry_mc.scaleY = 1;
-            this.m_view.button_mc.anim_mc.visible = false;
             this.m_view.button_mc.parry_mc.visible = true;
          }
          else
          {
-            this.m_view.button_mc.anim_mc.visible = false;
-            MenuUtils.removeColor(this.m_view.button_mc.anim_mc);
+            this.m_view.button_mc.parry_mc.visible = false;
          }
          this.m_view.x = backType == BACK_COMBO || backType == BACK_COMBO_AGENCY ? 16 : 0;
       }
@@ -620,4 +604,3 @@ package knt.hud.buttonprompts
       }
    }
 }
-
