@@ -9,7 +9,8 @@ package knt.hud.objectives
    
    public class ObjectivesMarkerWidget extends BaseControl
    {
-      
+      public static var s_isAimingWatchGlobal:Boolean = false;
+       
       public static const STATE_ACTIVE:int = 0;
       
       public static const STATE_COMPLETED:int = 1;
@@ -311,7 +312,7 @@ package knt.hud.objectives
          {
             return Boolean(param1.IsInQLens);
          }
-         return true;
+         return s_isAimingWatchGlobal;
       }
    }
 }

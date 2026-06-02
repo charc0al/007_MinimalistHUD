@@ -38,7 +38,7 @@ Changes made so far
 - Bluff/lure bottom-strip reduced to prompt glyphs plus availability glow:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
-- Bluff/lure widget now hides entirely unless at least one prompt is actually enabled:
+- Bluff/lure widget now hides entirely unless at least one prompt is actually enabled, with an explicit restore path when enabled prompts return:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
@@ -96,8 +96,7 @@ Notes on bluff/lure strip
 - `AgencySelectorWidget` owns the frame, lines, icon, and chunk count.
 - `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
-- The whole bluff/lure widget is now also suppressed unless at least one agency prompt reports `isEnabled`.
-- The bluff/lure visibility gate now matches the entry widget’s own usable-state logic more closely: a prompt must be enabled and have no `m_blockedLabel`.
+- The whole bluff/lure widget is currently gated by whether at least one prompt reports `m_promptData[0].isEnabled`, and it also explicitly restores the widget from its hidden state when enabled prompts return.
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
@@ -129,7 +128,7 @@ Notes on objectives widget
 - The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
 - The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
-- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless the incoming data reports watch mode via one of the watch flags used elsewhere (`commonData.isAimingWatch`, `isAimingWatch`, `m_isAimingWatch`, or `IsInQLens`).
+- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless watch mode is active. Because the marker payload itself does not reliably carry `IsInQLens`, `ObjectivesWidget` now publishes its watch state through `ObjectivesMarkerWidget.s_isAimingWatchGlobal`, and the marker falls back to that shared flag.
 
 Notes on grenade indicator
 - The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.

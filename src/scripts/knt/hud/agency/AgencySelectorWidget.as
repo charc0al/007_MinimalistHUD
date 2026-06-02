@@ -169,6 +169,27 @@ package knt.hud.agency
                hideForNoActionablePrompts();
                return;
             }
+            if(m_ishiddenDueToNoInstinctMovesAvailable)
+            {
+               Animate.kill(m_view);
+               m_view.visible = true;
+               if(data.commonData.isAimingWatch)
+               {
+                  m_view.y = 200;
+                  m_view.scaleX = 1.2;
+                  m_view.scaleY = 1.2;
+                  m_view.alpha = 0;
+               }
+               else
+               {
+                  Animate.to(m_view,0.2,0,{
+                     "y":0,
+                     "scaleX":1,
+                     "scaleY":1,
+                     "alpha":1
+                  },Animate.ExpoOut);
+               }
+            }
             m_ishiddenDueToNoInstinctMovesAvailable = false;
             if(Boolean(data.forceShow) || Boolean(data.commonData.isLethalForceEnabled) || Boolean(data.commonData.isTrespassing) || Boolean(data.commonData.isLicenseToPunch) || Boolean(data.commonData.isSoftTrespassing))
             {
@@ -282,6 +303,10 @@ package knt.hud.agency
       {
          var _loc2_:int = 0;
          var _loc3_:Object = null;
+         if(param1 == null)
+         {
+            return false;
+         }
          while(_loc2_ < param1.length)
          {
             _loc3_ = param1[_loc2_];
