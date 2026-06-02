@@ -4,6 +4,8 @@ package knt.hud.buttonprompts
    import glacier.basic.ButtonPromptImage;
    import glacier.basic.ButtonPromptSpacingImage;
    import glacier.common.CommonUtils;
+   import glacier.common.menu.MenuUtils;
+   import knt.common.menu.MenuConstantsKnt;
    
    public class ButtonPromptsWrapper extends Sprite
    {
@@ -56,6 +58,7 @@ package knt.hud.buttonprompts
             {
                _loc7_.button = _loc6_.iconId;
             }
+            MenuUtils.addColorFilter(_loc7_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
             if(_loc2_ + 1 < _loc4_.length)
             {
                _loc5_ += _loc7_.width + this.m_spacingAmount;

@@ -154,6 +154,15 @@ package knt.hud.buttonprompts
          this.m_view.shadows_mc.description_shadow_mc.visible = false;
          this.m_newFormat.letterSpacing = 1.3;
       }
+
+      override public function onSetVisible(param1:Boolean) : void
+      {
+         this.visible = param1;
+         if(param1 && this.m_data != null)
+         {
+            this.onSetData(this.m_data);
+         }
+      }
       
       public function onSetData(param1:Object) : void
       {
@@ -343,13 +352,13 @@ package knt.hud.buttonprompts
             {
                if(param1.aElements.length == 1)
                {
-                  MenuUtils.addColorFilter(_loc14_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
+                  this.applyPromptImageStyle(_loc14_);
                }
             }
             else
             {
                _loc15_ = param1.aElements.length == 1 ? _loc13_ : Boolean(param1.aElements[0].invertColor);
-               MenuUtils.addColorFilter(_loc14_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
+               this.applyPromptImageStyle(_loc14_);
             }
             if(SHOW_PROMPT_HIGHLIGHTS && (param1.eAgilityType == AGILITY_TYPE_VAULT_ATTACK || param1.eAgilityType == AGILITY_TYPE_ITEM_QUICK_THROW || param1.eAggressionLevel > AGGRESSION_LEVEL_NONE))
             {
@@ -400,7 +409,7 @@ package knt.hud.buttonprompts
                      {
                         _loc17_.button = _loc18_.iconId;
                      }
-                     MenuUtils.addColorFilter(_loc17_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
+                     this.applyPromptImageStyle(_loc17_);
                      _loc16_++;
                   }
                }
@@ -452,6 +461,7 @@ package knt.hud.buttonprompts
                {
                   _loc19_.button = this.m_iconId;
                }
+               this.applyPromptImageStyle(_loc19_);
             }
             else if(_loc12_ == "combo" || _loc12_ == "combofinisher")
             {
@@ -509,7 +519,7 @@ package knt.hud.buttonprompts
                {
                   _loc20_.button = param1.aElements[1].iconId;
                }
-               MenuUtils.addColorFilter(_loc20_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
+               this.applyPromptImageStyle(_loc20_);
             }
             this.releaseUnusedPromptInstances();
          }
@@ -705,6 +715,15 @@ package knt.hud.buttonprompts
             this.m_view.shadows_mc.prompt_shadow_mc.visible = true;
          }
          return this.m_promptInstances[_loc1_];
+      }
+
+      private function applyPromptImageStyle(param1:ButtonPromptImage) : void
+      {
+         if(param1 == null)
+         {
+            return;
+         }
+         MenuUtils.addColorFilter(param1,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
       }
       
       private function releaseAllPromptInstances() : void

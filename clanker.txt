@@ -46,6 +46,8 @@ Changes made so far
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Standard interaction prompts now also reapply that inverted styling when the widget is shown again, which should make checkpoint reloads less likely to leave cached vanilla-looking prompt visuals behind:
+  `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
   `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -55,6 +57,8 @@ Changes made so far
 - Slam / combat-rush NPC combat prompt hidden:
   `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
+  `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+- Objectives watch gating now also clamps the root control and inner container visibility, which should make checkpoint reloads less likely to resurrect the vanilla top-left list while not aiming the watch:
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - 3D objective distance marker now only shows while aiming the watch/QLens:
   `src/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
@@ -82,6 +86,8 @@ Changes made so far
   `src/scripts/knt/hud/npcstate/NpcStateWidget.as`
 - Weapon reticle idle visibility stabilized by forcing the inner ironsight alpha back on during setup/show:
   `src/scripts/knt/hud/weapons/WeaponReticleWidget.as`
+- Throwable reticle side arcs remain hard-hidden, and its quick-throw prompt buttons now also use the same inverted prompt styling and reapply it when the widget is shown again:
+  `src/scripts/knt/hud/weapons/ThrowableReticleWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -120,6 +126,8 @@ Notes on standard button prompts
 - Current mod behavior also forces its `ButtonPromptImage` instances through the inverted color matrix and applies the same `0.8` scale multiplier there.
 - `NPCCombatPromptsWidget` is also separate and directly instantiates its own combat prompt images.
 - Current mod behavior also forces those combat prompt images through the inverted color matrix and applies the same `0.8` scale multiplier there.
+- `ButtonPromptsWrapper` is another direct `ButtonPromptImage` user, used by grouped melee-finisher style prompts.
+- Current mod behavior now also forces those wrapped prompt images through the inverted color matrix.
 - Takedown-style combat prompt title text in `NPCCombatPromptsWidget` is now hidden entirely instead of recolored.
 - The `Shift + LMB` style slam-into-enemy prompt appears to be `TYPE_COMBAT_RUSH` in `NPCCombatPromptsWidget`; current mod behavior suppresses that prompt at the `onSetData()` gate.
 

@@ -4,12 +4,16 @@ package knt.hud.weapons
    import glacier.common.Animate;
    import glacier.common.BaseControl;
    import glacier.common.CommonUtils;
+   import glacier.common.menu.MenuUtils;
+   import knt.common.menu.MenuConstantsKnt;
    import knt.hud.*;
    
    public class ThrowableReticleWidget extends BaseControl
    {
       
       private static const SHOW_SIDE_ARCS:Boolean = false;
+
+      private static const PROMPT_SCALE_MULTIPLIER:Number = 0.8;
       
       private var m_view:ThrowableReticleWidgetView;
       
@@ -33,14 +37,18 @@ package knt.hud.weapons
       
       public function onSetData(param1:Object) : void
       {
-         if(this.m_data.quickThrowPromptData != param1.quickThrowPromptData)
+         if(param1 == null)
+         {
+            this.ensureFrameHidden();
+            this.m_view.promptholder_mc.visible = false;
+            return;
+         }
+         this.ensureFrameHidden();
+         if(param1.quickThrowPromptData != null)
          {
             this.processButtonPrompts(param1.quickThrowPromptData);
          }
-         if(this.m_data.showPrompt != param1.showPrompt)
-         {
-            this.m_view.promptholder_mc.visible = param1.showPrompt;
-         }
+         this.m_view.promptholder_mc.visible = param1.showPrompt;
          if(param1.targetId == 0)
          {
             this.initCrosshair(false);
@@ -61,8 +69,7 @@ package knt.hud.weapons
          this.m_view.frame_mc.scaleX = this.m_view.frame_mc.scaleY = 2;
          this.loopFrameInnerMc(false);
          this.m_view.center_mc.visible = false;
-         this.m_view.frame_mc.visible = false;
-         this.m_view.frame_mc.inner_mc.visible = false;
+         this.ensureFrameHidden();
          if(param1)
          {
             this.m_view.center_mc.visible = true;
@@ -131,6 +138,10 @@ package knt.hud.weapons
          var _loc4_:Object = null;
          var _loc5_:ButtonPromptImage = null;
          var _loc6_:ButtonPromptImage = null;
+         if(param1 == null || param1.aElements == null)
+         {
+            return;
+         }
          var _loc2_:int = 0;
          var _loc3_:Array = param1.aElements;
          _loc2_ = 0;
@@ -147,7 +158,7 @@ package knt.hud.weapons
             _loc5_ = this.m_buttonPrompts[_loc2_];
             _loc5_.visible = true;
             _loc5_.platform = param1.controllerType;
-            _loc5_.scaleX = _loc5_.scaleY = _loc5_.platform == "key" ? 0.5 : 0.7;
+            _loc5_.scaleX = _loc5_.scaleY = (_loc5_.platform == "key" ? 0.5 : 0.7) * PROMPT_SCALE_MULTIPLIER;
             if((_loc5_.platform == CommonUtils.CONTROLLER_TYPE_KEY || _loc4_.iconId == -1) && _loc4_.keyGlyph != "")
             {
                _loc5_.customKey = _loc4_.keyGlyph;
@@ -156,6 +167,7 @@ package knt.hud.weapons
             {
                _loc5_.button = _loc4_.iconId;
             }
+            MenuUtils.addColorFilter(_loc5_,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
             _loc2_++;
          }
          _loc2_ = int(_loc3_.length);
@@ -176,10 +188,27 @@ package knt.hud.weapons
       override public function onSetVisible(param1:Boolean) : void
       {
          this.visible = param1;
+         this.ensureFrameHidden();
          if(!param1)
          {
             this.initCrosshair(false);
          }
+         else
+         {
+            if(this.m_data.quickThrowPromptData != null)
+            {
+               this.processButtonPrompts(this.m_data.quickThrowPromptData);
+            }
+            this.m_view.promptholder_mc.visible = Boolean(this.m_data.showPrompt);
+         }
+      }
+
+      private function ensureFrameHidden() : void
+      {
+         this.m_view.frame_mc.alpha = 0;
+         this.m_view.frame_mc.inner_mc.alpha = 0;
+         this.m_view.frame_mc.visible = false;
+         this.m_view.frame_mc.inner_mc.visible = false;
       }
    }
 }

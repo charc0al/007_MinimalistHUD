@@ -50,9 +50,23 @@ package knt.hud.objectives
          super();
          this.m_view = new ObjectivesWidgetView();
          addChild(this.m_view);
+         this.visible = false;
          this.m_view.scaleX = this.m_view.scaleY = OBJECTIVES_SCALE;
          this.m_view.visible = false;
          this.m_view.alpha = 0;
+         this.m_view.container_mc.visible = false;
+      }
+
+      override public function onSetVisible(param1:Boolean) : void
+      {
+         if(!param1)
+         {
+            this.visible = false;
+            this.m_view.visible = false;
+            this.m_view.container_mc.visible = false;
+            return;
+         }
+         this.updateVisibility();
       }
       
       public function onSetData(param1:Object) : void
@@ -340,7 +354,9 @@ package knt.hud.objectives
       
       private function updateVisibility() : void
       {
+         this.visible = this.m_isAimingWatch;
          this.m_view.visible = this.m_isAimingWatch;
+         this.m_view.container_mc.visible = this.m_isAimingWatch;
          this.m_view.alpha = this.m_isAimingWatch ? 1 : 0;
          this.m_view.x = 0;
          this.m_view.y = 0;
@@ -355,7 +371,9 @@ package knt.hud.objectives
          ObjectivesMarkerWidget.setGlobalWatchState(false);
          EavesdropWidget.setGlobalWatchState(false);
          this.m_lastUpdateWasInWatchMode = false;
+         this.visible = false;
          this.m_view.visible = false;
+         this.m_view.container_mc.visible = false;
          this.m_view.alpha = 0;
          this.m_view.x = 0;
          this.m_view.y = 0;
