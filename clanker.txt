@@ -38,6 +38,8 @@ Changes made so far
 - Bluff/lure bottom-strip reduced to prompt glyphs plus availability glow:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
+- Bluff/lure widget now hides entirely unless at least one prompt is actually enabled:
+  `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -50,6 +52,8 @@ Changes made so far
   `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+- 3D objective distance marker now only shows while aiming the watch/QLens:
+  `src/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
 - Grenade / flashbang breadcrumb indicator disabled:
   `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
 - Tutorial side hint and simple popup now hard-hidden at the widget root:
@@ -92,6 +96,7 @@ Notes on bluff/lure strip
 - `AgencySelectorWidget` owns the frame, lines, icon, and chunk count.
 - `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
+- The whole bluff/lure widget is now also suppressed unless at least one agency prompt reports `isEnabled`.
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
@@ -122,6 +127,8 @@ Notes on objectives widget
 - Current mod behavior keeps the objectives list hidden unless the watch/QLens is being aimed, and scales the whole widget to `0.85`.
 - The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
+- The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
+- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless `IsInQLens` is true.
 
 Notes on grenade indicator
 - The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.
