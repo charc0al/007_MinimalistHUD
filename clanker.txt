@@ -50,6 +50,8 @@ Changes made so far
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Standard interaction prompts now also enforce that inverted styling every frame while visible, because some parent widgets toggle child visibility directly instead of rerunning the prompt setup path:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Menu SWF also contains a duplicate vanilla `knt.hud.buttonprompts.ButtonPromptWidget`; current mod behavior now mirrors the forced inversion / `0.8` scale / per-frame restyling there as well:
+  `src_menu/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
   `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -67,6 +69,8 @@ Changes made so far
 - `WatchBaseWidget` and `WatchRadarWidget` now both publish the shared watch-state feed used by `ObjectivesWidget`, `ObjectivesMarkerWidget`, and `EavesdropWidget`:
   `src/scripts/knt/hud/watch/WatchBaseWidget.as`
   `src/scripts/knt/hud/watch/WatchRadarWidget.as`
+- Menu SWF also contains a duplicate vanilla `knt.hud.objectives.ObjectivesWidget`; current mod behavior now mirrors the hard Q-lens-only visibility gate and `0.85` scale there as well:
+  `src_menu/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - 3D objective distance marker now only shows while aiming the watch/QLens:
   `src/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
 - Eavesdrop HUD now only shows while aiming the watch/QLens:
