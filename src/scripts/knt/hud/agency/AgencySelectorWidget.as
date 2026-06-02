@@ -48,6 +48,7 @@ package knt.hud.agency
          this.m_view.frame_mc.line_R_mc.alpha = 0.2;
          this.m_view.frame_mc.line_L_mc.alpha = 0.2;
          this.m_view.frame_mc.bg_mc.alpha = 0.1;
+         this.hideFrameDecorations();
       }
       
       public function onSetData(param1:Object) : void
@@ -156,7 +157,7 @@ package knt.hud.agency
                m_entriesArray[_loc1_].onSetData(_loc2_);
                _loc1_++;
             }
-            MenuUtils.setupTextUpper(m_view.frame_mc.num_mc.title_txt,data.agencyData.playerChunks,30,MenuConstantsKnt.FONT_TYPE_NUMBERS_BOLD,MenuConstantsKnt.FontColorAgency);
+            hideFrameDecorations();
          });
          ts.addChunk(function():void
          {
@@ -195,7 +196,7 @@ package knt.hud.agency
             {
                if(data.forceShow != m_frameHiddenDueToForceShow)
                {
-                  m_view.frame_mc.num_mc.visible = data.forceShow ? false : true;
+                  m_view.frame_mc.num_mc.visible = false;
                   m_frameHiddenDueToForceShow = data.forceShow;
                }
                if(m_ishiddenDueToSocial)
@@ -297,6 +298,7 @@ package knt.hud.agency
          Animate.to(this.m_view.frame_mc.line_R_mc,0.2,0,{"width":this.m_accumulatedXPos / 2},Animate.ExpoOut);
          Animate.to(this.m_view.frame_mc.line_L_mc,0.2,0,{"width":this.m_accumulatedXPos / 2},Animate.ExpoOut);
          Animate.to(this.m_view.frame_mc.bg_mc,0.2,0,{"width":this.m_accumulatedXPos + 220},Animate.ExpoOut);
+         this.hideFrameDecorations();
       }
       
       private function hasAnyActionablePrompt(param1:Array) : Boolean
@@ -333,6 +335,16 @@ package knt.hud.agency
             m_view.visible = false;
          });
          this.m_ishiddenDueToNoInstinctMovesAvailable = true;
+      }
+      
+      private function hideFrameDecorations() : void
+      {
+         this.m_view.frame_mc.num_mc.visible = false;
+         this.m_view.frame_mc.line_R_mc.visible = false;
+         this.m_view.frame_mc.line_L_mc.visible = false;
+         this.m_view.frame_mc.corner_R_mc.visible = false;
+         this.m_view.frame_mc.corner_L_mc.visible = false;
+         this.m_view.frame_mc.bg_mc.visible = false;
       }
    }
 }

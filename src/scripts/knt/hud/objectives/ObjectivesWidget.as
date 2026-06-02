@@ -3,6 +3,7 @@ package knt.hud.objectives
    import flash.display.Sprite;
    import glacier.common.Animate;
    import glacier.common.BaseControl;
+   import knt.hud.eavesdrop.EavesdropWidget;
    import knt.hud.*;
    
    public class ObjectivesWidget extends BaseControl
@@ -73,6 +74,7 @@ package knt.hud.objectives
          }
          this.m_isAimingWatch = Boolean(param1.IsInQLens);
          ObjectivesMarkerWidget.setGlobalWatchState(this.m_isAimingWatch);
+         EavesdropWidget.setGlobalWatchState(this.m_isAimingWatch);
          this.updateVisibility();
          while(this.m_view.container_mc.numChildren > 0)
          {
@@ -351,6 +353,7 @@ package knt.hud.objectives
          Animate.kill(this.m_delaySprite);
          this.m_isAimingWatch = false;
          ObjectivesMarkerWidget.setGlobalWatchState(false);
+         EavesdropWidget.setGlobalWatchState(false);
          this.m_lastUpdateWasInWatchMode = false;
          this.m_view.visible = false;
          this.m_view.alpha = 0;

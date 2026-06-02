@@ -40,6 +40,8 @@ Changes made so far
   `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Bluff/lure widget now hides entirely unless at least one prompt is actually enabled, with an explicit restore path when enabled prompts return:
   `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
+- Agency selector frame count numbers and divider/frame line art hidden:
+  `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
   `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -54,6 +56,8 @@ Changes made so far
   `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - 3D objective distance marker now only shows while aiming the watch/QLens:
   `src/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
+- Eavesdrop HUD now only shows while aiming the watch/QLens:
+  `src/scripts/knt/hud/eavesdrop/EavesdropWidget.as`
 - Grenade / flashbang breadcrumb indicator disabled:
   `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
 - Tutorial side hint and simple popup now hard-hidden at the widget root:
@@ -97,6 +101,7 @@ Notes on bluff/lure strip
 - `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
 - The whole bluff/lure widget is currently gated by whether at least one prompt reports `m_promptData[0].isEnabled`, and it also explicitly restores the widget from its hidden state when enabled prompts return.
+- Current mod behavior also forces the frame count, divider lines, corners, and frame background hidden, leaving the prompt glyphs and icon without the chunk count line art.
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
@@ -129,6 +134,11 @@ Notes on objectives widget
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
 - The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
 - Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless watch mode is active. Because the marker payload itself does not reliably carry `IsInQLens`, `ObjectivesWidget` now publishes its watch state through `ObjectivesMarkerWidget.setGlobalWatchState(...)`, and marker instances refresh immediately from that shared flag instead of waiting for the next movement/camera-driven marker update.
+
+Notes on eavesdrop HUD
+- The eavesdrop HUD is controlled by `knt.hud.eavesdrop.EavesdropWidget`.
+- Current mod behavior ports `EavesdropWidget` into `src/` and keeps its internal state machine running, but gates the root widget on the shared Q-watch/Q-lens state so it only appears while watch mode is active.
+- `ObjectivesWidget` also publishes that shared watch state to `EavesdropWidget.setGlobalWatchState(...)` for immediate show/hide updates when the watch is toggled.
 
 Notes on grenade indicator
 - The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.
