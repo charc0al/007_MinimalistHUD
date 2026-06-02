@@ -70,7 +70,7 @@ package knt.hud.objectives
          {
             return;
          }
-         this.m_isAimingWatch = Boolean(param1.IsInQLens);
+         this.m_isAimingWatch = Boolean(param1.isAimingWatch) || Boolean(param1.IsInQLens);
          if(!this.m_isAimingWatch || param1.shouldBeVisible == false)
          {
             this.killAllAnimations();

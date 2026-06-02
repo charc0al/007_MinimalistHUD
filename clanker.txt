@@ -97,6 +97,7 @@ Notes on bluff/lure strip
 - `AgencySelectorWidgetEntry` owns each individual prompt glyph, flare effect, and per-entry cost/label layout.
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
 - The whole bluff/lure widget is now also suppressed unless at least one agency prompt reports `isEnabled`.
+- The bluff/lure visibility gate now matches the entry widget’s own usable-state logic more closely: a prompt must be enabled and have no `m_blockedLabel`.
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
@@ -128,7 +129,7 @@ Notes on objectives widget
 - The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
 - The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
-- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless `IsInQLens` is true.
+- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless the incoming data reports watch mode via `isAimingWatch` or `IsInQLens`.
 
 Notes on grenade indicator
 - The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.

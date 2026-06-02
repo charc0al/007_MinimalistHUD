@@ -82,19 +82,10 @@ package knt.hud.agency
          });
          if(!data.agencyPrompts.length || !this.hasAnyActionablePrompt(data.agencyPrompts))
          {
-            if(!this.m_ishiddenDueToNoInstinctMovesAvailable)
-            {
-               Animate.kill(this.m_view);
-               Animate.to(this.m_view,0.2,0,{
-                  "y":200,
-                  "scaleX":1.2,
-                  "scaleY":1.2,
-                  "alpha":0
-               },Animate.ExpoOut);
-               this.m_ishiddenDueToNoInstinctMovesAvailable = true;
-            }
+            this.hideForNoActionablePrompts();
             return;
          }
+         this.m_ishiddenDueToNoInstinctMovesAvailable = false;
          abort = false;
          ts.addChunk(function():void
          {
@@ -283,13 +274,29 @@ package knt.hud.agency
          while(_loc2_ < param1.length)
          {
             _loc3_ = param1[_loc2_];
-            if(_loc3_ != null && _loc3_.m_promptData != null && _loc3_.m_promptData.length > 0 && _loc3_.m_promptData[0] != null && Boolean(_loc3_.m_promptData[0].isEnabled))
+            if(_loc3_ != null && _loc3_.m_promptData != null && _loc3_.m_promptData.length > 0 && _loc3_.m_promptData[0] != null && Boolean(_loc3_.m_promptData[0].isEnabled) && (_loc3_.m_blockedLabel == null || _loc3_.m_blockedLabel == ""))
             {
                return true;
             }
             _loc2_++;
          }
          return false;
+      }
+      
+      private function hideForNoActionablePrompts() : void
+      {
+         Animate.kill(this.m_view);
+         this.m_view.visible = true;
+         Animate.to(this.m_view,0.2,0,{
+            "y":200,
+            "scaleX":1.2,
+            "scaleY":1.2,
+            "alpha":0
+         },Animate.ExpoOut,function():void
+         {
+            m_view.visible = false;
+         });
+         this.m_ishiddenDueToNoInstinctMovesAvailable = true;
       }
    }
 }
