@@ -10,6 +10,8 @@ package knt.hud.objectives
    public class ObjectivesMarkerWidget extends BaseControl
    {
       public static var s_isAimingWatchGlobal:Boolean = false;
+      
+      private static var s_instances:Array = [];
        
       public static const STATE_ACTIVE:int = 0;
       
@@ -51,6 +53,21 @@ package knt.hud.objectives
       
       private var m_isAimingWatch:Boolean = false;
       
+      private var m_shouldBeVisible:Boolean = true;
+      
+      private var m_lastData:Object = null;
+      
+      public static function setGlobalWatchState(param1:Boolean) : void
+      {
+         var _loc2_:int = 0;
+         s_isAimingWatchGlobal = param1;
+         while(_loc2_ < s_instances.length)
+         {
+            ObjectivesMarkerWidget(s_instances[_loc2_]).onGlobalWatchStateChanged();
+            _loc2_++;
+         }
+      }
+      
       public function ObjectivesMarkerWidget()
       {
          super();
@@ -63,6 +80,7 @@ package knt.hud.objectives
          KntHudUtils.addOutline(this.m_view.direction_mc);
          KntHudUtils.addOutline(this.m_view.distance_txt);
          addChild(this.m_view);
+         s_instances.push(this);
       }
       
       public function onSetData(param1:Object) : void
@@ -71,11 +89,11 @@ package knt.hud.objectives
          {
             return;
          }
+         this.m_lastData = param1;
+         this.m_shouldBeVisible = param1.shouldBeVisible != false;
          this.m_isAimingWatch = this.resolveWatchState(param1);
-         if(!this.m_isAimingWatch || param1.shouldBeVisible == false)
+         if(!this.applyWatchVisibility())
          {
-            this.killAllAnimations();
-            this.m_view.visible = false;
             return;
          }
          if(param1.state == STATE_ACTIVE)
@@ -136,6 +154,16 @@ package knt.hud.objectives
             this.killAllAnimations();
             this.m_view.visible = false;
          }
+      }
+      
+      private function onGlobalWatchStateChanged() : void
+      {
+         if(this.m_lastData == null)
+         {
+            return;
+         }
+         this.m_isAimingWatch = this.resolveWatchState(this.m_lastData);
+         this.applyWatchVisibility();
       }
       
       private function highlightAnim() : void
@@ -313,6 +341,21 @@ package knt.hud.objectives
             return Boolean(param1.IsInQLens);
          }
          return s_isAimingWatchGlobal;
+      }
+      
+      private function applyWatchVisibility() : Boolean
+      {
+         if(!this.m_isAimingWatch || !this.m_shouldBeVisible)
+         {
+            this.killAllAnimations();
+            this.m_view.visible = false;
+            return false;
+         }
+         if(this.m_lastData != null && this.m_lastData.state == STATE_ACTIVE)
+         {
+            this.m_view.visible = true;
+         }
+         return true;
       }
    }
 }

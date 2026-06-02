@@ -128,7 +128,7 @@ Notes on objectives widget
 - The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
 - The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
-- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless watch mode is active. Because the marker payload itself does not reliably carry `IsInQLens`, `ObjectivesWidget` now publishes its watch state through `ObjectivesMarkerWidget.s_isAimingWatchGlobal`, and the marker falls back to that shared flag.
+- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless watch mode is active. Because the marker payload itself does not reliably carry `IsInQLens`, `ObjectivesWidget` now publishes its watch state through `ObjectivesMarkerWidget.setGlobalWatchState(...)`, and marker instances refresh immediately from that shared flag instead of waiting for the next movement/camera-driven marker update.
 
 Notes on grenade indicator
 - The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.

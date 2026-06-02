@@ -72,7 +72,7 @@ package knt.hud.objectives
             return;
          }
          this.m_isAimingWatch = Boolean(param1.IsInQLens);
-         ObjectivesMarkerWidget.s_isAimingWatchGlobal = this.m_isAimingWatch;
+         ObjectivesMarkerWidget.setGlobalWatchState(this.m_isAimingWatch);
          this.updateVisibility();
          while(this.m_view.container_mc.numChildren > 0)
          {
@@ -350,7 +350,7 @@ package knt.hud.objectives
          Animate.kill(this.m_view);
          Animate.kill(this.m_delaySprite);
          this.m_isAimingWatch = false;
-         ObjectivesMarkerWidget.s_isAimingWatchGlobal = false;
+         ObjectivesMarkerWidget.setGlobalWatchState(false);
          this.m_lastUpdateWasInWatchMode = false;
          this.m_view.visible = false;
          this.m_view.alpha = 0;
