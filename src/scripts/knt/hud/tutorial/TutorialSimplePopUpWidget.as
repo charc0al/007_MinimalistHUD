@@ -57,14 +57,8 @@ package knt.hud.tutorial
       public function onSetData(param1:Object) : void
       {
          Log.debugData(this,param1);
-         if(param1 == null)
-         {
-            return;
-         }
-         if(Boolean(param1.title) && param1.title != "")
-         {
-            this.ShowNotification(param1.title,MenuConstantsKnt.COLOR_WHITE);
-         }
+         this.killAllWidgetAnimations();
+         this.hideAllEntries();
       }
       
       private function ShowNotification(param1:String, param2:int) : void
@@ -198,6 +192,29 @@ package knt.hud.tutorial
       {
          Animate.kill(param1.reticle_mc);
          Animate.kill(param1.notification_mc.bg_mc);
+      }
+
+      private function killAllWidgetAnimations() : void
+      {
+         var _loc1_:TutorialSimplePopUpWidgetView = null;
+         Animate.kill(this.m_container);
+         for each(_loc1_ in this.m_entriesAvailable)
+         {
+            this.killAllAnimations(_loc1_);
+         }
+      }
+
+      private function hideAllEntries() : void
+      {
+         var _loc1_:int = 0;
+         this.m_yposArray.length = 0;
+         this.m_container.y = 0;
+         _loc1_ = 0;
+         while(_loc1_ < this.m_container.numChildren)
+         {
+            TutorialSimplePopUpWidgetView(this.m_container.getChildAt(_loc1_)).visible = false;
+            _loc1_++;
+         }
       }
       
       public function testPopUp() : void

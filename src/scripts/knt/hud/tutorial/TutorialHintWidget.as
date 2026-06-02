@@ -33,21 +33,9 @@ package knt.hud.tutorial
       
       public function onSetData(param1:Object) : void
       {
-         if(param1.isActive != this.m_isActive)
-         {
-            this.m_isActive = param1.isActive;
-            if(!this.m_isActive)
-            {
-               this.killAllAnimations();
-               this.animateClosingSequence();
-            }
-         }
-         if(this.m_isActive)
-         {
-            this.formatEntry(param1.title,param1.description);
-            this.alignAllEntryElements();
-            this.showObjectiveWithAnimation();
-         }
+         this.m_isActive = false;
+         this.killAllAnimations();
+         this.m_view.alpha = 0;
       }
       
       private function showObjectiveWithAnimation() : void
