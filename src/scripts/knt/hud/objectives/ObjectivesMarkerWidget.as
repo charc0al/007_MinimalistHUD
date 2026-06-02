@@ -138,9 +138,9 @@ package knt.hud.objectives
                MenuUtils.setColor(this.m_iconHighlightMc,MenuConstantsKnt.COLOR_WHITE,false);
                this.m_view.icon_container_mc.addChild(this.m_iconMc);
                this.m_view.icon_container_mc.addChild(this.m_iconHighlightMc);
-               this.highlightAnim();
-               this.m_currentType = param1.type;
-            }
+                this.applyStaticIconState();
+                this.m_currentType = param1.type;
+             }
             MenuUtils.setupText(this.m_view.distance_txt,"<font face=\"$numbersbold\">" + MenuUtils.formatNumber(Math.round(param1.distance),false) + "</font>m",12,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
             this.calcElevation(param1.distanceZ);
          }
@@ -166,71 +166,18 @@ package knt.hud.objectives
          this.applyWatchVisibility();
       }
       
-      private function highlightAnim() : void
-      {
-         this.m_iconHighlightMc.scaleX = this.m_iconHighlightMc.scaleY = 2.4;
-         this.m_iconMc.scaleX = this.m_iconMc.scaleY = 2.4;
-         this.m_iconHighlightMc.alpha = 1;
-         Animate.to(this.m_iconHighlightMc,0.2 * this.m_animTestTimeExtension,0,{
-            "scaleX":ICON_BASE_SCALE,
-            "scaleY":ICON_BASE_SCALE,
-            "alpha":0
-         },Animate.BackOut);
-         Animate.to(this.m_iconMc,0.2 * this.m_animTestTimeExtension,0,{
-            "scaleX":ICON_BASE_SCALE,
-            "scaleY":ICON_BASE_SCALE
-         },Animate.BackOut,function():void
-         {
-            pulseAnim();
-         });
-      }
-      
-      private function pulseAnim() : void
-      {
-         this.m_iconHighlightMc.alpha = 0;
-         Animate.delay(this.m_iconHighlightMc,4,function():void
-         {
-            Animate.to(m_iconHighlightMc,0.1 * m_animTestTimeExtension,0,{
-               "scaleX":ICON_BASE_SCALE - 0.2,
-               "scaleY":ICON_BASE_SCALE - 0.2
-            },Animate.ExpoIn);
-            Animate.to(m_iconMc,0.1 * m_animTestTimeExtension,0,{
-               "scaleX":ICON_BASE_SCALE - 0.2,
-               "scaleY":ICON_BASE_SCALE - 0.2
-            },Animate.ExpoIn,function():void
-            {
-               Animate.to(m_iconHighlightMc,0.1 * m_animTestTimeExtension,0,{
-                  "scaleX":ICON_BASE_SCALE + 0.2,
-                  "scaleY":ICON_BASE_SCALE + 0.2,
-                  "alpha":1
-               },Animate.ExpoOut);
-               Animate.to(m_iconMc,0.1 * m_animTestTimeExtension,0,{
-                  "scaleX":ICON_BASE_SCALE + 0.2,
-                  "scaleY":ICON_BASE_SCALE + 0.2
-               },Animate.ExpoOut,function():void
-               {
-                  Animate.to(m_iconHighlightMc,0.2 * m_animTestTimeExtension,0,{
-                     "scaleX":ICON_BASE_SCALE - 0.2,
-                     "scaleY":ICON_BASE_SCALE - 0.2
-                  },Animate.ExpoIn);
-                  Animate.addTo(m_iconHighlightMc,0.1 * m_animTestTimeExtension,0,{"alpha":0},Animate.ExpoIn);
-                  Animate.to(m_iconMc,0.2 * m_animTestTimeExtension,0,{
-                     "scaleX":ICON_BASE_SCALE - 0.2,
-                     "scaleY":ICON_BASE_SCALE - 0.2
-                  },Animate.ExpoIn,function():void
-                  {
-                     Animate.to(m_iconMc,0.2 * m_animTestTimeExtension,0,{
-                        "scaleX":ICON_BASE_SCALE,
-                        "scaleY":ICON_BASE_SCALE
-                     },Animate.BackOut,function():void
-                     {
-                        pulseAnim();
-                     });
-                  });
-               });
-            });
-         });
-      }
+       private function applyStaticIconState() : void
+       {
+          if(this.m_iconMc != null)
+          {
+             this.m_iconMc.scaleX = this.m_iconMc.scaleY = ICON_BASE_SCALE;
+          }
+          if(this.m_iconHighlightMc != null)
+          {
+             this.m_iconHighlightMc.scaleX = this.m_iconHighlightMc.scaleY = ICON_BASE_SCALE;
+             this.m_iconHighlightMc.alpha = 0;
+          }
+       }
       
       public function edgeAngle(param1:Number) : void
       {
@@ -241,7 +188,7 @@ package knt.hud.objectives
                this.killAllAnimations();
                Animate.to(this.m_view.distance_txt,0.15,0.05,{"alpha":1},Animate.Linear);
                Animate.to(this.m_view.direction_mc,0.15,0,{"alpha":0},Animate.Linear);
-               this.highlightAnim();
+               this.applyStaticIconState();
                this.m_edgeLocked = false;
             }
          }
@@ -252,16 +199,8 @@ package knt.hud.objectives
                this.killAllAnimations();
                Animate.to(this.m_view.distance_txt,0.15,0,{"alpha":0},Animate.Linear);
                Animate.to(this.m_view.direction_mc,0.15,0.05,{"alpha":1},Animate.Linear);
-               Animate.to(this.m_iconHighlightMc,0.1 * this.m_animTestTimeExtension,0,{
-                  "scaleX":ICON_BASE_SCALE,
-                  "scaleY":ICON_BASE_SCALE,
-                  "alpha":0
-               },Animate.Linear);
-               Animate.to(this.m_iconMc,0.1 * this.m_animTestTimeExtension,0,{
-                  "scaleX":ICON_BASE_SCALE,
-                  "scaleY":ICON_BASE_SCALE
-               },Animate.BackOut);
-               this.m_edgeLocked = true;
+                this.applyStaticIconState();
+                this.m_edgeLocked = true;
             }
             this.m_view.direction_mc.rotation = param1;
          }
