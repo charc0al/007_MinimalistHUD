@@ -222,3 +222,8 @@ Notes on menu-side objective notifications
 - The menu SWF also contains duplicate objective-notification classes that can override or outlive gameplay-side HUD changes: `knt.hud.objectives.ObjectivesNotificationWidget` and `ObjectivesNotificationItemWidget`.
 - `MenuObjectivesNotification` and `MenuObjectivesNotificationItem` in the menu SWF instantiate those duplicate HUD classes.
 - Current mod behavior ports both menu-side notification widgets into `src_menu/` and scales them to `0.5` as well, so center-screen objective/tutorial-style banners from the menu SWF follow the same reduced-size treatment.
+
+Notes on 3D objective markers
+- `ObjectivesMarkerWidget` originally animates the marker icon from oversized (`2.4`) down to its resting scale (`0.84`) and also pulses it periodically.
+- With the added Q-watch visibility gating, that animation could be interrupted on show/hide and leave the icon stuck oversized.
+- Current mod behavior removes the marker icon grow/pulse animation and snaps the icon directly to its resting scale, while keeping the watch-only visibility behavior.
