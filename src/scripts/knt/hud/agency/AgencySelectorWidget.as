@@ -55,7 +55,9 @@ package knt.hud.agency
          var _this:AgencySelectorWidget = null;
          var abort:Boolean = false;
          var data:Object = param1;
+         var hasActionablePrompt:Boolean = false;
          _this = this;
+         hasActionablePrompt = this.hasAnyActionablePrompt(data.agencyPrompts);
          var ts:TaskletSequencer = TaskletSequencer.getGlobalInstance();
          ts.addChunk(function():void
          {
@@ -80,12 +82,11 @@ package knt.hud.agency
                m_ishiddenDueToNoInstinctMovesAvailable = false;
             }
          });
-         if(!data.agencyPrompts.length || !this.hasAnyActionablePrompt(data.agencyPrompts))
+         if(!data.agencyPrompts.length)
          {
             this.hideForNoActionablePrompts();
             return;
          }
-         this.m_ishiddenDueToNoInstinctMovesAvailable = false;
          abort = false;
          ts.addChunk(function():void
          {
@@ -163,6 +164,12 @@ package knt.hud.agency
             {
                return;
             }
+            if(!hasActionablePrompt)
+            {
+               hideForNoActionablePrompts();
+               return;
+            }
+            m_ishiddenDueToNoInstinctMovesAvailable = false;
             if(Boolean(data.forceShow) || Boolean(data.commonData.isLethalForceEnabled) || Boolean(data.commonData.isTrespassing) || Boolean(data.commonData.isLicenseToPunch) || Boolean(data.commonData.isSoftTrespassing))
             {
                if(data.forceShow != m_frameHiddenDueToForceShow)
@@ -206,6 +213,10 @@ package knt.hud.agency
          ts.addChunk(function():void
          {
             if(abort)
+            {
+               return;
+            }
+            if(!hasActionablePrompt)
             {
                return;
             }
@@ -274,7 +285,7 @@ package knt.hud.agency
          while(_loc2_ < param1.length)
          {
             _loc3_ = param1[_loc2_];
-            if(_loc3_ != null && _loc3_.m_promptData != null && _loc3_.m_promptData.length > 0 && _loc3_.m_promptData[0] != null && Boolean(_loc3_.m_promptData[0].isEnabled) && (_loc3_.m_blockedLabel == null || _loc3_.m_blockedLabel == ""))
+            if(_loc3_ != null && _loc3_.m_promptData != null && _loc3_.m_promptData.length > 0 && _loc3_.m_promptData[0] != null && Boolean(_loc3_.m_promptData[0].isEnabled))
             {
                return true;
             }

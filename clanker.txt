@@ -46,7 +46,7 @@ Changes made so far
   `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
   `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
-- Takedown-style NPC combat prompt text tinted soft red (`#FF8888`):
+- Takedown-style NPC combat prompt label text hidden:
   `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Slam / combat-rush NPC combat prompt hidden:
   `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
@@ -107,7 +107,7 @@ Notes on standard button prompts
 - Current mod behavior also forces its `ButtonPromptImage` instances through the inverted color matrix and applies the same `0.8` scale multiplier there.
 - `NPCCombatPromptsWidget` is also separate and directly instantiates its own combat prompt images.
 - Current mod behavior also forces those combat prompt images through the inverted color matrix and applies the same `0.8` scale multiplier there.
-- Takedown-style combat prompt title/status text in `NPCCombatPromptsWidget` now uses `#FF8888` instead of pure white.
+- Takedown-style combat prompt title text in `NPCCombatPromptsWidget` is now hidden entirely instead of recolored.
 - The `Shift + LMB` style slam-into-enemy prompt appears to be `TYPE_COMBAT_RUSH` in `NPCCombatPromptsWidget`; current mod behavior suppresses that prompt at the `onSetData()` gate.
 
 Notes on takedown/throw prompt circles
@@ -129,7 +129,7 @@ Notes on objectives widget
 - The centered tutorial-style banner is not the same widget; tutorial center-banner notifications also flow through `ObjectivesNotificationItemWidget` using `ObjectivesData.TYPE_TUTORIAL`.
 - Current mod behavior suppresses only the `TYPE_TUTORIAL` branch there, leaving item, challenge, mosaic, and collectible notifications intact.
 - The world-space objective marker with the distance text is `ObjectivesMarkerWidget`.
-- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless the incoming data reports watch mode via `isAimingWatch` or `IsInQLens`.
+- Current mod behavior ports `ObjectivesMarkerWidget` into `src/` and hides it unless the incoming data reports watch mode via one of the watch flags used elsewhere (`commonData.isAimingWatch`, `isAimingWatch`, `m_isAimingWatch`, or `IsInQLens`).
 
 Notes on grenade indicator
 - The flashbang / grenade warning indicator is driven by `knt.hud.breadcrumbs.GrenadeBreadcrumb`.

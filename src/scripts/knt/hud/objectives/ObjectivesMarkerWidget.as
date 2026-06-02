@@ -70,7 +70,7 @@ package knt.hud.objectives
          {
             return;
          }
-         this.m_isAimingWatch = Boolean(param1.isAimingWatch) || Boolean(param1.IsInQLens);
+         this.m_isAimingWatch = this.resolveWatchState(param1);
          if(!this.m_isAimingWatch || param1.shouldBeVisible == false)
          {
             this.killAllAnimations();
@@ -287,6 +287,31 @@ package knt.hud.objectives
       public function set hideTitleDistance(param1:Number) : void
       {
          this.m_distanceToTitleThreshold = param1;
+      }
+      
+      private function resolveWatchState(param1:Object) : Boolean
+      {
+         if(param1 == null)
+         {
+            return false;
+         }
+         if(param1.commonData != null && param1.commonData.isAimingWatch != undefined)
+         {
+            return Boolean(param1.commonData.isAimingWatch);
+         }
+         if(param1.isAimingWatch != undefined)
+         {
+            return Boolean(param1.isAimingWatch);
+         }
+         if(param1.m_isAimingWatch != undefined)
+         {
+            return Boolean(param1.m_isAimingWatch);
+         }
+         if(param1.IsInQLens != undefined)
+         {
+            return Boolean(param1.IsInQLens);
+         }
+         return true;
       }
    }
 }
