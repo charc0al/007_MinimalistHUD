@@ -14,6 +14,7 @@ package knt.hud.objectives
    
    public class ObjectivesNotificationItemWidget extends BaseControl
    {
+      
       private static const NOTIFICATION_SCALE:Number = 0.5;
       
       private var m_imageLoader:ImageLoader;
@@ -58,7 +59,6 @@ package knt.hud.objectives
       
       public function onSetData(param1:Object) : void
       {
-         this.hideNotification();
          if(param1 == null)
          {
             return;
@@ -71,7 +71,83 @@ package knt.hud.objectives
          {
             return;
          }
-         return;
+         this.m_notificationType = param1.NotificationType;
+         this.m_totalDuration = param1.Duration;
+         this.m_remainingDuration = param1.RemainingDuration;
+         this.m_useTotalDuration = param1.RemainingDuration == undefined || param1.RemainingDuration < 0;
+         var _loc2_:Boolean = false;
+         switch(this.m_notificationType)
+         {
+            case ObjectivesData.TYPE_ITEM:
+               MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_ITEM"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorBrandPrimary);
+               MenuUtils.setupTextUpper(this.m_view.title_txt,param1.Headline,24,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
+               this.m_soundTrigger = "UI_HUD_IntelItem_PickedUp_Shown";
+               this.m_maskImage = true;
+               this.m_view.imageHolder_mc.x = -20;
+               break;
+            case ObjectivesData.TYPE_TUTORIAL:
+               MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_MENU_TUTORIALS_TITLE"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,"#FF8888");
+               MenuUtils.setupTextUpper(this.m_view.title_txt,param1.Headline,24,MenuConstantsKnt.FONT_TYPE_NORMAL,"#FF8888");
+               this.m_soundTrigger = "UI_HUD_IntelItem_Tutorial_Shown";
+               _loc2_ = true;
+               this.m_maskImage = false;
+               this.m_view.imageHolder_mc.x = -20;
+               break;
+            case ObjectivesData.TYPE_CHALLENGE:
+               MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_CHALLENGECOMP"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,"#FFDA99");
+               MenuUtils.setupTextUpper(this.m_view.title_txt,param1.Headline,24,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
+               this.m_soundTrigger = "UI_HUD_IntelItem_Challenge_Shown";
+               this.m_maskImage = true;
+               this.m_view.imageHolder_mc.x = -32;
+               break;
+            case ObjectivesData.TYPE_CHALLENGEMOSAIC:
+               MenuUtils.setupTextUpper(this.m_view.headline_txt,param1.Headline,16,MenuConstantsKnt.FONT_TYPE_MEDIUM,"#FFDA99");
+               MenuUtils.setupTextUpper(this.m_view.title_txt,Localization.get("UI_HUD_NOTIFICATION_CHALLENGEMOSAIC") + " " + Localization.get("UI_HUD_NOTIFICATION_CHALLENGEMOSAIC_PROMPT"),24,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
+               this.m_soundTrigger = "UI_HUD_IntelItem_ChallengeMosaic_Shown";
+               this.m_maskImage = false;
+               this.m_view.imageHolder_mc.x = -32;
+               break;
+            case ObjectivesData.TYPE_COLLECTIBLE:
+               MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COLLECTIBLE"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,"#FFDA99");
+               MenuUtils.setupTextUpper(this.m_view.title_txt,param1.Headline,24,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
+               this.m_soundTrigger = "UI_HUD_IntelItem_Collectible_Shown";
+               this.m_maskImage = true;
+               this.m_view.imageHolder_mc.x = -16;
+               break;
+            default:
+               this.m_maskImage = true;
+               this.m_view.imageHolder_mc.x = 0;
+               return;
+         }
+         if(_loc2_)
+         {
+            this.m_view.track_txt.visible = true;
+            this.m_view.track_txt.alpha = 0;
+            this.onControlLayoutChanged();
+         }
+         else
+         {
+            this.m_view.track_txt.visible = false;
+         }
+         if(this.m_useTotalDuration == true || this.m_remainingDuration > 0 && this.m_view.visible == false)
+         {
+            if(param1.Image == null || param1.Image == "" || param1.Image == "undefined")
+            {
+               this.animateOpeningSequence();
+            }
+            else if(param1.NotificationImage != null && param1.NotificationImage != "")
+            {
+               this.loadImage(param1.NotificationImage);
+            }
+            else
+            {
+               this.loadImage(param1.Image);
+            }
+         }
+         else if(this.m_useTotalDuration == false && this.m_remainingDuration <= 0 && this.m_view.visible == true)
+         {
+            this.animateClosingSequence();
+         }
       }
       
       private function animateOpeningSequence() : void
@@ -258,16 +334,9 @@ package knt.hud.objectives
       {
          this.killAllAnimations();
          this.killImageLoader();
-         this.m_soundTrigger = "";
-         this.m_totalDuration = 0;
-         this.m_remainingDuration = 0;
-         this.m_useTotalDuration = false;
-         this.m_notificationType = null;
-         this.m_maskImage = false;
          this.m_view.track_txt.visible = false;
          this.m_view.imageHolder_mc.alpha = 0;
          this.m_view.visible = false;
-         this.visible = false;
       }
       
       override public function onControlLayoutChanged() : void
@@ -276,3 +345,4 @@ package knt.hud.objectives
       }
    }
 }
+

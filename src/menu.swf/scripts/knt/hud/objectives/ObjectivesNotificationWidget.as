@@ -12,6 +12,7 @@ package knt.hud.objectives
    
    public class ObjectivesNotificationWidget extends BaseControl
    {
+      
       private static const NOTIFICATION_SCALE:Number = 0.5;
       
       private var m_view:ObjectivesNotificationWidgetView;
@@ -61,7 +62,7 @@ package knt.hud.objectives
       
       public function onSetData(param1:Object) : void
       {
-         this.hideNotification();
+         var _loc2_:* = undefined;
          if(param1 == null)
          {
             return;
@@ -89,7 +90,112 @@ package knt.hud.objectives
          {
             return;
          }
-         return;
+         this.killAllAnimations();
+         while(this.m_view.icon_container_mc.numChildren > 0)
+         {
+            this.m_view.icon_container_mc.removeChildAt(0);
+         }
+         this.m_soundTrigger = "";
+         switch(param1.NotificationType)
+         {
+            case ObjectivesData.TYPE_OBJECTIVE:
+               _loc2_ = new ObjectivesIconMainObjectiveView();
+               MenuUtils.setupTextAndShrinkToFitUpper(this.m_view.title_txt,param1.Headline,32,MenuConstantsKnt.FONT_TYPE_NORMAL,this.MAX_TITLE_WIDTH,this.MAX_TITLE_HEIGHT,20,MenuConstantsKnt.FontColorWhite);
+               break;
+            case ObjectivesData.TYPE_SUB_OBJECTIVE:
+               _loc2_ = new ObjectivesIconMainSubobjectiveView();
+               MenuUtils.setupTextAndShrinkToFitUpper(this.m_view.title_txt,param1.Headline,32,MenuConstantsKnt.FONT_TYPE_NORMAL,this.MAX_TITLE_WIDTH,this.MAX_TITLE_HEIGHT,20,MenuConstantsKnt.FontColorWhite);
+               break;
+            case ObjectivesData.TYPE_OPPERTUNITY:
+            case ObjectivesData.TYPE_OPPERTUNITYSTEP:
+               _loc2_ = new ObjectivesIconOpportunityView();
+               MenuUtils.setupTextAndShrinkToFitUpper(this.m_view.title_txt,param1.Headline,32,MenuConstantsKnt.FONT_TYPE_NORMAL,this.MAX_TITLE_WIDTH,this.MAX_TITLE_HEIGHT,20,MenuConstantsKnt.FontColorWhite);
+               break;
+            case ObjectivesData.TYPE_HINT:
+               _loc2_ = new ObjectivesIconMainHintView();
+               MenuUtils.setupTextAndShrinkToFitUpper(this.m_view.title_txt,param1.Headline,32,MenuConstantsKnt.FONT_TYPE_NORMAL,this.MAX_TITLE_WIDTH,this.MAX_TITLE_HEIGHT,20,MenuConstantsKnt.FontColorWhite);
+         }
+         switch(param1.ObjectiveState)
+         {
+            case ObjectivesData.STATE_ACTIVE:
+               if(param1.IsObjectiveTracked)
+               {
+                  _loc2_.gotoAndStop("tracked");
+               }
+               else
+               {
+                  _loc2_.gotoAndStop("untracked");
+               }
+               MenuUtils.setColor(_loc2_,MenuConstantsKnt.COLOR_OBJECTIVE,false);
+               if(param1.NotificationType == ObjectivesData.TYPE_OBJECTIVE)
+               {
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_NEWOBJ"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorTeal);
+                  this.m_soundTrigger = "UI_HUD_Obj_Main_Reveal";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_SUB_OBJECTIVE)
+               {
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_NEWSUBOBJ"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorTeal);
+                  this.m_soundTrigger = "UI_HUD_Obj_Sub_Reveal";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_OPPERTUNITY || param1.NotificationType == ObjectivesData.TYPE_OPPERTUNITYSTEP)
+               {
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_OPPORTUNITY"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorTeal);
+                  this.m_soundTrigger = "UI_HUD_Obj_Opp_Reveal";
+               }
+               break;
+            case ObjectivesData.STATE_COMPLETED:
+               _loc2_.gotoAndStop("completed");
+               if(param1.NotificationType == ObjectivesData.TYPE_OBJECTIVE)
+               {
+                  MenuUtils.setColor(_loc2_,MenuConstantsKnt.COLOR_OBJECTIVE_COMPLETED,false);
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COMPOBJ"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorTeal);
+                  this.m_soundTrigger = "UI_HUD_Obj_Main_Complete";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_SUB_OBJECTIVE)
+               {
+                  MenuUtils.setColor(_loc2_,MenuConstantsKnt.COLOR_OBJECTIVE_COMPLETED,false);
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COMPSUBOBJ"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorTeal);
+                  this.m_soundTrigger = "UI_HUD_Obj_Sub_Complete";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_OPPERTUNITY || param1.NotificationType == ObjectivesData.TYPE_OPPERTUNITYSTEP)
+               {
+                  MenuUtils.setColor(_loc2_,MenuConstantsKnt.COLOR_OBJECTIVE_COMPLETED,false);
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COMPOPPORT"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorTeal);
+                  this.m_soundTrigger = "UI_HUD_Obj_Opp_Complete";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_HINT)
+               {
+                  MenuUtils.setColor(_loc2_,MenuConstantsKnt.COLOR_PRIMARY,false);
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_HINT"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorBrandPrimary);
+                  this.m_soundTrigger = "UI_HUD_IntelItem_Hint_Shown";
+               }
+               break;
+            case ObjectivesData.STATE_FAILED:
+               MenuUtils.setColor(_loc2_,MenuConstantsKnt.COLOR_OBJECTIVE_FAILED,false);
+               _loc2_.gotoAndStop("failed");
+               if(param1.NotificationType == ObjectivesData.TYPE_OBJECTIVE)
+               {
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COMPOBJ"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorGrey);
+                  this.m_soundTrigger = "UI_HUD_Obj_Main_Failed";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_SUB_OBJECTIVE)
+               {
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COMPSUBOBJ"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorGrey);
+                  this.m_soundTrigger = "UI_HUD_Obj_Sub_Failed";
+               }
+               else if(param1.NotificationType == ObjectivesData.TYPE_OPPERTUNITY || param1.NotificationType == ObjectivesData.TYPE_OPPERTUNITYSTEP)
+               {
+                  MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_HUD_NOTIFICATION_COMPOPPORT"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorGrey);
+                  this.m_soundTrigger = "UI_HUD_Obj_Opp_Failed";
+               }
+         }
+         MenuUtils.setColor(this.m_view.flame_mc,param1.NotificationType == ObjectivesData.TYPE_HINT ? uint(MenuConstantsKnt.COLOR_PRIMARY) : uint(MenuConstantsKnt.COLOR_TEAL));
+         MenuUtils.setColor(this.m_view.orb_mc,param1.NotificationType == ObjectivesData.TYPE_HINT ? uint(MenuConstantsKnt.COLOR_PRIMARY) : uint(MenuConstantsKnt.COLOR_TEAL));
+         this.m_view.icon_container_mc.addChild(_loc2_);
+         this.onControlLayoutChanged();
+         this.m_objState = param1.ObjectiveState;
+         this.m_objType = param1.NotificationType;
+         this.animateOpeningSequence(param1.Duration,this.m_objState,this.m_objType,param1.IsObjectiveTracked);
       }
       
       private function animateOpeningSequence(param1:Number, param2:String, param3:String, param4:Boolean) : void
@@ -282,23 +388,6 @@ package knt.hud.objectives
          Animate.kill(this.m_view.progressbar_mc.fill_mc);
          this.m_view.flame_mc.stop();
       }
-
-      private function hideNotification() : void
-      {
-         this.killAllAnimations();
-         while(this.m_view.icon_container_mc.numChildren > 0)
-         {
-            this.m_view.icon_container_mc.removeChildAt(0);
-         }
-         this.m_soundTrigger = "";
-         this.m_isAnimatingClosingSequence = false;
-         this.m_objState = "";
-         this.m_objType = "";
-         this.m_view.progressbar_mc.visible = false;
-         this.m_view.track_txt.visible = false;
-         this.m_view.visible = false;
-         this.visible = false;
-      }
       
       override public function onControlLayoutChanged() : void
       {
@@ -386,3 +475,4 @@ package knt.hud.objectives
       }
    }
 }
+
