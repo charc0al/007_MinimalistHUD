@@ -227,3 +227,15 @@ Notes on 3D objective markers
 - `ObjectivesMarkerWidget` originally animates the marker icon from oversized (`2.4`) down to its resting scale (`0.84`) and also pulses it periodically.
 - With the added Q-watch visibility gating, that animation could be interrupted on show/hide and leave the icon stuck oversized.
 - Current mod behavior removes the marker icon grow/pulse animation and snaps the icon directly to its resting scale, while keeping the watch-only visibility behavior.
+
+Notes on nuclear tutorial suppression
+- The two dedicated tutorial widgets remain hard-hidden:
+  `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
+  `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
+- The remaining center-screen objective / hint / tutorial notification family is now also fully suppressed by hard-hiding both gameplay and menu variants of:
+  `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+  `src/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
+  `src/scripts/knt/hud/objectives/ObjectivesHintRevealingWidget.as`
+  `src_menu/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+  `src_menu/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
+- This is intentionally broader than the prior `0.5` scale treatment and will also suppress non-tutorial center notifications that share those controller paths.

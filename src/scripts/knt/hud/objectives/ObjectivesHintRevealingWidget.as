@@ -44,6 +44,7 @@ package knt.hud.objectives
       
       public function onSetData(param1:Object) : void
       {
+         this.hideNotification();
       }
       
       private function animateOpeningSequence(param1:int, param2:Number) : void
@@ -196,6 +197,14 @@ package knt.hud.objectives
          Animate.kill(this.m_view.pop_mc.icon_mc);
          Animate.kill(this.m_view.image_mc);
          Animate.kill(this);
+      }
+
+      private function hideNotification() : void
+      {
+         this.killAllAnimations();
+         this.m_view.alpha = 0;
+         this.m_view.visible = false;
+         this.visible = false;
       }
       
       public function testPop() : void
