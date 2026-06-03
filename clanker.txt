@@ -1,9 +1,11 @@
 MinimalistHUD project notes for future Codex agents
 
 Project structure
-- `src_vanilla/` is the full exported vanilla ActionScript source dump.
-- `src/` is the modded source set used for rebuilding/importing. It may contain only the files intentionally overridden.
-- When a needed class exists only in `src_vanilla/`, copy it into the matching path under `src/` before modifying it.
+- `src/` contains the modded source set used for rebuilding/importing, split by SWF:
+  `src/hud.swf/` for gameplay HUD sources and `src/menu.swf/` for menu sources.
+- `src_vanilla/` is the full exported vanilla ActionScript reference dump, also split by SWF:
+  `src_vanilla/hud.swf/` and `src_vanilla/menu.swf/`.
+- When a needed class exists only in `src_vanilla/`, copy it into the matching SWF-specific path under `src/` before modifying it.
 
 Editing rules that match how this project is being worked on
 - Preserve the watch gameplay widgets unless specifically asked to remove them.
@@ -12,93 +14,93 @@ Editing rules that match how this project is being worked on
 
 Changes made so far
 - Tutorial banners disabled:
-  `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
-  `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
+  `src/hud.swf/scripts/knt/hud/tutorial/TutorialHintWidget.as`
+  `src/hud.swf/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
 - Top-of-screen danger/state notification overlay disabled:
-  `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
-  `src/scripts/knt/hud/notifications/StateNotificationWidget.as`
-- Supporting notification classes copied from vanilla into `src/scripts/knt/hud/notifications/`:
+  `src/hud.swf/scripts/knt/hud/notifications/DangerNotificationWidget.as`
+  `src/hud.swf/scripts/knt/hud/notifications/StateNotificationWidget.as`
+- Supporting notification classes copied from vanilla into `src/hud.swf/scripts/knt/hud/notifications/`:
   `DangerNotificationWidgetEntry.as`
   `DangerNotificationWidgetFlares.as`
   `DangerNotificationWidgetParticles.as`
   `DangerNotificationWidgetParticleSingle.as`
 - Watch face background disabled without touching the useful watch overlays:
-  `src/scripts/knt/hud/watch/WatchBaseWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
 - Combat prompt circles reduced/removed at the widget layer:
-  `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
-  `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - Rotating watch compass background removed:
-  `src/scripts/knt/hud/watch/WatchRadarWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchRadarWidget.as`
 - Attention indicator arrows removed:
-  `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
+  `src/hud.swf/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
 - Offscreen enemy direction arrows removed:
-  `src/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as`
+  `src/hud.swf/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as`
 - Offscreen melee/parry direction arrows removed:
-  `src/scripts/knt/hud/damagedirection/OffscreenMeleeDirectionWidget.as`
+  `src/hud.swf/scripts/knt/hud/damagedirection/OffscreenMeleeDirectionWidget.as`
 - Bluff/lure bottom-strip reduced to prompt glyphs plus availability glow:
-  `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
-  `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
+  `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as`
+  `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Bluff/lure widget now hides entirely unless at least one prompt is actually enabled, with an explicit restore path when enabled prompts return:
-  `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
+  `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Agency selector frame count numbers and divider/frame line art hidden:
-  `src/scripts/knt/hud/agency/AgencySelectorWidget.as`
+  `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Agency selector per-entry numeric cost labels hidden:
-  `src/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
+  `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Standard interaction button prompts inverted to black buttons with white glyphs/text and scaled to `0.8` of prior prompt size:
-  `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Standard interaction prompts now also reapply that inverted styling when the widget is shown again, which should make checkpoint reloads less likely to leave cached vanilla-looking prompt visuals behind:
-  `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Standard interaction prompts now also enforce that inverted styling every frame while visible, because some parent widgets toggle child visibility directly instead of rerunning the prompt setup path:
-  `src/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Menu SWF also contains a duplicate vanilla `knt.hud.buttonprompts.ButtonPromptWidget`; current mod behavior now mirrors the forced inversion / `0.8` scale / per-frame restyling there as well:
-  `src_menu/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
-  `src/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
-  `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Takedown-style NPC combat prompt label text hidden:
-  `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Slam / combat-rush NPC combat prompt hidden:
-  `src/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
-  `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Objectives watch gating now also clamps the root control and inner container visibility, which should make checkpoint reloads less likely to resurrect the vanilla top-left list while not aiming the watch:
-  `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Objectives visibility now also resyncs every frame from the shared watch-state feed used by other watch-driven HUD pieces, instead of trusting the objectives data stream alone after checkpoint reloads:
-  `src/scripts/knt/hud/objectives/ObjectivesWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - `WatchBaseWidget` and `WatchRadarWidget` now both publish the shared watch-state feed used by `ObjectivesWidget`, `ObjectivesMarkerWidget`, and `EavesdropWidget`:
-  `src/scripts/knt/hud/watch/WatchBaseWidget.as`
-  `src/scripts/knt/hud/watch/WatchRadarWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchRadarWidget.as`
 - Menu SWF also contains a duplicate vanilla `knt.hud.objectives.ObjectivesWidget`; current mod behavior now mirrors the hard Q-lens-only visibility gate and `0.85` scale there as well:
-  `src_menu/scripts/knt/hud/objectives/ObjectivesWidget.as`
+  `src/menu.swf/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - 3D objective distance marker now only shows while aiming the watch/QLens:
-  `src/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesMarkerWidget.as`
 - Eavesdrop HUD now only shows while aiming the watch/QLens:
-  `src/scripts/knt/hud/eavesdrop/EavesdropWidget.as`
+  `src/hud.swf/scripts/knt/hud/eavesdrop/EavesdropWidget.as`
 - Grenade / flashbang breadcrumb indicator disabled:
-  `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
+  `src/hud.swf/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
 - Tutorial side hint and simple popup now hard-hidden at the widget root:
-  `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
-  `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
+  `src/hud.swf/scripts/knt/hud/tutorial/TutorialHintWidget.as`
+  `src/hud.swf/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
 - Center-screen tutorial notification banner suppressed without affecting non-tutorial item/challenge notifications:
-  `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
 - Remaining center objective/hint notification banners scaled to `0.5` instead of hidden:
-  `src/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
-  `src/scripts/knt/hud/objectives/ObjectivesHintRevealingWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesHintRevealingWidget.as`
 - Tutorial/item notification banner path now allows `TYPE_TUTORIAL` again and is scaled to `0.5`:
-  `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
 - Focus / instinct gain popup disabled:
-  `src/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
+  `src/hud.swf/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
 - Ammo / chemical / electrical pickup popups disabled:
-  `src/scripts/knt/hud/notifications/PickupNotificationWidget.as`
+  `src/hud.swf/scripts/knt/hud/notifications/PickupNotificationWidget.as`
 - Redundant right-side primary ammo bar removed while keeping numeric ammo digits:
-  `src/scripts/knt/hud/weapons/WeaponWidget.as`
+  `src/hud.swf/scripts/knt/hud/weapons/WeaponWidget.as`
 - NPC watcher overhead indicators now only appear in Q Lens/watch view:
-  `src/scripts/knt/hud/npcstate/NpcStateWidget.as`
+  `src/hud.swf/scripts/knt/hud/npcstate/NpcStateWidget.as`
 - Weapon reticle idle visibility stabilized by forcing the inner ironsight alpha back on during setup/show:
-  `src/scripts/knt/hud/weapons/WeaponReticleWidget.as`
+  `src/hud.swf/scripts/knt/hud/weapons/WeaponReticleWidget.as`
 - Throwable reticle side arcs remain hard-hidden, and its quick-throw prompt buttons now also use the same inverted prompt styling and reapply it when the widget is shown again:
-  `src/scripts/knt/hud/weapons/ThrowableReticleWidget.as`
+  `src/hud.swf/scripts/knt/hud/weapons/ThrowableReticleWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -107,19 +109,19 @@ What the top-screen duplicate indicator was
 - Related view assets are the `DangerNotificationWidget*` classes and likely correspond to the `knt.hud_i2d3` through `knt.hud_i2f6.dds` images the user mentioned.
 
 Likely useful targets for future cleanup
-- Watch base visuals: `src/scripts/knt/hud/watch/WatchBaseWidget.as`
-- Watch compass/radar base: `src/scripts/knt/hud/watch/WatchRadarWidget.as`
-- Watch danger/status indicator: `src_vanilla/scripts/knt/hud/watch/WatchDangerWidget.as`
-- Top-screen danger/status indicator: `src/scripts/knt/hud/notifications/DangerNotificationWidget.as`
-- Focus / instinct gain notification: `src/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
-- Tutorial systems: `src/scripts/knt/hud/tutorial/`
-- Grenade / throwable breadcrumbs: `src/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
-- Combat prompt backgrounds: `src/scripts/knt/hud/buttonprompts/`
-- Attention wedges/arrows: `src/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
-- Offscreen enemy/melee direction arrows: `src/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as` and `OffscreenMeleeDirectionWidget.as`
-- Bluff/lure strip: `src/scripts/knt/hud/agency/AgencySelectorWidget.as` and `AgencySelectorWidgetEntry.as`
-- Weapon ammo bar / right-side bullet strip: `src/scripts/knt/hud/weapons/WeaponWidget.as` and `src/scripts/knt/hud/WeaponWidgetView.as`
-- NPC watcher / influenced-by-watcher overhead icons: `src/scripts/knt/hud/npcstate/NpcStateWidget.as`
+- Watch base visuals: `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
+- Watch compass/radar base: `src/hud.swf/scripts/knt/hud/watch/WatchRadarWidget.as`
+- Watch danger/status indicator: `src_vanilla/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
+- Top-screen danger/status indicator: `src/hud.swf/scripts/knt/hud/notifications/DangerNotificationWidget.as`
+- Focus / instinct gain notification: `src/hud.swf/scripts/knt/hud/notifications/AgencyNotificationWidget.as`
+- Tutorial systems: `src/hud.swf/scripts/knt/hud/tutorial/`
+- Grenade / throwable breadcrumbs: `src/hud.swf/scripts/knt/hud/breadcrumbs/GrenadeBreadcrumb.as`
+- Combat prompt backgrounds: `src/hud.swf/scripts/knt/hud/buttonprompts/`
+- Attention wedges/arrows: `src/hud.swf/scripts/knt/hud/attentiongain/AttentionGainWidget.as`
+- Offscreen enemy/melee direction arrows: `src/hud.swf/scripts/knt/hud/damagedirection/OffscreenEnemyDirectionWidget.as` and `OffscreenMeleeDirectionWidget.as`
+- Bluff/lure strip: `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as` and `AgencySelectorWidgetEntry.as`
+- Weapon ammo bar / right-side bullet strip: `src/hud.swf/scripts/knt/hud/weapons/WeaponWidget.as` and `src/hud.swf/scripts/knt/hud/WeaponWidgetView.as`
+- NPC watcher / influenced-by-watcher overhead icons: `src/hud.swf/scripts/knt/hud/npcstate/NpcStateWidget.as`
 
 Notes on bluff/lure strip
 - The bottom bluff/lure widget is the agency selector strip, not the circular agency meter.
@@ -221,7 +223,7 @@ Testing notes
 Notes on menu-side objective notifications
 - The menu SWF also contains duplicate objective-notification classes that can override or outlive gameplay-side HUD changes: `knt.hud.objectives.ObjectivesNotificationWidget` and `ObjectivesNotificationItemWidget`.
 - `MenuObjectivesNotification` and `MenuObjectivesNotificationItem` in the menu SWF instantiate those duplicate HUD classes.
-- Current mod behavior ports both menu-side notification widgets into `src_menu/` and scales them to `0.5` as well, so center-screen objective/tutorial-style banners from the menu SWF follow the same reduced-size treatment.
+- Current mod behavior ports both menu-side notification widgets into `src/menu.swf/` and scales them to `0.5` as well, so center-screen objective/tutorial-style banners from the menu SWF follow the same reduced-size treatment.
 
 Notes on 3D objective markers
 - `ObjectivesMarkerWidget` originally animates the marker icon from oversized (`2.4`) down to its resting scale (`0.84`) and also pulses it periodically.
@@ -230,12 +232,12 @@ Notes on 3D objective markers
 
 Notes on nuclear tutorial suppression
 - The two dedicated tutorial widgets remain hard-hidden:
-  `src/scripts/knt/hud/tutorial/TutorialHintWidget.as`
-  `src/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
+  `src/hud.swf/scripts/knt/hud/tutorial/TutorialHintWidget.as`
+  `src/hud.swf/scripts/knt/hud/tutorial/TutorialSimplePopUpWidget.as`
 - The remaining center-screen objective / hint / tutorial notification family is now also fully suppressed by hard-hiding both gameplay and menu variants of:
-  `src/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
-  `src/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
-  `src/scripts/knt/hud/objectives/ObjectivesHintRevealingWidget.as`
-  `src_menu/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
-  `src_menu/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
+  `src/hud.swf/scripts/knt/hud/objectives/ObjectivesHintRevealingWidget.as`
+  `src/menu.swf/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
+  `src/menu.swf/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
 - This is intentionally broader than the prior `0.5` scale treatment and will also suppress non-tutorial center notifications that share those controller paths.
