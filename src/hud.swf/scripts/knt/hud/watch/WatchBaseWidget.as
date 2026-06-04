@@ -9,6 +9,9 @@ package knt.hud.watch
    
    public class WatchBaseWidget extends BaseControl
    {
+      private static const BASE_SCALE:Number = 0.75;
+      
+      private static const AIMING_SCALE:Number = BASE_SCALE * 1.3;
       
       private var m_view:WatchBaseWidgetView;
       
@@ -26,6 +29,7 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchBaseWidgetView();
+         this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
          addChild(this.m_view);
       }
       
@@ -90,8 +94,8 @@ package knt.hud.watch
                Animate.to(this.m_view,0.2,0,{
                   "x":-180,
                   "y":100,
-                  "scaleX":1.3,
-                  "scaleY":1.3,
+                  "scaleX":AIMING_SCALE,
+                  "scaleY":AIMING_SCALE,
                   "alpha":0
                },Animate.ExpoOut);
                this.m_isAimingWatch = true;
@@ -103,8 +107,8 @@ package knt.hud.watch
             Animate.to(this.m_view,0.2,0,{
                "x":0,
                "y":0,
-               "scaleX":1,
-               "scaleY":1,
+               "scaleX":BASE_SCALE,
+               "scaleY":BASE_SCALE,
                "alpha":1
             },Animate.ExpoOut);
             this.m_isAimingWatch = false;

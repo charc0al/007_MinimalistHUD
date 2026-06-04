@@ -62,6 +62,8 @@ package knt.hud.buttonprompts
       
       private static const PROMPT_X_SPACING:Number = 44;
       
+      private static const AGENCY_ACTIONABLE_TEXT_COLOR:String = "#FFFFCC";
+      
       public static const PLAYER_RESOURCETYPE_CHEMICAL:uint = 0;
       
       public static const PLAYER_RESOURCETYPE_ELECTRICAL:uint = 1;
@@ -270,6 +272,10 @@ package knt.hud.buttonprompts
          }
          var _loc8_:Boolean = this.m_iconId != -1 || this.m_actionKeyGlyph != "";
          var _loc9_:String = _loc13_ && !_loc8_ ? MenuConstantsKnt.FontColorHighlight : MenuConstantsKnt.FontColorWhite;
+         if(this.m_isAgencyPrompt && !_loc2_ && !_loc5_)
+         {
+            _loc9_ = AGENCY_ACTIONABLE_TEXT_COLOR;
+         }
          MenuUtils.setupText(this.m_view.title_mc.title_txt,_loc6_,21,MenuConstantsKnt.FONT_TYPE_MEDIUM,_loc9_);
          this.m_view.title_mc.title_txt.alpha = _loc2_ || _loc5_ ? 0.6 : 1;
          this.m_view.shadows_mc.title_shadow_mc.width = this.m_view.title_mc.title_txt.textWidth + TITLE_SHADOW_EXTRA_WIDTH;
@@ -666,6 +672,9 @@ package knt.hud.buttonprompts
       private function setStateNotAvailable(param1:Object) : void
       {
          Animate.kill(this.m_view.collapsed_mc);
+         this.m_view.collapsed_mc.visible = false;
+         this.m_view.collapsed_mc.alpha = 0;
+         this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
          this.showCollectibleIcon(false);
          this.showResourceType(false,-1);
       }
@@ -700,6 +709,9 @@ package knt.hud.buttonprompts
          {
             return;
          }
+         this.m_view.collapsed_mc.visible = false;
+         this.m_view.collapsed_mc.alpha = 0;
+         this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
          _loc2_ = 0;
          while(_loc2_ < this.m_promptInstances.length)
          {
