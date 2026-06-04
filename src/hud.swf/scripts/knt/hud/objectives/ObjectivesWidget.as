@@ -20,7 +20,7 @@ package knt.hud.objectives
       
       private static const OPPORTUNITY_SUBOBJECTIVE_INDENT:int = 72;
       
-      private static const OBJECTIVES_SCALE:Number = 0.85;
+      private static const OBJECTIVES_SCALE:Number = 1.00;
       
       private var m_view:ObjectivesWidgetView;
       
