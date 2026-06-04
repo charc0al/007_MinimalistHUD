@@ -7,6 +7,7 @@ package knt.hud.watch
    
    public class WatchGadgetResourcesWidget extends BaseControl
    {
+      
       private static const PLAYER_RESOURCETYPE_INVALID:uint = 0;
       
       private static const PLAYER_RESOURCETYPE_UNKNOWN:uint = 1;
@@ -15,13 +16,13 @@ package knt.hud.watch
       
       private static const PLAYER_RESOURCETYPE_CHEMICAL:uint = 3;
       
-      private static const BASE_X_OFFSET:Number = -8;
+      private static const BASE_X_OFFSET:Number = -18;
       
       private static const AIMING_X_OFFSET:Number = BASE_X_OFFSET - 180;
       
-      private static const ELECTRIC_X_OFFSET:Number = -58;
+      private static const ELECTRIC_X_OFFSET:Number = -63;
       
-      private static const CHEMICAL_X_OFFSET:Number = 34;
+      private static const CHEMICAL_X_OFFSET:Number = 9;
       
       private var m_view:WatchGadgetResourcesWidgetView;
       
@@ -217,3 +218,4 @@ package knt.hud.watch
       }
    }
 }
+
