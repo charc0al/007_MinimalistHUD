@@ -62,7 +62,7 @@ package knt.hud.buttonprompts
       
       private static const PROMPT_X_SPACING:Number = 44;
       
-      private static const AGENCY_ACTIONABLE_TEXT_COLOR:String = "#FFFFCC";
+      private static const AGENCY_ACTIONABLE_TEXT_COLOR:String = "#FFFFAA";
       
       public static const PLAYER_RESOURCETYPE_CHEMICAL:uint = 0;
       

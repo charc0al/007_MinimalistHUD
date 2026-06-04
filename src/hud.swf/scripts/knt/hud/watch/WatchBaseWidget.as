@@ -13,6 +13,8 @@ package knt.hud.watch
       
       private static const AIMING_SCALE:Number = BASE_SCALE * 1.3;
       
+      private static const BASE_X_OFFSET:Number = -36;
+      
       private var m_view:WatchBaseWidgetView;
       
       private var m_interface:*;
@@ -30,6 +32,7 @@ package knt.hud.watch
          super();
          this.m_view = new WatchBaseWidgetView();
          this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
+         this.m_view.x = BASE_X_OFFSET;
          addChild(this.m_view);
       }
       
@@ -92,7 +95,7 @@ package knt.hud.watch
             {
                Animate.kill(this.m_view);
                Animate.to(this.m_view,0.2,0,{
-                  "x":-180,
+                  "x":BASE_X_OFFSET - 180,
                   "y":100,
                   "scaleX":AIMING_SCALE,
                   "scaleY":AIMING_SCALE,
@@ -105,7 +108,7 @@ package knt.hud.watch
          {
             Animate.kill(this.m_view);
             Animate.to(this.m_view,0.2,0,{
-               "x":0,
+               "x":BASE_X_OFFSET,
                "y":0,
                "scaleX":BASE_SCALE,
                "scaleY":BASE_SCALE,
