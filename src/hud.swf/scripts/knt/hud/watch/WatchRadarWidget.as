@@ -10,6 +10,11 @@ package knt.hud.watch
    
    public class WatchRadarWidget extends BaseControl
    {
+      private static const BASE_SCALE:Number = 0.75;
+      
+      private static const AIMING_SCALE:Number = BASE_SCALE * 1.3;
+      
+      private static const BASE_X_OFFSET:Number = -45;
       
       private static const PING_TYPE_HUMANOID:int = 1;
       
@@ -31,6 +36,8 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchRadarWidgetView();
+         this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
+         this.m_view.x = BASE_X_OFFSET;
          addChild(this.m_view);
          this.m_targetsArray = new Array();
          this.m_qModeTargetsArray = new Array();
@@ -66,10 +73,10 @@ package knt.hud.watch
             {
                Animate.kill(this.m_view);
                Animate.to(this.m_view,0.2,0,{
-                  "x":-180,
+                  "x":BASE_X_OFFSET - 180,
                   "y":100,
-                  "scaleX":1.3,
-                  "scaleY":1.3,
+                  "scaleX":AIMING_SCALE,
+                  "scaleY":AIMING_SCALE,
                   "alpha":0
                },Animate.ExpoOut);
                this.m_isAimingWatch = true;
@@ -79,10 +86,10 @@ package knt.hud.watch
          {
             Animate.kill(this.m_view);
             Animate.to(this.m_view,0.2,0,{
-               "x":0,
+               "x":BASE_X_OFFSET,
                "y":0,
-               "scaleX":1,
-               "scaleY":1,
+               "scaleX":BASE_SCALE,
+               "scaleY":BASE_SCALE,
                "alpha":1
             },Animate.ExpoOut);
             this.m_isAimingWatch = false;

@@ -26,8 +26,6 @@ package knt.hud.watch
       private static const FLASH_ANIM_SPEED:Number = 0.03;
       
       private static const BASE_SCALE:Number = 0.75;
-
-      private static const BASE_X_OFFSET:Number = -18;
       
       private var m_view:WatchGadgetResourceDialWidgetView;
       
@@ -59,7 +57,6 @@ package knt.hud.watch
          this.m_view = new WatchGadgetResourceDialWidgetView();
          addChild(this.m_view);
          this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
-         this.m_view.x = BASE_X_OFFSET;
          this.m_view.main_mc.electrical_dropshadow_mc.alpha = 0.4;
          this.m_view.main_mc.chemical_dropshadow_mc.alpha = 0.4;
          this.m_view.main_mc.timer_hand_dropshadow_mc.alpha = 0.4;

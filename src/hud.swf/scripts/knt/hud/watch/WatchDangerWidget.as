@@ -22,7 +22,7 @@ package knt.hud.watch
       
       private static const AIMING_SCALE:Number = BASE_SCALE * 1.3;
 
-      private static const BASE_X_OFFSET:Number = -18;
+      private static const BASE_X_OFFSET:Number = -27;
       
       private var m_view:WatchDangerWidgetView;
       
