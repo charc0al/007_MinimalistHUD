@@ -57,8 +57,10 @@ package knt.hud.agency
          var abort:Boolean = false;
          var data:Object = param1;
          var hasActionablePrompt:Boolean = false;
+         var shouldShowWidget:Boolean = false;
          _this = this;
          hasActionablePrompt = this.hasAnyActionablePrompt(data.agencyPrompts);
+         shouldShowWidget = Boolean(data.forceShow) || hasActionablePrompt;
          var ts:TaskletSequencer = TaskletSequencer.getGlobalInstance();
          ts.addChunk(function():void
          {
@@ -165,7 +167,7 @@ package knt.hud.agency
             {
                return;
             }
-            if(!hasActionablePrompt)
+            if(!shouldShowWidget)
             {
                hideForNoActionablePrompts();
                return;
@@ -238,7 +240,7 @@ package knt.hud.agency
             {
                return;
             }
-            if(!hasActionablePrompt)
+            if(!shouldShowWidget)
             {
                return;
             }
