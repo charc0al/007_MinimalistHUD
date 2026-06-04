@@ -122,18 +122,7 @@ package knt.hud.agency
          }
          if(this.m_isAgencyPrompt)
          {
-            if(this.m_isEnabled && this.m_blockedLabel == "")
-            {
-               if(!this.m_flareLoopIsRunning)
-               {
-                  this.m_view.amount_mc.alpha = 1;
-                  this.loopFlares(true);
-               }
-            }
-            else
-            {
-               this.loopFlares(false);
-            }
+            this.loopFlares(false,true);
          }
       }
       
@@ -144,14 +133,16 @@ package knt.hud.agency
       
       private function updatePrompt(param1:Object) : void
       {
+         var _loc3_:Boolean = false;
          if(!param1.m_promptData[0])
          {
             return;
          }
+         _loc3_ = Boolean(param1.m_promptData[0].isEnabled) && param1.m_blockedLabel == "";
          var _loc2_:Object = new Object();
          _loc2_.aElements = param1.m_promptData[0].aElements;
          _loc2_.controllerType = param1.m_promptData[0].controllerType;
-         _loc2_.isEnabled = param1.m_promptData[0].isEnabled;
+         _loc2_.isEnabled = _loc3_;
          _loc2_.multiPromptSpacing = 0;
          _loc2_.multiPromptSpacingIcon = "";
          _loc2_.sTitle = param1.m_label;
@@ -166,15 +157,15 @@ package knt.hud.agency
          _loc2_.bIsLegal = true;
          _loc2_.bIsTrespassing = true;
          _loc2_.eState = 0;
-         _loc2_.eBlockedStatus = _loc2_.bBlocked ? ButtonPromptWidget.BLOCKED_STATUS_BLOCKED : ButtonPromptWidget.BLOCKED_STATUS_NONE;
+         _loc2_.eBlockedStatus = _loc3_ ? ButtonPromptWidget.BLOCKED_STATUS_NONE : ButtonPromptWidget.BLOCKED_STATUS_BLOCKED;
          _loc2_.fBluffProbability = 0;
          _loc2_.eAgilityType = 0;
          _loc2_.eResourceType = -1;
          this.m_prompt.onSetData(_loc2_);
          this.m_view.amount_mc.visible = false;
          this.m_view.amount_mc.x = this.m_prompt.getPromptWidth() + 10;
-         var _loc3_:Number = ENTRY_EXTENDED_BASE_WIDTH - 22;
-         this.m_parentClassInstance.callBackEntryWidthAndRealignEntriesXPos(this.m_entryIndex,_loc3_ + this.m_prompt.getPromptWidth());
+         var _loc4_:Number = ENTRY_EXTENDED_BASE_WIDTH - 22;
+         this.m_parentClassInstance.callBackEntryWidthAndRealignEntriesXPos(this.m_entryIndex,_loc4_ + this.m_prompt.getPromptWidth());
       }
       
       private function loopFlares(param1:Boolean, param2:Boolean = false) : void
