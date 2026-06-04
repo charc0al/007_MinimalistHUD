@@ -21,6 +21,14 @@ package knt.hud.weapons
       private static const REMOVAL_ANIM_SPEED:Number = 0.1;
 
       private static const SHOW_AMMO_BAR:Boolean = false;
+
+      private static const HUD_OFFSET_X:Number = 30;
+
+      private static const HUD_OFFSET_Y:Number = 30;
+
+      private static const WATCH_AIM_HIDE_OFFSET_X:Number = 140;
+
+      private static const WATCH_AIM_HIDE_OFFSET_Y:Number = 100;
       
       private var m_view:WeaponWidgetView;
       
@@ -158,6 +166,8 @@ package knt.hud.weapons
          this.m_view.special_prompt_container_mc.alpha = 0.6;
          this.m_view.prompt_container_mc.visible = false;
          this.m_view.special_prompt_container_mc.visible = false;
+         this.m_view.x = HUD_OFFSET_X;
+         this.m_view.y = HUD_OFFSET_Y;
          addChild(this.m_view);
          this.m_currentWeapon = "";
          this.m_currentWeaponSecondary = "";
@@ -181,8 +191,8 @@ package knt.hud.weapons
                {
                   Animate.kill(m_view);
                   Animate.to(m_view,0.2,0,{
-                     "x":140,
-                     "y":100,
+                     "x":HUD_OFFSET_X + WATCH_AIM_HIDE_OFFSET_X,
+                     "y":HUD_OFFSET_Y + WATCH_AIM_HIDE_OFFSET_Y,
                      "scaleX":1.3,
                      "scaleY":1.3,
                      "alpha":0
@@ -194,8 +204,8 @@ package knt.hud.weapons
             {
                Animate.kill(m_view);
                Animate.to(m_view,0.2,0,{
-                  "x":0,
-                  "y":0,
+                  "x":HUD_OFFSET_X,
+                  "y":HUD_OFFSET_Y,
                   "scaleX":1,
                   "scaleY":1,
                   "alpha":1
