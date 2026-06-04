@@ -149,6 +149,7 @@ package knt.hud.weapons
          this.m_view.special_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.gadget_resource_icon_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.ammo_icon_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
+         this.m_view.ammo_icon_container_mc.visible = false;
          this.m_view.prompt_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.special_prompt_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.ammo_bar.numb_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
@@ -197,7 +198,7 @@ package knt.hud.weapons
                   "y":0,
                   "scaleX":1,
                   "scaleY":1,
-                  "alpha":(data.ItemData.isDisabled ? 0.4 : 1)
+                  "alpha":1
                },Animate.ExpoOut);
                m_isAimingWatch = false;
             }
@@ -252,6 +253,7 @@ package knt.hud.weapons
                this.loadWeaponImage(this.m_currentWeapon,this.m_imageLoaderPrimary,this.m_view.weapon_container_mc);
                this.m_view.ammo_bar.visible = SHOW_AMMO_BAR;
                this.m_ammoIcon.gotoAndStop("ammo");
+               this.m_view.ammo_icon_container_mc.visible = false;
                this.m_view.gradient_lines_mc.visible = false;
                this.m_view.ammo_info_mc.visible = true;
                this.m_view.ammo_info_mc.alpha = 1;
@@ -331,6 +333,7 @@ package knt.hud.weapons
                      this.m_wasDisabled = true;
                      this.m_isDisabled = true;
                   }
+                  this.m_view.visible = false;
                }
                else if(this.m_isDisabled)
                {
@@ -344,6 +347,11 @@ package knt.hud.weapons
                   }
                   this.m_view.alpha = 1;
                   this.m_isDisabled = false;
+                  this.m_view.visible = true;
+               }
+               else
+               {
+                  this.m_view.visible = true;
                }
                if(!this.m_reloadInProgress)
                {
@@ -818,6 +826,7 @@ package knt.hud.weapons
          this.m_resourceIcon.gotoAndStop("default");
          this.m_view.ammo_info_mc.ammo_txt_mc.resource_mc.ammo_total_txt.text = "";
          this.m_ammoIcon.gotoAndStop("default");
+         this.m_view.ammo_icon_container_mc.visible = false;
          this.m_view.ammo_bar.visible = false;
          this.m_view.special_ammo_bar.visible = false;
          this.m_view.gradient_lines_mc.visible = false;

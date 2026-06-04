@@ -166,6 +166,7 @@ package knt.hud.agency
          _loc2_.bIsLegal = true;
          _loc2_.bIsTrespassing = true;
          _loc2_.eState = 0;
+         _loc2_.eBlockedStatus = _loc2_.bBlocked ? ButtonPromptWidget.BLOCKED_STATUS_BLOCKED : ButtonPromptWidget.BLOCKED_STATUS_NONE;
          _loc2_.fBluffProbability = 0;
          _loc2_.eAgilityType = 0;
          _loc2_.eResourceType = -1;
