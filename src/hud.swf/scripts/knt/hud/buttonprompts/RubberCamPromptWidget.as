@@ -116,15 +116,9 @@ package knt.hud.buttonprompts
          if(data.isActive != this.m_isRubberCamActive)
          {
             this.m_isRubberCamActive = data.isActive;
-            if(this.m_isRubberCamActive)
-            {
-               Animate.kill(this.m_promptImage);
-               Animate.fromTo(this.m_promptImage,0.5,0,{"x":this.m_promptImagePosition.x},{"x":this.m_promptImagePosition.x + PROMPT_ANIM_X_OFFSET},Animate.SineInOut,function():void
-               {
-                  animatePromptLoop();
-               });
-            }
          }
+         Animate.kill(this.m_promptImage);
+         this.visible = false;
       }
       
       private function onImageCallbackSuccess() : void

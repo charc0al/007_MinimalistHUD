@@ -567,20 +567,8 @@ package knt.hud.buttonprompts
          this.m_view.shadows_mc.description_shadow_mc.visible = false;
          this.m_view.title_mc.title_txt.y = -15;
          this.m_view.shadows_mc.title_shadow_mc.y = 0;
-         this.m_view.collapsed_mc.outline_mc.alpha = 1;
-         this.m_view.collapsed_mc.fill_mc.alpha = 1;
-         MenuUtils.setColor(this.m_view.collapsed_mc.fill_mc,MenuConstantsKnt.COLOR_WHITE);
-         this.m_view.collapsed_mc.visible = true;
-         Animate.to(this.m_view.collapsed_mc,0.1,0,{
-            "scaleX":1.6,
-            "scaleY":1.6
-         },Animate.ExpoOut,function():void
-         {
-            Animate.to(m_view.collapsed_mc,0.2,0,{
-               "scaleX":1.2,
-               "scaleY":1.2
-            },Animate.BackOut);
-         });
+         this.m_view.collapsed_mc.visible = false;
+         this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
          this.showCollectibleIcon(false);
          this.showResourceType(false,-1);
       }
@@ -647,34 +635,11 @@ package knt.hud.buttonprompts
          this.m_view.shadows_mc.title_shadow_mc.visible = false;
          this.m_view.shadows_mc.status_shadow_mc.visible = false;
          this.m_view.shadows_mc.description_shadow_mc.visible = false;
-         this.m_view.collapsed_mc.outline_mc.alpha = 1;
-         this.m_view.collapsed_mc.fill_mc.alpha = 0.7;
-         MenuUtils.setColor(this.m_view.collapsed_mc.fill_mc,MenuConstantsKnt.COLOR_GREY_LIGHT);
+         this.m_view.collapsed_mc.visible = false;
+         this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
          if(data.eResourceType == -1)
          {
-            this.m_view.collapsed_mc.visible = true;
             this.showResourceType(false,-1);
-            if(this.m_eState == STATE_AVAILABLE)
-            {
-               Animate.to(this.m_view.collapsed_mc,0.1,0,{
-                  "scaleX":0.6,
-                  "scaleY":0.6
-               },Animate.ExpoOut,function():void
-               {
-                  Animate.to(m_view.collapsed_mc,0.2,0,{
-                     "scaleX":1,
-                     "scaleY":1
-                  },Animate.BackOut);
-               });
-            }
-            else
-            {
-               this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
-               Animate.to(this.m_view.collapsed_mc,0.2,0,{
-                  "scaleX":1,
-                  "scaleY":1
-               },Animate.BackOut);
-            }
          }
          else
          {

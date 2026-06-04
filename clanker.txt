@@ -101,6 +101,12 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/weapons/WeaponReticleWidget.as`
 - Throwable reticle side arcs remain hard-hidden, and its quick-throw prompt buttons now also use the same inverted prompt styling and reapply it when the widget is shown again:
   `src/hud.swf/scripts/knt/hud/weapons/ThrowableReticleWidget.as`
+- Saving spinner disabled:
+  `src/hud.swf/scripts/knt/hud/saveindicator/SaveIndicatorWidget.as`
+- Out-of-range interaction circle disabled by suppressing the shared collapsed prompt state:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Lower-right cutscene "Look" prompt disabled:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/RubberCamPromptWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -133,6 +139,7 @@ Notes on bluff/lure strip
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
+- The small out-of-range interaction ring/circle is not a separate `InteractionIndicator` class here; it is the shared `collapsed_mc` path used by `ButtonPromptWidget` in its `STATE_AVAILABLE` and `STATE_COLLAPSED` states.
 - Vanilla behavior uses `ButtonPromptImage` instances with optional per-prompt inversion and platform-specific scaling.
 - Current mod behavior forces prompt images through the inverted color matrix so the buttons render dark with light glyphs, and applies a `0.8` multiplier to the normal prompt icon scale.
 - `CloseCombatPromptsWidget` is separate and does not inherit those shared prompt changes automatically.
@@ -189,6 +196,15 @@ Notes on focus gain popup
 - The lightning-bolt `+N` popup for gained focus/instinct energy is driven by `knt.hud.notifications.AgencyNotificationWidget`.
 - Vanilla behavior compares `agencyData.currentAgency` against `m_previousValue` and shows a popup when the value increases.
 - Current mod behavior ports `AgencyNotificationWidget` into `src/` and suppresses the popup in `onSetData()` while still updating `m_previousValue` so repeated gains do not accumulate stale deltas.
+
+Notes on save spinner
+- The lower-right `Saving` spinner is driven by `knt.hud.saveindicator.SaveIndicatorWidget`.
+- Current mod behavior ports `SaveIndicatorWidget` into `src/` and hard-hides it in both `onSetData()` and `onSetVisible()` while killing any running animation handles on its `outer_mc`, `inner_mc`, and `title_txt`.
+
+Notes on rubber-cam look prompt
+- The lower-right cutscene `Look` prompt appears to be driven by `knt.hud.buttonprompts.RubberCamPromptWidget`.
+- This widget swaps its prompt glyph based on `data.prompt.controllerType`, supports keyboard glyphs or controller icons, and animates the input icon side-to-side while `data.isActive` is true.
+- Current mod behavior keeps its data/layout refresh path intact but kills the prompt animation and forces the widget hidden in `onSetData()`.
 
 Notes on pickup popups
 - The right-side ammo / chemical / electrical pickup popup is driven by `knt.hud.notifications.PickupNotificationWidget`.
