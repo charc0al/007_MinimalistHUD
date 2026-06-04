@@ -67,6 +67,11 @@ package knt.hud.objectives
          {
             return;
          }
+         if(param1.NotificationType == ObjectivesData.TYPE_HINT)
+         {
+            this.hideNotification();
+            return;
+         }
          if(!param1.IsValid)
          {
             if(this.m_view.visible && !this.m_isAnimatingClosingSequence)
@@ -196,6 +201,11 @@ package knt.hud.objectives
          this.m_objState = param1.ObjectiveState;
          this.m_objType = param1.NotificationType;
          this.animateOpeningSequence(param1.Duration,this.m_objState,this.m_objType,param1.IsObjectiveTracked);
+      }
+      
+      override public function onSetVisible(param1:Boolean) : void
+      {
+         this.hideNotification();
       }
       
       private function animateOpeningSequence(param1:Number, param2:String, param3:String, param4:Boolean) : void
@@ -387,6 +397,17 @@ package knt.hud.objectives
          Animate.kill(this.m_view.progressbar_mc);
          Animate.kill(this.m_view.progressbar_mc.fill_mc);
          this.m_view.flame_mc.stop();
+      }
+      
+      private function hideNotification() : void
+      {
+         this.killAllAnimations();
+         this.m_view.progressbar_mc.visible = false;
+         this.m_view.track_txt.visible = false;
+         this.m_view.visible = false;
+         this.m_isAnimatingClosingSequence = false;
+         this.m_objState = "";
+         this.m_objType = "";
       }
       
       override public function onControlLayoutChanged() : void

@@ -67,6 +67,11 @@ package knt.hud.objectives
          {
             return;
          }
+         if(param1.NotificationType == ObjectivesData.TYPE_TUTORIAL)
+         {
+            this.hideNotification();
+            return;
+         }
          if(param1.NotificationType != ObjectivesData.TYPE_ITEM && param1.NotificationType != ObjectivesData.TYPE_CHALLENGE && param1.NotificationType != ObjectivesData.TYPE_CHALLENGEMOSAIC && param1.NotificationType != ObjectivesData.TYPE_COLLECTIBLE && param1.NotificationType != ObjectivesData.TYPE_TUTORIAL)
          {
             return;
@@ -83,14 +88,6 @@ package knt.hud.objectives
                MenuUtils.setupTextUpper(this.m_view.title_txt,param1.Headline,24,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
                this.m_soundTrigger = "UI_HUD_IntelItem_PickedUp_Shown";
                this.m_maskImage = true;
-               this.m_view.imageHolder_mc.x = -20;
-               break;
-            case ObjectivesData.TYPE_TUTORIAL:
-               MenuUtils.setupTextUpper(this.m_view.headline_txt,Localization.get("UI_MENU_TUTORIALS_TITLE"),16,MenuConstantsKnt.FONT_TYPE_MEDIUM,"#FFDA99");
-               MenuUtils.setupTextUpper(this.m_view.title_txt,param1.Headline,24,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
-               this.m_soundTrigger = "UI_HUD_IntelItem_Tutorial_Shown";
-               _loc2_ = true;
-               this.m_maskImage = false;
                this.m_view.imageHolder_mc.x = -20;
                break;
             case ObjectivesData.TYPE_CHALLENGE:
@@ -148,6 +145,11 @@ package knt.hud.objectives
          {
             this.animateClosingSequence();
          }
+      }
+      
+      override public function onSetVisible(param1:Boolean) : void
+      {
+         this.hideNotification();
       }
       
       private function animateOpeningSequence() : void

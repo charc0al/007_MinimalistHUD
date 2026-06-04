@@ -57,9 +57,15 @@ package knt.hud.notifications
          {
             this.releaseEntry(_loc2_.pop());
          }
+         this.hideAllNotifications();
       }
       
       public function onSetData(param1:Object) : void
+      {
+         this.hideAllNotifications();
+      }
+      
+      override public function onSetVisible(param1:Boolean) : void
       {
          this.hideAllNotifications();
       }
@@ -82,6 +88,8 @@ package knt.hud.notifications
       private function hideAllNotifications() : void
       {
          var _loc1_:int = 0;
+         this.visible = false;
+         this.alpha = 0;
          Animate.kill(this.m_container);
          this.m_container.visible = false;
          this.m_container.alpha = 0;
@@ -89,8 +97,12 @@ package knt.hud.notifications
          _loc1_ = 0;
          while(_loc1_ < this.m_container.numChildren)
          {
-            PickupNotificationWidgetView(this.m_container.getChildAt(_loc1_)).visible = false;
             Animate.kill(this.m_container.getChildAt(_loc1_));
+            PickupNotificationWidgetView(this.m_container.getChildAt(_loc1_)).visible = false;
+            PickupNotificationWidgetView(this.m_container.getChildAt(_loc1_)).alpha = 0;
+            PickupNotificationWidgetView(this.m_container.getChildAt(_loc1_)).container_mc.visible = false;
+            Animate.kill(PickupNotificationWidgetView(this.m_container.getChildAt(_loc1_)).container_mc);
+            Animate.kill(PickupNotificationWidgetView(this.m_container.getChildAt(_loc1_)).title_txt);
             _loc1_++;
          }
          this.m_yposArray = [];
