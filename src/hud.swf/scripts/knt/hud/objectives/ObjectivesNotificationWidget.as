@@ -13,7 +13,7 @@ package knt.hud.objectives
    public class ObjectivesNotificationWidget extends BaseControl
    {
       
-      private static const NOTIFICATION_SCALE:Number = 0.5;
+      private static const NOTIFICATION_SCALE:Number = 1;
       
       private var m_view:ObjectivesNotificationWidgetView;
       

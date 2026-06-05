@@ -9,7 +9,7 @@ package knt.hud.objectives
    public class ObjectivesHintRevealingWidget extends BaseControl
    {
       
-      private static const NOTIFICATION_SCALE:Number = 0.5;
+      private static const NOTIFICATION_SCALE:Number = 1;
       
       public static const TYPE_NOTIFICATION:int = 4;
       
