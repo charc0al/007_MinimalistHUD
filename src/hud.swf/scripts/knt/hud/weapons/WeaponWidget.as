@@ -261,6 +261,7 @@ package knt.hud.weapons
                }
                this.m_view.weapon_container_mc.scaleX = this.m_view.weapon_container_mc.scaleY = 1 * this.ICON_SCALE_FACTOR;
                this.loadWeaponImage(this.m_currentWeapon,this.m_imageLoaderPrimary,this.m_view.weapon_container_mc);
+               this.ensureWeaponIconVisible();
                this.m_view.ammo_bar.visible = SHOW_AMMO_BAR;
                this.m_ammoIcon.gotoAndStop("ammo");
                this.m_view.ammo_icon_container_mc.visible = false;
@@ -355,11 +356,13 @@ package knt.hud.weapons
                         this.m_view.ammo_info_mc.ammo_txt_mc.resource_mc.alpha = 0.4;
                      }
                   }
+                  this.ensureWeaponIconVisible();
                   this.m_view.alpha = 1;
                   this.m_isDisabled = false;
                }
                else
                {
+                  this.ensureWeaponIconVisible();
                   this.m_view.alpha = 1;
                }
                if(!this.m_reloadInProgress)
@@ -808,7 +811,19 @@ package knt.hud.weapons
       private function onFailedImage() : void
       {
       }
-      
+
+      private function ensureWeaponIconVisible() : void
+      {
+         var i:int = 0;
+         this.m_view.weapon_container_mc.visible = true;
+         this.m_view.weapon_container_mc.alpha = 1;
+         while(i < this.m_view.weapon_container_mc.numChildren)
+         {
+            this.m_view.weapon_container_mc.getChildAt(i).visible = true;
+            i++;
+         }
+      }
+       
       private function removeWeapon() : void
       {
          this.runReloadDots(false);
