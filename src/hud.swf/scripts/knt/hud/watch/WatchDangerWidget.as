@@ -57,7 +57,7 @@ package knt.hud.watch
          super();
          this.m_newFormat.letterSpacing = 8;
          this.m_view = new WatchDangerWidgetView();
-         this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
+         this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
          this.m_view.trespass_bg_mc.alpha = 0;
          this.m_view.warning_mc.alpha = 0;
          this.m_view.warning_mc.sign_mc.alpha = 0.4;
@@ -69,7 +69,9 @@ package knt.hud.watch
          this.m_view.hidden_mc.visible = false;
          this.m_view.hidden_mc.desc_mc.visible = false;
          this.m_view.hidden_mc.desc_mc.bg_mc.alpha = 0.6;
-         this.m_view.x = BASE_X_OFFSET;
+         this.m_view.x = BASE_X_OFFSET - 180;
+         this.m_view.y = 100;
+         this.m_view.alpha = 0;
          addChild(this.m_view);
       }
       
@@ -92,61 +94,61 @@ package knt.hud.watch
             this.m_view.warning_bg_mc.visible = true;
             this.m_triangulationModeHidden = false;
          }
-         if(param1.commonData.isAimingWatch)
-         {
-            if(!this.m_isAimingWatch)
-            {
-               Animate.kill(this.m_view);
-               Animate.to(this.m_view,0.2,0,{
-                  "x":BASE_X_OFFSET - 180,
-                  "y":100,
-                  "scaleX":AIMING_SCALE,
-                  "scaleY":AIMING_SCALE,
-                  "alpha":0
-               },Animate.ExpoOut);
-               this.m_isAimingWatch = true;
-            }
-         }
-         else if(this.m_isAimingWatch)
-         {
-            Animate.kill(this.m_view);
-            Animate.to(this.m_view,0.2,0,{
-               "x":BASE_X_OFFSET,
-               "y":0,
-               "scaleX":BASE_SCALE,
-               "scaleY":BASE_SCALE,
-               "alpha":1
-            },Animate.ExpoOut);
-            this.m_isAimingWatch = false;
-         }
-         if(this.m_isAimingWatch)
-         {
-            return;
-         }
-         if(param1 == null)
-         {
-            return;
-         }
-         this.m_dataCloned = ObjectUtils.cloneDeep(param1);
-         if(this.m_ignoreDangerStates)
-         {
-            if(this.m_dangerIsShown)
-            {
-               this.setDangerState(false);
-               this.m_lethalForceEnabled = false;
-               this.m_trespassing = false;
-               this.m_softTrespassing = false;
-            }
-            return;
-         }
-         if(param1.commonData.isLethalForceEnabled != this.m_lethalForceEnabled || param1.commonData.isTrespassing != this.m_trespassing || param1.commonData.isSoftTrespassing != this.m_softTrespassing)
-         {
-            this.m_lethalForceEnabled = param1.commonData.isLethalForceEnabled;
-            this.m_trespassing = param1.commonData.isTrespassing;
-            this.m_softTrespassing = param1.commonData.isSoftTrespassing;
-            this.updateDangerState();
-         }
-      }
+          if(param1.commonData.isAimingWatch)
+          {
+             if(this.m_isAimingWatch)
+             {
+                Animate.kill(this.m_view);
+                Animate.to(this.m_view,0.2,0,{
+                   "x":BASE_X_OFFSET,
+                   "y":0,
+                   "scaleX":BASE_SCALE,
+                   "scaleY":BASE_SCALE,
+                   "alpha":1
+                },Animate.ExpoOut);
+                this.m_isAimingWatch = false;
+             }
+          }
+          else if(!this.m_isAimingWatch)
+          {
+             Animate.kill(this.m_view);
+             Animate.to(this.m_view,0.2,0,{
+                "x":BASE_X_OFFSET - 180,
+                "y":100,
+                "scaleX":AIMING_SCALE,
+                "scaleY":AIMING_SCALE,
+                "alpha":0
+             },Animate.ExpoOut);
+             this.m_isAimingWatch = true;
+          }
+          if(this.m_isAimingWatch)
+          {
+             return;
+          }
+          if(param1 == null)
+          {
+             return;
+          }
+          this.m_dataCloned = ObjectUtils.cloneDeep(param1);
+          if(this.m_ignoreDangerStates)
+          {
+             if(this.m_dangerIsShown)
+             {
+                this.setDangerState(false);
+                this.m_lethalForceEnabled = false;
+                this.m_trespassing = false;
+                this.m_softTrespassing = false;
+             }
+             return;
+          }
+          if(param1.commonData.isLethalForceEnabled != this.m_lethalForceEnabled || param1.commonData.isTrespassing != this.m_trespassing || param1.commonData.isSoftTrespassing != this.m_softTrespassing)
+          {
+             this.m_lethalForceEnabled = param1.commonData.isLethalForceEnabled;
+             this.m_trespassing = param1.commonData.isTrespassing;
+             this.m_softTrespassing = param1.commonData.isSoftTrespassing;
+             this.updateDangerState();
+          }
+       }
       
       private function setDangerState(param1:Boolean, param2:String = "", param3:int = 0) : void
       {

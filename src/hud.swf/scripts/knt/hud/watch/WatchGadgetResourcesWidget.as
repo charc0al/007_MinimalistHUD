@@ -48,7 +48,10 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchGadgetResourcesWidgetView();
-         this.m_view.x = BASE_X_OFFSET;
+         this.m_view.x = AIMING_X_OFFSET;
+         this.m_view.y = 100;
+         this.m_view.scaleX = this.m_view.scaleY = 1.3;
+         this.m_view.alpha = 0;
          this.m_electric = new WatchGadgetResourceDialWidget();
          this.m_electric.setParentClass(this);
          this.m_electric.x = ELECTRIC_X_OFFSET;
@@ -81,65 +84,65 @@ package knt.hud.watch
                m_view.visible = true;
                m_triangulationModeHidden = false;
             }
-            if(data.isAimingWatch)
-            {
-               if(!m_isAimingWatch)
-               {
-                  Animate.kill(m_view);
-                  Animate.to(m_view,0.2,0,{
-                     "x":AIMING_X_OFFSET,
-                     "y":100,
-                     "scaleX":1.3,
-                     "scaleY":1.3,
-                     "alpha":0
-                  },Animate.ExpoOut);
-                  m_isAimingWatch = true;
-               }
-            }
-            else if(m_isAimingWatch)
-            {
-               Animate.kill(m_view);
-               Animate.to(m_view,0.2,0,{
-                  "x":BASE_X_OFFSET,
-                  "y":0,
-                  "scaleX":1,
-                  "scaleY":1,
-                  "alpha":1
-               },Animate.ExpoOut);
-               m_isAimingWatch = false;
-            }
-            if(m_isAimingWatch)
-            {
-               return;
-            }
-            ts.addChunk(function():void
-            {
-               m_electric.onSetData(data.electricalResource);
-               m_chemical.onSetData(data.chemicalResource);
-            });
-            ts.addChunk(function():void
-            {
-               if(data.hasInfiniteGadgetResources)
-               {
-                  if(!m_QlensGodMode)
-                  {
-                     runFancyShimmerFx();
-                     m_QlensRegular = false;
-                     m_QlensGodMode = true;
-                  }
-               }
-               else if(!m_QlensRegular)
-               {
-                  if(m_QlensGodMode)
-                  {
-                     runRemoveFancyShimmerFx();
-                  }
-                  m_QlensGodMode = false;
-                  m_QlensRegular = true;
-               }
-            });
-         });
-      }
+             if(data.isAimingWatch)
+             {
+                if(m_isAimingWatch)
+                {
+                   Animate.kill(m_view);
+                   Animate.to(m_view,0.2,0,{
+                      "x":BASE_X_OFFSET,
+                      "y":0,
+                      "scaleX":1,
+                      "scaleY":1,
+                      "alpha":1
+                   },Animate.ExpoOut);
+                   m_isAimingWatch = false;
+                }
+             }
+             else if(!m_isAimingWatch)
+             {
+                Animate.kill(m_view);
+                Animate.to(m_view,0.2,0,{
+                   "x":AIMING_X_OFFSET,
+                   "y":100,
+                   "scaleX":1.3,
+                   "scaleY":1.3,
+                   "alpha":0
+                },Animate.ExpoOut);
+                m_isAimingWatch = true;
+             }
+             if(m_isAimingWatch)
+             {
+                return;
+             }
+             ts.addChunk(function():void
+             {
+                m_electric.onSetData(data.electricalResource);
+                m_chemical.onSetData(data.chemicalResource);
+             });
+             ts.addChunk(function():void
+             {
+                if(data.hasInfiniteGadgetResources)
+                {
+                   if(!m_QlensGodMode)
+                   {
+                      runFancyShimmerFx();
+                      m_QlensRegular = false;
+                      m_QlensGodMode = true;
+                   }
+                }
+                else if(!m_QlensRegular)
+                {
+                   if(m_QlensGodMode)
+                   {
+                      runRemoveFancyShimmerFx();
+                   }
+                   m_QlensGodMode = false;
+                   m_QlensRegular = true;
+                }
+             });
+          });
+       }
       
       private function runFancyShimmerFx() : void
       {
