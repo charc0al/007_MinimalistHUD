@@ -208,7 +208,7 @@ package knt.hud.weapons
                   "y":HUD_OFFSET_Y,
                   "scaleX":1,
                   "scaleY":1,
-                  "alpha":(data.ItemData.isDisabled ? 0 : 1)
+                  "alpha":1
                },Animate.ExpoOut);
                m_isAimingWatch = false;
             }
@@ -261,7 +261,6 @@ package knt.hud.weapons
                }
                this.m_view.weapon_container_mc.scaleX = this.m_view.weapon_container_mc.scaleY = 1 * this.ICON_SCALE_FACTOR;
                this.loadWeaponImage(this.m_currentWeapon,this.m_imageLoaderPrimary,this.m_view.weapon_container_mc);
-               this.ensureWeaponIconVisible();
                this.m_view.ammo_bar.visible = SHOW_AMMO_BAR;
                this.m_ammoIcon.gotoAndStop("ammo");
                this.m_view.ammo_icon_container_mc.visible = false;
@@ -329,25 +328,16 @@ package knt.hud.weapons
                {
                   if(!this.m_isDisabled)
                   {
-                     if(this.m_weaponUsesResource)
-                     {
-                        this.m_view.gadget_resource_icon_container_mc.alpha = 1;
-                        this.m_view.ammo_info_mc.ammo_txt_mc.resource_mc.alpha = 1;
-                     }
-                     this.m_view.ammo_icon_container_mc.alpha = 1;
-                     this.m_view.alpha = 0.4;
-                     this.m_view.ammo_info_mc.ammo_txt_mc.ammo_mc.alpha = 1;
-                     this.m_view.ammo_info_mc.ammo_txt_mc.ammo_total_mc.alpha = 1;
-                     this.m_view.weapon_container_mc.alpha = 1;
                      this.m_outOfAmmoInGun = false;
                      this.m_outOfAmmoInStash = false;
                      this.m_wasDisabled = true;
                      this.m_isDisabled = true;
                   }
-                  this.m_view.alpha = 0;
-               }
-               else if(this.m_isDisabled)
-               {
+                  this.applyDisabledHudState(true);
+                }
+                else if(this.m_isDisabled)
+                {
+                  this.applyDisabledHudState(false);
                   if(this.m_weaponUsesResource)
                   {
                      if(!this.m_hasGadgetResources)
@@ -357,18 +347,17 @@ package knt.hud.weapons
                      }
                   }
                   this.ensureWeaponIconVisible();
-                  this.m_view.alpha = 1;
                   this.m_isDisabled = false;
-               }
-               else
-               {
+                }
+                else
+                {
+                  this.applyDisabledHudState(false);
                   this.ensureWeaponIconVisible();
-                  this.m_view.alpha = 1;
-               }
+                }
                if(!this.m_reloadInProgress)
                {
                   MenuUtils.setupText(this.m_view.ammo_info_mc.ammo_txt_mc.ammo_mc.ammo_txt,this.addLeadingZero(data.nRemainingAmount),80,MenuConstantsKnt.FONT_TYPE_NUMBERS_LIGHT,MenuConstantsKnt.FontColorWhite);
-               }
+                }
                if(data.nMaxAmount >= 2)
                {
                   if(!this.m_isDisabled)
@@ -812,11 +801,51 @@ package knt.hud.weapons
       {
       }
 
+      private function applyDisabledHudState(param1:Boolean) : void
+      {
+         if(param1)
+         {
+            this.m_view.weapon_container_mc.alpha = 0;
+            this.m_view.secondary_container_mc.alpha = 0;
+            this.m_view.special_container_mc.alpha = 0;
+            this.m_view.prompt_container_mc.alpha = 0;
+            this.m_view.special_prompt_container_mc.alpha = 0;
+            this.m_view.gadget_resource_icon_container_mc.alpha = 0;
+            this.m_view.ammo_icon_container_mc.alpha = 0;
+            this.m_view.ammo_info_mc.alpha = 0;
+            this.m_view.ammo_bar.alpha = 0;
+            this.m_view.special_ammo_bar.alpha = 0;
+         }
+         else
+         {
+            this.m_view.weapon_container_mc.alpha = 1;
+            this.m_view.secondary_container_mc.alpha = 0.4;
+            this.m_view.special_container_mc.alpha = 0.4;
+            this.m_view.prompt_container_mc.alpha = 0.6;
+            this.m_view.special_prompt_container_mc.alpha = 0.6;
+            this.m_view.gadget_resource_icon_container_mc.alpha = 1;
+            this.m_view.ammo_icon_container_mc.alpha = 1;
+            this.m_view.ammo_info_mc.alpha = 1;
+            this.m_view.ammo_bar.alpha = 1;
+            this.m_view.special_ammo_bar.alpha = 1;
+         }
+      }
+
       private function ensureWeaponIconVisible() : void
       {
          var i:int = 0;
+         if(this.m_currentWeapon == "")
+         {
+            return;
+         }
          this.m_view.weapon_container_mc.visible = true;
          this.m_view.weapon_container_mc.alpha = 1;
+         if(this.m_view.weapon_container_mc.numChildren == 0)
+         {
+            this.loadWeaponImage(this.m_currentWeapon,this.m_imageLoaderPrimary,this.m_view.weapon_container_mc);
+            return;
+         }
+         i = 0;
          while(i < this.m_view.weapon_container_mc.numChildren)
          {
             this.m_view.weapon_container_mc.getChildAt(i).visible = true;

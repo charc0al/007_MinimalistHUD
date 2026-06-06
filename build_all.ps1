@@ -7,7 +7,8 @@ $rpkgToolRoot = Join-Path $projectRoot "RPKGTool"
 $rebuildSourceRoot = Join-Path $projectRoot "rebuild"
 $rebuildOutputRoot = Join-Path $projectRoot "rebuild_output"
 $rebuildGfxfTargetRoot = Join-Path $rebuildSourceRoot "chunk0\GFXF"
-$finalPatchPath = Join-Path $projectRoot "chunk0patch272.rpkg"
+$releaseRoot = Join-Path $projectRoot "release"
+$finalPatchPath = Join-Path $releaseRoot "chunk0patch272.rpkg"
 $postRebuildDelaySeconds = 5
 $rebuiltWaitTimeoutSeconds = 120
 
@@ -185,6 +186,14 @@ $swfRoots = @(
     (Join-Path $projectRoot "src\menu.swf")
 )
 
+if (-not (Test-Path -LiteralPath $releaseRoot)) {
+    New-Item -ItemType Directory -Path $releaseRoot | Out-Null
+}
+
+if (Test-Path -LiteralPath $finalPatchPath) {
+    Remove-Item -LiteralPath $finalPatchPath -Force
+}
+
 Write-Step "Rebuilding GFXF resources"
 Write-Step "Refreshing rebuild\chunk0\GFXF"
 Clear-TargetGfxfFiles -DestinationRoot $rebuildGfxfTargetRoot
@@ -231,10 +240,6 @@ if (-not (Test-Path -LiteralPath $generatedRpkgPath)) {
 }
 
 Write-Step "Promoting final patch file"
-if (Test-Path -LiteralPath $finalPatchPath) {
-    Remove-Item -LiteralPath $finalPatchPath -Force
-}
-
 Move-Item -LiteralPath $generatedRpkgPath -Destination $finalPatchPath -Force
 
 Write-Host ""
