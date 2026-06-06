@@ -256,6 +256,10 @@ Notes on inverted watch HUD visibility
 - Vanilla behavior hid these watch widgets while aiming the watch / Q Lens by animating them off-screen toward the lower-left corner and early-returning while hidden.
 - Current mod behavior inverts that condition so they animate in during Q Lens, animate back out when Q Lens closes, and initialize in the hidden/off-screen state to avoid a first-frame flash.
 - Current mod behavior also allows the lower-left watch cluster to temporarily reveal for 1 second when the watch danger indicator changes between its active danger colors. The danger widget publishes the shared temporary reveal signal and the other watch widgets consume it.
+- A follow-up attempt tried to make that temporary reveal actively refresh on both the rising edge and the timeout edge through shared static hooks across `WatchDangerWidget`, `WatchBaseWidget`, `WatchRadarWidget`, `WatchGadgetResourcesWidget`, and `AgencyWidget`.
+- The user tested that attempt and reported it did not reliably hide the widgets again after 1 second, and later revisions also regressed already-working HUD behavior.
+- That temporary-reveal implementation was reverted.
+- If revisiting later, prefer a smaller-scope trigger path and be careful about using shared static timers / refresh callbacks across multiple HUD widgets, because that approach proved fragile in this HUD stack.
 
 Notes on triangulation radar attempt
 - The frozen objective / target-direction pointer seen during Q Lens did not respond to earlier attempts that modified `WatchRadarWidget`.
