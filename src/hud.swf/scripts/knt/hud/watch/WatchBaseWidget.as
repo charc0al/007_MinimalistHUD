@@ -31,8 +31,11 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchBaseWidgetView();
-         this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
-         this.m_view.x = BASE_X_OFFSET;
+         this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
+         this.m_view.x = BASE_X_OFFSET - 180;
+         this.m_view.y = 100;
+         this.m_view.alpha = 0;
+         this.m_isAimingWatch = true;
          addChild(this.m_view);
       }
       
@@ -89,48 +92,48 @@ package knt.hud.watch
             this.m_triangulationModeHidden = false;
          }
          this.hideBackgroundFace();
-         if(param1.commonData.isAimingWatch)
-         {
-            if(!this.m_isAimingWatch)
-            {
-               Animate.kill(this.m_view);
-               Animate.to(this.m_view,0.2,0,{
-                  "x":BASE_X_OFFSET - 180,
-                  "y":100,
-                  "scaleX":AIMING_SCALE,
-                  "scaleY":AIMING_SCALE,
-                  "alpha":0
-               },Animate.ExpoOut);
-               this.m_isAimingWatch = true;
-            }
-         }
-         else if(this.m_isAimingWatch)
-         {
-            Animate.kill(this.m_view);
-            Animate.to(this.m_view,0.2,0,{
-               "x":BASE_X_OFFSET,
-               "y":0,
-               "scaleX":BASE_SCALE,
-               "scaleY":BASE_SCALE,
-               "alpha":1
-            },Animate.ExpoOut);
-            this.m_isAimingWatch = false;
-         }
-      }
-      
-      private function runFancyShimmerFx() : void
-      {
-         Animate.kill(this.m_interface);
-         Animate.kill(this.m_interface.shimmer_mc);
-         Animate.fromTo(this.m_interface.shimmer_mc,2,0,{"frames":0},{"frames":40},Animate.Linear);
-         Animate.fromTo(this.m_interface,0.2,0.1,{
-            "scaleX":0.9,
-            "scaleY":0.9
-         },{
-            "scaleX":1,
-            "scaleY":1
-         },Animate.Linear);
-      }
+          if(param1.commonData.isAimingWatch)
+          {
+             if(this.m_isAimingWatch)
+             {
+                Animate.kill(this.m_view);
+                Animate.to(this.m_view,0.2,0,{
+                   "x":BASE_X_OFFSET,
+                   "y":0,
+                   "scaleX":BASE_SCALE,
+                   "scaleY":BASE_SCALE,
+                   "alpha":1
+                },Animate.ExpoOut);
+                this.m_isAimingWatch = false;
+             }
+          }
+          else if(!this.m_isAimingWatch)
+          {
+             Animate.kill(this.m_view);
+             Animate.to(this.m_view,0.2,0,{
+                "x":BASE_X_OFFSET - 180,
+                "y":100,
+                "scaleX":AIMING_SCALE,
+                "scaleY":AIMING_SCALE,
+                "alpha":0
+             },Animate.ExpoOut);
+             this.m_isAimingWatch = true;
+          }
+       }
+       
+       private function runFancyShimmerFx() : void
+       {
+          Animate.kill(this.m_interface);
+          Animate.kill(this.m_interface.shimmer_mc);
+          Animate.fromTo(this.m_interface.shimmer_mc,2,0,{"frames":0},{"frames":40},Animate.Linear);
+          Animate.fromTo(this.m_interface,0.2,0.1,{
+             "scaleX":0.9,
+             "scaleY":0.9
+          },{
+             "scaleX":1,
+             "scaleY":1
+          },Animate.Linear);
+       }
       
       private function prepareInterface() : void
       {

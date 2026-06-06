@@ -36,8 +36,11 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchRadarWidgetView();
-         this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
-         this.m_view.x = BASE_X_OFFSET;
+         this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
+         this.m_view.x = BASE_X_OFFSET - 180;
+         this.m_view.y = 100;
+         this.m_view.alpha = 0;
+         this.m_isAimingWatch = true;
          addChild(this.m_view);
          this.m_targetsArray = new Array();
          this.m_qModeTargetsArray = new Array();
@@ -67,85 +70,85 @@ package knt.hud.watch
             this.m_QlensGodMode = false;
             this.m_QlensRegular = true;
          }
-         if(param1.IsAimingWatch)
-         {
-            if(!this.m_isAimingWatch)
-            {
-               Animate.kill(this.m_view);
-               Animate.to(this.m_view,0.2,0,{
-                  "x":BASE_X_OFFSET - 180,
-                  "y":100,
-                  "scaleX":AIMING_SCALE,
-                  "scaleY":AIMING_SCALE,
-                  "alpha":0
-               },Animate.ExpoOut);
-               this.m_isAimingWatch = true;
-            }
-         }
-         else if(this.m_isAimingWatch)
-         {
-            Animate.kill(this.m_view);
-            Animate.to(this.m_view,0.2,0,{
-               "x":BASE_X_OFFSET,
-               "y":0,
-               "scaleX":BASE_SCALE,
-               "scaleY":BASE_SCALE,
-               "alpha":1
-            },Animate.ExpoOut);
-            this.m_isAimingWatch = false;
-         }
-         if(this.m_isAimingWatch)
-         {
-            return;
-         }
-         if(param1.Objectives != null)
-         {
-            this.syncTargets(param1.Objectives);
-         }
-         if(param1.GadgetTargets != null)
-         {
-            this.syncQModeTargets(param1.GadgetTargets);
-         }
-      }
-      
-      public function syncQModeTargets(param1:Array) : void
-      {
-         var _loc4_:Boolean = false;
-         var _loc5_:int = 0;
-         var _loc6_:Boolean = false;
-         var _loc7_:int = 0;
-         var _loc8_:* = undefined;
-         if(param1 == null)
-         {
-            return;
-         }
-         var _loc2_:int = 0;
-         while(_loc2_ < this.m_qModeTargetsArray.length)
-         {
-            _loc4_ = false;
-            _loc5_ = 0;
-            while(_loc5_ < param1.length)
-            {
-               if(param1[_loc5_].ID == this.m_qModeTargetsArray[_loc2_].ID)
-               {
-                  _loc4_ = true;
-               }
-               _loc5_++;
-            }
-            if(!_loc4_)
-            {
-               this.m_view.container_mc.removeChild(this.m_qModeTargetsArray[_loc2_].pingTarget);
-               this.m_qModeTargetsArray.splice(_loc2_,1);
-               _loc2_--;
-            }
-            _loc2_++;
-         }
-         var _loc3_:int = 0;
-         while(_loc3_ < param1.length)
-         {
-            _loc6_ = false;
-            _loc7_ = 0;
-            while(_loc7_ < this.m_qModeTargetsArray.length)
+          if(param1.IsAimingWatch)
+          {
+             if(this.m_isAimingWatch)
+             {
+                Animate.kill(this.m_view);
+                Animate.to(this.m_view,0.2,0,{
+                   "x":BASE_X_OFFSET,
+                   "y":0,
+                   "scaleX":BASE_SCALE,
+                   "scaleY":BASE_SCALE,
+                   "alpha":1
+                },Animate.ExpoOut);
+                this.m_isAimingWatch = false;
+             }
+          }
+          else if(!this.m_isAimingWatch)
+          {
+             Animate.kill(this.m_view);
+             Animate.to(this.m_view,0.2,0,{
+                "x":BASE_X_OFFSET - 180,
+                "y":100,
+                "scaleX":AIMING_SCALE,
+                "scaleY":AIMING_SCALE,
+                "alpha":0
+             },Animate.ExpoOut);
+             this.m_isAimingWatch = true;
+          }
+          if(this.m_isAimingWatch)
+          {
+             return;
+          }
+          if(param1.Objectives != null)
+          {
+             this.syncTargets(param1.Objectives);
+          }
+          if(param1.GadgetTargets != null)
+          {
+             this.syncQModeTargets(param1.GadgetTargets);
+          }
+       }
+       
+       public function syncQModeTargets(param1:Array) : void
+       {
+          var _loc4_:Boolean = false;
+          var _loc5_:int = 0;
+          var _loc6_:Boolean = false;
+          var _loc7_:int = 0;
+          var _loc8_:* = undefined;
+          if(param1 == null)
+          {
+             return;
+          }
+          var _loc2_:int = 0;
+          while(_loc2_ < this.m_qModeTargetsArray.length)
+          {
+             _loc4_ = false;
+             _loc5_ = 0;
+             while(_loc5_ < param1.length)
+             {
+                if(param1[_loc5_].ID == this.m_qModeTargetsArray[_loc2_].ID)
+                {
+                   _loc4_ = true;
+                }
+                _loc5_++;
+             }
+             if(!_loc4_)
+             {
+                this.m_view.container_mc.removeChild(this.m_qModeTargetsArray[_loc2_].pingTarget);
+                this.m_qModeTargetsArray.splice(_loc2_,1);
+                _loc2_--;
+             }
+             _loc2_++;
+          }
+          var _loc3_:int = 0;
+          while(_loc3_ < param1.length)
+          {
+             _loc6_ = false;
+             _loc7_ = 0;
+             while(_loc7_ < this.m_qModeTargetsArray.length)
             {
                if(param1[_loc3_].ID == this.m_qModeTargetsArray[_loc7_].ID)
                {

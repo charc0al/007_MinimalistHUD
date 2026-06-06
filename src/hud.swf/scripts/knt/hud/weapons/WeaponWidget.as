@@ -208,7 +208,7 @@ package knt.hud.weapons
                   "y":HUD_OFFSET_Y,
                   "scaleX":1,
                   "scaleY":1,
-                  "alpha":1
+                  "alpha":(data.ItemData.isDisabled ? 0 : 1)
                },Animate.ExpoOut);
                m_isAimingWatch = false;
             }
@@ -343,7 +343,7 @@ package knt.hud.weapons
                      this.m_wasDisabled = true;
                      this.m_isDisabled = true;
                   }
-                  this.m_view.visible = false;
+                  this.m_view.alpha = 0;
                }
                else if(this.m_isDisabled)
                {
@@ -357,11 +357,10 @@ package knt.hud.weapons
                   }
                   this.m_view.alpha = 1;
                   this.m_isDisabled = false;
-                  this.m_view.visible = true;
                }
                else
                {
-                  this.m_view.visible = true;
+                  this.m_view.alpha = 1;
                }
                if(!this.m_reloadInProgress)
                {
