@@ -26,10 +26,15 @@ package knt.hud.watch
       private var m_QlensGodMode:Boolean = false;
       
       private var m_isAimingWatch:Boolean = false;
+
+      private var m_lastIsAimingWatchData:Boolean = false;
+
+      private static var s_instance:WatchBaseWidget;
       
       public function WatchBaseWidget()
       {
          super();
+         s_instance = this;
          this.m_view = new WatchBaseWidgetView();
          this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
          this.m_view.x = BASE_X_OFFSET - 180;
@@ -41,6 +46,8 @@ package knt.hud.watch
       
       public function onSetData(param1:Object) : void
       {
+         var shouldShow:Boolean = false;
+         this.m_lastIsAimingWatchData = Boolean(param1.commonData.isAimingWatch);
          ObjectivesMarkerWidget.setGlobalWatchState(Boolean(param1.commonData.isAimingWatch));
          EavesdropWidget.setGlobalWatchState(Boolean(param1.commonData.isAimingWatch));
          if(param1.commonData.hasInfiniteGadgetResources)
@@ -90,36 +97,50 @@ package knt.hud.watch
             this.m_interface.bg_dials_mc.visible = false;
             this.m_interface.bg_no_dials_mc.visible = false;
             this.m_triangulationModeHidden = false;
-         }
-         this.hideBackgroundFace();
-          if(param1.commonData.isAimingWatch)
-          {
-             if(this.m_isAimingWatch)
-             {
-                Animate.kill(this.m_view);
-                Animate.to(this.m_view,0.2,0,{
-                   "x":BASE_X_OFFSET,
-                   "y":0,
-                   "scaleX":BASE_SCALE,
-                   "scaleY":BASE_SCALE,
-                   "alpha":1
-                },Animate.ExpoOut);
-                this.m_isAimingWatch = false;
-             }
           }
-          else if(!this.m_isAimingWatch)
-          {
-             Animate.kill(this.m_view);
-             Animate.to(this.m_view,0.2,0,{
-                "x":BASE_X_OFFSET - 180,
-                "y":100,
-                "scaleX":AIMING_SCALE,
-                "scaleY":AIMING_SCALE,
-                "alpha":0
-             },Animate.ExpoOut);
-             this.m_isAimingWatch = true;
-          }
+          this.hideBackgroundFace();
+         shouldShow = Boolean(param1.commonData.isAimingWatch) || WatchDangerWidget.shouldForceHudReveal();
+         this.applyWatchVisibility(shouldShow);
        }
+
+      public static function refreshTemporaryRevealState() : void
+      {
+         if(s_instance)
+         {
+            s_instance.applyWatchVisibility(s_instance.m_lastIsAimingWatchData || WatchDangerWidget.shouldForceHudReveal());
+         }
+      }
+
+      private function applyWatchVisibility(param1:Boolean) : void
+      {
+         if(param1)
+         {
+            if(this.m_isAimingWatch)
+            {
+               Animate.kill(this.m_view);
+               Animate.to(this.m_view,0.2,0,{
+                  "x":BASE_X_OFFSET,
+                  "y":0,
+                  "scaleX":BASE_SCALE,
+                  "scaleY":BASE_SCALE,
+                  "alpha":1
+               },Animate.ExpoOut);
+               this.m_isAimingWatch = false;
+            }
+         }
+         else if(!this.m_isAimingWatch)
+         {
+            Animate.kill(this.m_view);
+            Animate.to(this.m_view,0.2,0,{
+               "x":BASE_X_OFFSET - 180,
+               "y":100,
+               "scaleX":AIMING_SCALE,
+               "scaleY":AIMING_SCALE,
+               "alpha":0
+            },Animate.ExpoOut);
+            this.m_isAimingWatch = true;
+         }
+      }
        
        private function runFancyShimmerFx() : void
        {

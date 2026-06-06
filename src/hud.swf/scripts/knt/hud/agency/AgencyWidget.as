@@ -6,6 +6,7 @@ package knt.hud.agency
    import glacier.common.menu.MenuUtils;
    import knt.common.menu.MenuConstantsKnt;
    import knt.hud.*;
+   import knt.hud.watch.WatchDangerWidget;
    
    public class AgencyWidget extends BaseControl
    {
@@ -31,10 +32,15 @@ package knt.hud.agency
       private var m_isAnyAgencyMoveAvailable:Boolean = false;
       
       private var m_flareLoopIsRunning:Boolean = false;
+
+      private var m_lastIsAimingWatchData:Boolean = false;
+
+      private static var s_instance:AgencyWidget;
       
       public function AgencyWidget()
       {
          super();
+         s_instance = this;
          this.m_view = new AgencyWidgetView();
          addChild(this.m_view);
          this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
@@ -74,6 +80,8 @@ package knt.hud.agency
       {
          var _loc2_:Boolean = false;
          var _loc3_:Number = NaN;
+         var shouldShow:Boolean = false;
+         this.m_lastIsAimingWatchData = Boolean(param1.isAimingWatch);
          this.m_view.gradient_mc.visible = false;
          if(Boolean(param1.isLethalForceEnabled) || Boolean(param1.isTrespassing) || Boolean(param1.isLicenseToPunch) || Boolean(param1.isSoftTrespassing))
          {
@@ -117,34 +125,9 @@ package knt.hud.agency
             Animate.to(this.m_view.bars_mc.bar_bg_mc.outline_bg_mc,0.2,0,{"alpha":0.4},Animate.ExpoOut);
             this.m_isGreyedOutDueToSocial = true;
          }
-          if(param1.isAimingWatch)
-          {
-             if(this.m_isAimingWatch)
-             {
-                Animate.kill(this.m_view);
-                Animate.to(this.m_view,0.2,0,{
-                   "x":0,
-                   "y":0,
-                   "scaleX":BASE_SCALE,
-                   "scaleY":BASE_SCALE,
-                   "alpha":1
-                },Animate.ExpoOut);
-                this.m_isAimingWatch = false;
-             }
-          }
-          else if(!this.m_isAimingWatch)
-          {
-             Animate.kill(this.m_view);
-             Animate.to(this.m_view,0.2,0,{
-                "x":-180,
-                "y":100,
-                "scaleX":AIMING_SCALE,
-                "scaleY":AIMING_SCALE,
-                "alpha":0
-             },Animate.ExpoOut);
-             this.m_isAimingWatch = true;
-          }
-          if(this.m_isAimingWatch)
+         shouldShow = Boolean(param1.isAimingWatch) || WatchDangerWidget.shouldForceHudReveal();
+         this.applyWatchVisibility(shouldShow);
+         if(this.m_isAimingWatch)
           {
              return;
           }
@@ -171,8 +154,47 @@ package knt.hud.agency
              }
              this.setAgency(param1.maximumAgency,param1.currentAgency,_loc3_,_loc2_);
           }
-          this.m_previousAgencyValue = param1.currentAgency;
-       }
+           this.m_previousAgencyValue = param1.currentAgency;
+        }
+
+      public static function refreshTemporaryRevealState() : void
+      {
+         if(s_instance)
+         {
+            s_instance.applyWatchVisibility(s_instance.m_lastIsAimingWatchData || WatchDangerWidget.shouldForceHudReveal());
+         }
+      }
+
+      private function applyWatchVisibility(param1:Boolean) : void
+      {
+         if(param1)
+         {
+            if(this.m_isAimingWatch)
+            {
+               Animate.kill(this.m_view);
+               Animate.to(this.m_view,0.2,0,{
+                  "x":0,
+                  "y":0,
+                  "scaleX":BASE_SCALE,
+                  "scaleY":BASE_SCALE,
+                  "alpha":1
+               },Animate.ExpoOut);
+               this.m_isAimingWatch = false;
+            }
+         }
+         else if(!this.m_isAimingWatch)
+         {
+            Animate.kill(this.m_view);
+            Animate.to(this.m_view,0.2,0,{
+               "x":-180,
+               "y":100,
+               "scaleX":AIMING_SCALE,
+               "scaleY":AIMING_SCALE,
+               "alpha":0
+            },Animate.ExpoOut);
+            this.m_isAimingWatch = true;
+         }
+      }
       
       private function setAgency(param1:Number, param2:Number, param3:Number, param4:Boolean) : void
       {

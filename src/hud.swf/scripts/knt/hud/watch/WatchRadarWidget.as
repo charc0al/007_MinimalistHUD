@@ -31,10 +31,15 @@ package knt.hud.watch
       private var m_QlensGodMode:Boolean = false;
       
       private var m_isAimingWatch:Boolean = false;
+
+      private var m_lastIsAimingWatchData:Boolean = false;
+
+      private static var s_instance:WatchRadarWidget;
       
       public function WatchRadarWidget()
       {
          super();
+         s_instance = this;
          this.m_view = new WatchRadarWidgetView();
          this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
          this.m_view.x = BASE_X_OFFSET - 180;
@@ -49,6 +54,8 @@ package knt.hud.watch
       
       public function onSetData(param1:Object) : void
       {
+         var shouldShow:Boolean = false;
+         this.m_lastIsAimingWatchData = Boolean(param1.IsAimingWatch);
          ObjectivesMarkerWidget.setGlobalWatchState(Boolean(param1.IsAimingWatch));
          EavesdropWidget.setGlobalWatchState(Boolean(param1.IsAimingWatch));
          this.hideCompass();
@@ -70,85 +77,99 @@ package knt.hud.watch
             this.m_QlensGodMode = false;
             this.m_QlensRegular = true;
          }
-          if(param1.IsAimingWatch)
-          {
-             if(this.m_isAimingWatch)
-             {
-                Animate.kill(this.m_view);
-                Animate.to(this.m_view,0.2,0,{
-                   "x":BASE_X_OFFSET,
-                   "y":0,
-                   "scaleX":BASE_SCALE,
-                   "scaleY":BASE_SCALE,
-                   "alpha":1
-                },Animate.ExpoOut);
-                this.m_isAimingWatch = false;
-             }
-          }
-          else if(!this.m_isAimingWatch)
-          {
-             Animate.kill(this.m_view);
-             Animate.to(this.m_view,0.2,0,{
-                "x":BASE_X_OFFSET - 180,
-                "y":100,
-                "scaleX":AIMING_SCALE,
-                "scaleY":AIMING_SCALE,
-                "alpha":0
-             },Animate.ExpoOut);
-             this.m_isAimingWatch = true;
-          }
-          if(this.m_isAimingWatch)
-          {
-             return;
-          }
-          if(param1.Objectives != null)
-          {
-             this.syncTargets(param1.Objectives);
-          }
-          if(param1.GadgetTargets != null)
-          {
-             this.syncQModeTargets(param1.GadgetTargets);
-          }
-       }
-       
-       public function syncQModeTargets(param1:Array) : void
-       {
-          var _loc4_:Boolean = false;
-          var _loc5_:int = 0;
-          var _loc6_:Boolean = false;
-          var _loc7_:int = 0;
-          var _loc8_:* = undefined;
-          if(param1 == null)
-          {
-             return;
-          }
-          var _loc2_:int = 0;
-          while(_loc2_ < this.m_qModeTargetsArray.length)
-          {
-             _loc4_ = false;
-             _loc5_ = 0;
-             while(_loc5_ < param1.length)
-             {
-                if(param1[_loc5_].ID == this.m_qModeTargetsArray[_loc2_].ID)
-                {
-                   _loc4_ = true;
-                }
-                _loc5_++;
-             }
-             if(!_loc4_)
-             {
-                this.m_view.container_mc.removeChild(this.m_qModeTargetsArray[_loc2_].pingTarget);
-                this.m_qModeTargetsArray.splice(_loc2_,1);
-                _loc2_--;
-             }
-             _loc2_++;
-          }
-          var _loc3_:int = 0;
-          while(_loc3_ < param1.length)
-          {
-             _loc6_ = false;
-             _loc7_ = 0;
-             while(_loc7_ < this.m_qModeTargetsArray.length)
+         shouldShow = Boolean(param1.IsAimingWatch) || WatchDangerWidget.shouldForceHudReveal();
+         this.applyWatchVisibility(shouldShow);
+         if(this.m_isAimingWatch)
+         {
+            return;
+         }
+         if(param1.Objectives != null)
+         {
+            this.syncTargets(param1.Objectives);
+         }
+         if(param1.GadgetTargets != null)
+         {
+            this.syncQModeTargets(param1.GadgetTargets);
+         }
+      }
+
+      public static function refreshTemporaryRevealState() : void
+      {
+         if(s_instance)
+         {
+            s_instance.applyWatchVisibility(s_instance.m_lastIsAimingWatchData || WatchDangerWidget.shouldForceHudReveal());
+         }
+      }
+
+      private function applyWatchVisibility(param1:Boolean) : void
+      {
+         if(param1)
+         {
+            if(this.m_isAimingWatch)
+            {
+               Animate.kill(this.m_view);
+               Animate.to(this.m_view,0.2,0,{
+                  "x":BASE_X_OFFSET,
+                  "y":0,
+                  "scaleX":BASE_SCALE,
+                  "scaleY":BASE_SCALE,
+                  "alpha":1
+               },Animate.ExpoOut);
+               this.m_isAimingWatch = false;
+            }
+         }
+         else if(!this.m_isAimingWatch)
+         {
+            Animate.kill(this.m_view);
+            Animate.to(this.m_view,0.2,0,{
+               "x":BASE_X_OFFSET - 180,
+               "y":100,
+               "scaleX":AIMING_SCALE,
+               "scaleY":AIMING_SCALE,
+               "alpha":0
+            },Animate.ExpoOut);
+            this.m_isAimingWatch = true;
+         }
+      }
+        
+      public function syncQModeTargets(param1:Array) : void
+      {
+         var _loc4_:Boolean = false;
+         var _loc5_:int = 0;
+         var _loc6_:Boolean = false;
+         var _loc7_:int = 0;
+         var _loc8_:* = undefined;
+         if(param1 == null)
+         {
+            return;
+         }
+         var _loc2_:int = 0;
+         while(_loc2_ < this.m_qModeTargetsArray.length)
+         {
+            _loc4_ = false;
+            _loc5_ = 0;
+            while(_loc5_ < param1.length)
+            {
+               if(param1[_loc5_].ID == this.m_qModeTargetsArray[_loc2_].ID)
+               {
+                  _loc4_ = true;
+               }
+               _loc5_++;
+            }
+            if(!_loc4_)
+            {
+               this.m_view.container_mc.removeChild(this.m_qModeTargetsArray[_loc2_].pingTarget);
+               this.m_qModeTargetsArray.splice(_loc2_,1);
+               _loc2_--;
+            }
+            _loc2_++;
+         }
+         var _loc3_:int = 0;
+         while(_loc3_ < param1.length)
+         {
+            _loc6_ = false;
+            _loc7_ = 0;
+            while(_loc7_ < this.m_qModeTargetsArray.length)
             {
                if(param1[_loc3_].ID == this.m_qModeTargetsArray[_loc7_].ID)
                {

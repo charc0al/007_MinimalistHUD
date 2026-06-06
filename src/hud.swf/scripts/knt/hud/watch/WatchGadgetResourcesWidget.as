@@ -43,10 +43,15 @@ package knt.hud.watch
       private var m_rechargeDuration:Number = 0;
       
       private var m_isAimingWatch:Boolean = true;
+
+      private var m_lastIsAimingWatchData:Boolean = false;
+
+      private static var s_instance:WatchGadgetResourcesWidget;
       
       public function WatchGadgetResourcesWidget()
       {
          super();
+         s_instance = this;
          this.m_view = new WatchGadgetResourcesWidgetView();
          this.m_view.x = AIMING_X_OFFSET;
          this.m_view.y = 100;
@@ -67,6 +72,8 @@ package knt.hud.watch
       {
          var ts:TaskletSequencer = null;
          var data:Object = param1;
+         var shouldShow:Boolean = false;
+         this.m_lastIsAimingWatchData = Boolean(data.isAimingWatch);
          ts = TaskletSequencer.getGlobalInstance();
          ts.addChunk(function():void
          {
@@ -84,33 +91,8 @@ package knt.hud.watch
                m_view.visible = true;
                m_triangulationModeHidden = false;
             }
-             if(data.isAimingWatch)
-             {
-                if(m_isAimingWatch)
-                {
-                   Animate.kill(m_view);
-                   Animate.to(m_view,0.2,0,{
-                      "x":BASE_X_OFFSET,
-                      "y":0,
-                      "scaleX":1,
-                      "scaleY":1,
-                      "alpha":1
-                   },Animate.ExpoOut);
-                   m_isAimingWatch = false;
-                }
-             }
-             else if(!m_isAimingWatch)
-             {
-                Animate.kill(m_view);
-                Animate.to(m_view,0.2,0,{
-                   "x":AIMING_X_OFFSET,
-                   "y":100,
-                   "scaleX":1.3,
-                   "scaleY":1.3,
-                   "alpha":0
-                },Animate.ExpoOut);
-                m_isAimingWatch = true;
-             }
+             shouldShow = Boolean(data.isAimingWatch) || WatchDangerWidget.shouldForceHudReveal();
+             applyWatchVisibility(shouldShow);
              if(m_isAimingWatch)
              {
                 return;
@@ -143,6 +125,45 @@ package knt.hud.watch
              });
           });
        }
+
+      public static function refreshTemporaryRevealState() : void
+      {
+         if(s_instance)
+         {
+            s_instance.applyWatchVisibility(s_instance.m_lastIsAimingWatchData || WatchDangerWidget.shouldForceHudReveal());
+         }
+      }
+
+      private function applyWatchVisibility(param1:Boolean) : void
+      {
+         if(param1)
+         {
+            if(this.m_isAimingWatch)
+            {
+               Animate.kill(this.m_view);
+               Animate.to(this.m_view,0.2,0,{
+                  "x":BASE_X_OFFSET,
+                  "y":0,
+                  "scaleX":1,
+                  "scaleY":1,
+                  "alpha":1
+               },Animate.ExpoOut);
+               this.m_isAimingWatch = false;
+            }
+         }
+         else if(!this.m_isAimingWatch)
+         {
+            Animate.kill(this.m_view);
+            Animate.to(this.m_view,0.2,0,{
+               "x":AIMING_X_OFFSET,
+               "y":100,
+               "scaleX":1.3,
+               "scaleY":1.3,
+               "alpha":0
+            },Animate.ExpoOut);
+            this.m_isAimingWatch = true;
+         }
+      }
       
       private function runFancyShimmerFx() : void
       {

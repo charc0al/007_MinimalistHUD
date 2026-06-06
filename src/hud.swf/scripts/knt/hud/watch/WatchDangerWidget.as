@@ -1,12 +1,15 @@
 package knt.hud.watch
 {
+   import flash.display.Sprite;
    import flash.text.TextFormat;
+   import flash.utils.getTimer;
    import glacier.common.Animate;
    import glacier.common.BaseControl;
    import glacier.common.Localization;
    import glacier.common.ObjectUtils;
    import glacier.common.menu.MenuUtils;
    import knt.common.menu.MenuConstantsKnt;
+   import knt.hud.agency.AgencyWidget;
    import knt.hud.*;
    
    public class WatchDangerWidget extends BaseControl
@@ -23,6 +26,18 @@ package knt.hud.watch
       private static const AIMING_SCALE:Number = BASE_SCALE * 1.3;
       
       private static const BASE_X_OFFSET:Number = -45;
+
+      private static const TEMP_HUD_REVEAL_DURATION_MS:int = 1000;
+
+      private static const DANGER_COLOR_NONE:int = 0;
+
+      private static const DANGER_COLOR_MED:int = 1;
+
+      private static const DANGER_COLOR_HIGH:int = 2;
+
+      private static var s_forceHudRevealUntil:int = 0;
+
+      private static var s_forceHudRevealDelaySprite:Sprite = new Sprite();
       
       private var m_view:WatchDangerWidgetView;
       
@@ -51,10 +66,17 @@ package knt.hud.watch
       private var m_ignoreDangerStates:Boolean = false;
       
       private var m_dataCloned:Object;
+
+      private var m_lastDangerColorState:int = -1;
+
+      private var m_lastIsAimingWatchData:Boolean = false;
+
+      private static var s_instance:WatchDangerWidget;
       
       public function WatchDangerWidget()
       {
          super();
+         s_instance = this;
          this.m_newFormat.letterSpacing = 8;
          this.m_view = new WatchDangerWidgetView();
          this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
@@ -77,6 +99,12 @@ package knt.hud.watch
       
       public function onSetData(param1:Object) : void
       {
+         var currentDangerColorState:int = 0;
+         if(param1 == null || param1.commonData == null)
+         {
+            return;
+         }
+         this.m_lastIsAimingWatchData = Boolean(param1.commonData.isAimingWatch);
          if(param1.commonData.isInTriangulationMode)
          {
             if(!this.m_triangulationModeHidden)
@@ -94,38 +122,14 @@ package knt.hud.watch
             this.m_view.warning_bg_mc.visible = true;
             this.m_triangulationModeHidden = false;
          }
-          if(param1.commonData.isAimingWatch)
-          {
-             if(this.m_isAimingWatch)
-             {
-                Animate.kill(this.m_view);
-                Animate.to(this.m_view,0.2,0,{
-                   "x":BASE_X_OFFSET,
-                   "y":0,
-                   "scaleX":BASE_SCALE,
-                   "scaleY":BASE_SCALE,
-                   "alpha":1
-                },Animate.ExpoOut);
-                this.m_isAimingWatch = false;
-             }
-          }
-          else if(!this.m_isAimingWatch)
-          {
-             Animate.kill(this.m_view);
-             Animate.to(this.m_view,0.2,0,{
-                "x":BASE_X_OFFSET - 180,
-                "y":100,
-                "scaleX":AIMING_SCALE,
-                "scaleY":AIMING_SCALE,
-                "alpha":0
-             },Animate.ExpoOut);
-             this.m_isAimingWatch = true;
-          }
-          if(this.m_isAimingWatch)
-          {
-             return;
-          }
-          if(param1 == null)
+         currentDangerColorState = this.resolveDangerColorState(param1.commonData);
+         if(this.m_lastDangerColorState != -1 && this.m_lastDangerColorState != DANGER_COLOR_NONE && currentDangerColorState != DANGER_COLOR_NONE && currentDangerColorState != this.m_lastDangerColorState)
+         {
+            triggerForceHudReveal();
+         }
+         this.m_lastDangerColorState = currentDangerColorState;
+         this.refreshTemporaryRevealState();
+         if(this.m_isAimingWatch)
           {
              return;
           }
@@ -260,7 +264,84 @@ package knt.hud.watch
             this.m_softTrespassing = false;
          }
       }
-      
+
+      public static function shouldForceHudReveal() : Boolean
+      {
+         return getTimer() < s_forceHudRevealUntil;
+      }
+
+      private static function triggerForceHudReveal() : void
+      {
+         Animate.kill(s_forceHudRevealDelaySprite);
+         s_forceHudRevealUntil = getTimer() + TEMP_HUD_REVEAL_DURATION_MS;
+         refreshAllTemporaryRevealStates();
+         Animate.delay(s_forceHudRevealDelaySprite,TEMP_HUD_REVEAL_DURATION_MS / 1000,function():void
+         {
+            refreshAllTemporaryRevealStates();
+         });
+      }
+
+      public function refreshTemporaryRevealState() : void
+      {
+         this.applyWatchVisibility(this.m_lastIsAimingWatchData || shouldForceHudReveal());
+      }
+
+      private static function refreshAllTemporaryRevealStates() : void
+      {
+         if(s_instance)
+         {
+            s_instance.refreshTemporaryRevealState();
+         }
+         AgencyWidget.refreshTemporaryRevealState();
+         WatchBaseWidget.refreshTemporaryRevealState();
+         WatchRadarWidget.refreshTemporaryRevealState();
+         WatchGadgetResourcesWidget.refreshTemporaryRevealState();
+      }
+
+      private function applyWatchVisibility(param1:Boolean) : void
+      {
+         if(param1)
+         {
+            if(this.m_isAimingWatch)
+            {
+               Animate.kill(this.m_view);
+               Animate.to(this.m_view,0.2,0,{
+                  "x":BASE_X_OFFSET,
+                  "y":0,
+                  "scaleX":BASE_SCALE,
+                  "scaleY":BASE_SCALE,
+                  "alpha":1
+               },Animate.ExpoOut);
+               this.m_isAimingWatch = false;
+            }
+         }
+         else if(!this.m_isAimingWatch)
+         {
+            Animate.kill(this.m_view);
+            Animate.to(this.m_view,0.2,0,{
+               "x":BASE_X_OFFSET - 180,
+               "y":100,
+               "scaleX":AIMING_SCALE,
+               "scaleY":AIMING_SCALE,
+               "alpha":0
+            },Animate.ExpoOut);
+            this.m_isAimingWatch = true;
+         }
+      }
+
+      private function resolveDangerColorState(param1:Object) : int
+      {
+         if(Boolean(param1.isTrespassing) && Boolean(param1.isLethalForceEnabled))
+         {
+            return DANGER_COLOR_HIGH;
+         }
+         if(Boolean(param1.isTrespassing) || Boolean(param1.isSoftTrespassing))
+         {
+            return DANGER_COLOR_MED;
+         }
+         return DANGER_COLOR_NONE;
+      }
+       
       private function pulsateIcon(param1:Boolean, param2:int) : void
       {
          var start:Boolean = param1;
