@@ -109,6 +109,8 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/buttonprompts/RubberCamPromptWidget.as`
 - Weapon HUD disabled state now hides via root alpha instead of root visibility, which fixes the case where ammo digits returned but the weapon icon cluster stayed missing after re-enable:
   `src/hud.swf/scripts/knt/hud/weapons/WeaponWidget.as`
+- Melee combat counter/parry and dodge/sidestep indicators disabled:
+  `src/hud.swf/scripts/knt/hud/melee/MeleeAttackWidget.as`
 - Lower-left watch/focus/radar HUD behavior relative to Q Lens was inverted while preserving the existing off-screen animation path:
   `src/hud.swf/scripts/knt/hud/agency/AgencyWidget.as`
   `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
@@ -216,6 +218,12 @@ Notes on rubber-cam look prompt
 - The lower-right cutscene `Look` prompt appears to be driven by `knt.hud.buttonprompts.RubberCamPromptWidget`.
 - This widget swaps its prompt glyph based on `data.prompt.controllerType`, supports keyboard glyphs or controller icons, and animates the input icon side-to-side while `data.isActive` is true.
 - Current mod behavior keeps its data/layout refresh path intact but kills the prompt animation and forces the widget hidden in `onSetData()`.
+
+Notes on melee counter / dodge indicators
+- The combat counter/parry and dodge/sidestep overlay is driven by `knt.hud.melee.MeleeAttackWidget`.
+- Its embedded view clips are `parry_mc`, `perfect_parry_mc`, `parry_success_mc`, and `unblockable_mc` on `MeleeAttackWidgetView`.
+- Vanilla behavior animates those clips for normal/parry/perfect-parry windows plus sidestep/unblockable windows and counter success feedback.
+- Current mod behavior suppresses the widget at the controller layer by killing any active melee indicator animations in `onSetData()` and keeping both the root widget and inner view hidden.
 
 Notes on pickup popups
 - The right-side ammo / chemical / electrical pickup popup is driven by `knt.hud.notifications.PickupNotificationWidget`.

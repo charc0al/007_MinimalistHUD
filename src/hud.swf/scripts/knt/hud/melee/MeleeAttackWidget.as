@@ -37,67 +37,14 @@ package knt.hud.melee
          this.m_view.parry_mc.scaleX = this.m_view.parry_mc.scaleY = 0.6;
          this.m_view.unblockable_mc.scaleX = this.m_view.unblockable_mc.scaleY = 0.4;
          this.m_view.parry_success_mc.scaleX = this.m_view.parry_success_mc.scaleY = 0.6;
+         this.hideWidget();
       }
       
       public function onSetData(param1:Object) : void
       {
-         var parryDelay:Number;
-         var perfectParryDelay:Number;
-         var data:Object = param1;
-         if(data.type == undefined)
-         {
-            return;
-         }
-         if(data.type == this.ATTACK_INTERRUPTED)
-         {
-            this.killAllExceptSuccess();
-         }
-         if(data.type == this.COUNTER_SIDESTEP)
-         {
-            this.killAllExceptSuccess();
-         }
-         if(data.type == this.COUNTER_PARRY)
-         {
-            this.killAllExceptSuccess();
-            Animate.fromTo(this.m_view.parry_success_mc,0.4,0,{"frames":0},{"frames":7},Animate.ExpoOut,function():void
-            {
-               m_view.parry_success_mc.gotoAndStop(0);
-            });
-         }
-         parryDelay = 0;
-         perfectParryDelay = 0;
-         if(data.type == this.ATTACK_NORMAL && !this.m_isParry)
-         {
-            parryDelay = data.attackToImpactDuration - data.parryWindowDuration;
-            Animate.fromTo(this.m_view.parry_mc,data.parryWindowDuration,parryDelay,{"frames":0},{"frames":60},Animate.Linear,function():void
-            {
-               m_view.parry_mc.gotoAndStop(0);
-               m_isParry = false;
-            });
-            this.m_isParry = true;
-         }
-         if(data.type == this.ATTACK_PERFECT && !this.m_isPerfectParry)
-         {
-            parryDelay = data.attackToImpactDuration - data.parryWindowDuration;
-            perfectParryDelay = data.attackToImpactDuration - data.perfectParryWindowDuration;
-            Animate.fromTo(this.m_view.parry_mc,data.parryWindowDuration,parryDelay,{"frames":0},{"frames":60},Animate.Linear);
-            Animate.fromTo(this.m_view.perfect_parry_mc,data.perfectParryWindowDuration,perfectParryDelay,{"frames":0},{"frames":60},Animate.Linear,function():void
-            {
-               m_view.parry_mc.gotoAndStop(0);
-               m_view.perfect_parry_mc.gotoAndStop(0);
-               m_isPerfectParry = false;
-            });
-            this.m_isPerfectParry = true;
-         }
-         if(data.type == this.ATTACK_SIDESTEP && !this.m_isUnblockable || data.type == this.ATTACK_SIDESTEPGRAB && !this.m_isUnblockable)
-         {
-            Animate.fromTo(this.m_view.unblockable_mc,data.attackToImpactDuration,0,{"frames":0},{"frames":60},Animate.Linear,function():void
-            {
-               m_view.unblockable_mc.gotoAndStop(0);
-               m_isUnblockable = false;
-            });
-            this.m_isUnblockable = true;
-         }
+         this.killAllExceptSuccess();
+         this.killParrySuccess();
+         this.hideWidget();
       }
       
       private function killAllExceptSuccess() : void
@@ -117,6 +64,14 @@ package knt.hud.melee
       {
          Animate.kill(this.m_view.parry_success_mc);
          this.m_view.parry_success_mc.gotoAndStop(0);
+      }
+
+      private function hideWidget() : void
+      {
+         this.visible = false;
+         this.alpha = 0;
+         this.m_view.visible = false;
+         this.m_view.alpha = 0;
       }
       
       private function getType(param1:int) : String
