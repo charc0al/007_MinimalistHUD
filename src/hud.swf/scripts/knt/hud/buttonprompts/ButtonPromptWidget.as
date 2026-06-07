@@ -535,15 +535,15 @@ package knt.hud.buttonprompts
          {
             this.releaseAllPromptInstances();
          }
-         this.showCollectibleIcon(param1.bIsCollectible ? true : false);
-         if(param1.eResourceType != -1)
-         {
-            this.showResourceType(true,param1.eResourceType);
-         }
-         else
-         {
-            this.showResourceType(false,-1);
-         }
+          this.showCollectibleIcon(param1.bIsCollectible ? true : false);
+          if(param1.eResourceType != -1 && !_loc2_ && !_loc5_)
+          {
+             this.showResourceType(true,param1.eResourceType);
+          }
+          else
+          {
+             this.showResourceType(false,-1);
+          }
       }
       
       private function setStateAvailable(param1:Object) : void
@@ -643,10 +643,10 @@ package knt.hud.buttonprompts
          this.m_view.shadows_mc.description_shadow_mc.visible = false;
          this.m_view.collapsed_mc.visible = false;
          this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
-         if(data.eResourceType == -1)
-         {
-            this.showResourceType(false,-1);
-         }
+          if(data.eResourceType == -1 || data.eBlockedStatus || data.isEnabled === false)
+          {
+             this.showResourceType(false,-1);
+          }
          else
          {
             this.m_view.collapsed_mc.visible = false;
