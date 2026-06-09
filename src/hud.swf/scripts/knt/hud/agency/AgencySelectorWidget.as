@@ -30,6 +30,8 @@ package knt.hud.agency
       private var m_ishiddenDueToNoInstinctMovesAvailable:Boolean = false;
       
       private var m_frameHiddenDueToForceShow:Boolean = false;
+
+      private var m_lastShouldShowWidget:Boolean = false;
       
       public function AgencySelectorWidget()
       {
@@ -61,6 +63,15 @@ package knt.hud.agency
          _this = this;
          hasActionablePrompt = this.hasAnyActionablePrompt(data.agencyPrompts);
          shouldShowWidget = Boolean(data.forceShow) || hasActionablePrompt;
+         this.m_lastShouldShowWidget = shouldShowWidget;
+         if(this.requiresRebuild(data.agencyPrompts) && !this.hasCompletePromptPayload(data.agencyPrompts))
+         {
+            if(shouldShowWidget)
+            {
+               this.restoreVisibleState(data);
+            }
+            return;
+         }
          var ts:TaskletSequencer = TaskletSequencer.getGlobalInstance();
          ts.addChunk(function():void
          {
@@ -101,31 +112,6 @@ package knt.hud.agency
                _loc1_ = 0;
                while(_loc1_ < data.agencyPrompts.length)
                {
-                  if(!data.agencyPrompts[_loc1_].m_promptData)
-                  {
-                     abort = true;
-                     return;
-                  }
-                  if(!data.agencyPrompts[_loc1_].m_promptData.length)
-                  {
-                     abort = true;
-                     return;
-                  }
-                  if(!data.agencyPrompts[_loc1_].m_promptData[0].aElements)
-                  {
-                     abort = true;
-                     return;
-                  }
-                  if(!data.agencyPrompts[_loc1_].m_promptData[0].aElements.length)
-                  {
-                     abort = true;
-                     return;
-                  }
-                  if(data.agencyPrompts[_loc1_].m_promptData[0].aElements[0].iconId == -1 && data.agencyPrompts[_loc1_].m_promptData[0].aElements[0].keyGlyph == "")
-                  {
-                     abort = true;
-                     return;
-                  }
                   _loc2_ = new AgencySelectorWidgetEntry();
                   _loc2_.setParentClass(_this);
                   m_view.container_mc.addChild(_loc2_);
@@ -194,6 +180,7 @@ package knt.hud.agency
                }
             }
             m_ishiddenDueToNoInstinctMovesAvailable = false;
+            restoreVisibleState(data);
             if(Boolean(data.forceShow) || Boolean(data.commonData.isLethalForceEnabled) || Boolean(data.commonData.isTrespassing) || Boolean(data.commonData.isLicenseToPunch) || Boolean(data.commonData.isSoftTrespassing))
             {
                if(data.forceShow != m_frameHiddenDueToForceShow)
@@ -248,6 +235,7 @@ package knt.hud.agency
             {
                return;
             }
+            restoreVisibleState(data);
             if(data.commonData.isAimingWatch)
             {
                if(!m_isAimingWatch)
@@ -321,6 +309,65 @@ package knt.hud.agency
             _loc2_++;
          }
          return false;
+      }
+
+      private function hasCompletePromptPayload(param1:Array) : Boolean
+      {
+         var _loc2_:int = 0;
+         var _loc3_:Object = null;
+         if(param1 == null)
+         {
+            return false;
+         }
+         while(_loc2_ < param1.length)
+         {
+            _loc3_ = param1[_loc2_];
+            if(_loc3_ == null || _loc3_.m_promptData == null || !_loc3_.m_promptData.length || _loc3_.m_promptData[0] == null || _loc3_.m_promptData[0].aElements == null || !_loc3_.m_promptData[0].aElements.length)
+            {
+               return false;
+            }
+            if(_loc3_.m_promptData[0].aElements[0].iconId == -1 && _loc3_.m_promptData[0].aElements[0].keyGlyph == "")
+            {
+               return false;
+            }
+            _loc2_++;
+         }
+         return true;
+      }
+
+      private function requiresRebuild(param1:Array) : Boolean
+      {
+         if(param1 == null)
+         {
+            return false;
+         }
+         return this.m_agencyEntriesInstantiated && param1.length != this.m_entriesArray.length || !this.m_agencyEntriesInstantiated && param1.length > 0;
+      }
+
+      private function restoreVisibleState(param1:Object) : void
+      {
+         if(!this.m_lastShouldShowWidget)
+         {
+            return;
+         }
+         Animate.kill(this.m_view);
+         this.m_view.visible = true;
+         if(param1.commonData.isAimingWatch)
+         {
+            this.m_view.y = 200;
+            this.m_view.scaleX = 1.2;
+            this.m_view.scaleY = 1.2;
+            this.m_view.alpha = 0;
+            this.m_isAimingWatch = true;
+         }
+         else
+         {
+            this.m_view.y = 0;
+            this.m_view.scaleX = 1;
+            this.m_view.scaleY = 1;
+            this.m_view.alpha = 1;
+            this.m_isAimingWatch = false;
+         }
       }
       
       private function hideForNoActionablePrompts() : void

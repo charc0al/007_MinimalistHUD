@@ -42,6 +42,8 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidgetEntry.as`
 - Bluff/lure widget now hides entirely unless at least one prompt is actually enabled, with an explicit restore path when enabled prompts return:
   `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as`
+- Agency selector prompt-count changes are now more defensive against transient/incomplete prompt payloads during rebuilds, so the widget should no longer intermittently stay hidden when Confront expands it from 2 prompts to 3:
+  `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Agency selector frame count numbers and divider/frame line art hidden:
   `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as`
 - Agency selector per-entry numeric cost labels hidden:
@@ -52,6 +54,9 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Standard interaction prompts now also enforce that inverted styling every frame while visible, because some parent widgets toggle child visibility directly instead of rerunning the prompt setup path:
   `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Shared button-prompt chemical/electrical resource icons now actively suppress their disabled/blocked style when `MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS` is `false`, including first bind, visibility restores, and per-frame resyncs to survive checkpoint reloads:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Menu SWF also contains a duplicate vanilla `knt.hud.buttonprompts.ButtonPromptWidget`; current mod behavior now mirrors the forced inversion / `0.8` scale / per-frame restyling there as well:
   `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -99,6 +104,8 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/npcstate/NpcStateWidget.as`
 - Weapon reticle idle visibility stabilized by forcing the inner ironsight alpha back on during setup/show:
   `src/hud.swf/scripts/knt/hud/weapons/WeaponReticleWidget.as`
+- Under-crosshair weapon reticle warning text/icon path (`warning_mc`) is now hard-hidden unconditionally, suppressing the annoying no-instinct style warning banner along with other reticle warning flashes:
+  `src/hud.swf/scripts/knt/hud/weapons/WeaponReticleWidget.as`
 - Throwable reticle side arcs remain hard-hidden, and its quick-throw prompt buttons now also use the same inverted prompt styling and reapply it when the widget is shown again:
   `src/hud.swf/scripts/knt/hud/weapons/ThrowableReticleWidget.as`
 - Saving spinner disabled:
@@ -117,6 +124,8 @@ Changes made so far
 - Ammo / chemical / electrical pickup popups now keep the vanilla logic behind a global `MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS` feature flag, defaulting to hidden:
   `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
   `src/hud.swf/scripts/knt/hud/notifications/PickupNotificationWidget.as`
+- The menu SWF also contains a duplicate `knt.hud.notifications.PickupNotificationWidget`; it now mirrors the same `SHOW_PICKUP_NOTIFICATIONS` suppression so checkpoint reloads are less likely to resurrect vanilla pickup icons from the menu-side controller:
+  `src/menu.swf/scripts/knt/hud/notifications/PickupNotificationWidget.as`
 - Weapon HUD disabled-state handling now also hides/restores the ESP discharge prompt container, so the ESP prompt no longer remains visible when the rest of the weapon widget is hidden:
   `src/hud.swf/scripts/knt/hud/weapons/WeaponWidget.as`
 - Lower-left watch/focus/radar HUD behavior relative to Q Lens was inverted while preserving the existing off-screen animation path:
@@ -135,6 +144,8 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Triangulation radar was copied into `src/` and also inverted for Q Lens visibility so its target-direction widget can be overridden locally:
   `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
+- Q Lens reticle "no valid gadget" banner under the center reticle is now ported into `src/` and hard-hidden unconditionally:
+  `src/hud.swf/scripts/knt/hud/gadgets/QLensWidgetReticle.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -164,6 +175,7 @@ Notes on bluff/lure strip
 - Current mod behavior hides the frame and chunk count, hides entry labels and costs, and keeps only the prompt glyphs plus flares when enabled.
 - The whole bluff/lure widget is currently gated by whether at least one prompt reports `m_promptData[0].isEnabled`, and it also explicitly restores the widget from its hidden state when enabled prompts return.
 - Current mod behavior also disables `frame_mc` entirely, removing the frame icon, frame count, divider lines, corners, background, and residual dot artifacts, and hides the per-entry numeric cost labels, leaving a glyph-only bluff/lure strip.
+- A transient Confront bug was traced to `AgencySelectorWidget` tearing down and rebuilding entries immediately when prompt count changed, even if the new prompt payload was incomplete for that frame. Current mod behavior now validates the replacement payload before rebuilding and explicitly restores widget visibility when a showable prompt set is present.
 
 Notes on standard button prompts
 - The shared interaction prompt pill/glyph renderer is `ButtonPromptWidget`.
@@ -178,6 +190,8 @@ Notes on standard button prompts
 - Current mod behavior now also forces those wrapped prompt images through the inverted color matrix.
 - Takedown-style combat prompt title text in `NPCCombatPromptsWidget` is now hidden entirely instead of recolored.
 - The `Shift + LMB` style slam-into-enemy prompt appears to be `TYPE_COMBAT_RUSH` in `NPCCombatPromptsWidget`; current mod behavior suppresses that prompt at the `onSetData()` gate.
+- The chemical/electrical resource side icons in `ButtonPromptWidget` were a separate path from the right-side pickup popup controller.
+- Current mod behavior now suppresses those shared prompt resource icons whenever they would be shown in the disabled/blocked state and `SHOW_PICKUP_NOTIFICATIONS` is `false`, and also fixes a stale-state bug where `showResourceType()` did not refresh when the icon stayed conceptually "shown" but its resource subtype or disabled state changed.
 
 Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
@@ -246,6 +260,7 @@ Notes on pickup popups
 - Vanilla behavior raises entries for `Ammo.Amount` and `Resource.Amount`, with resource type variants for ammo, electrical, and chemical pickups.
 - Current mod behavior ports `PickupNotificationWidget` into `src/` and suppresses it entirely by clearing/hiding active entries in `onSetData()` instead of raising new notifications.
 - That suppression is now controlled by the global `MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS` flag, which currently defaults to `false`.
+- The menu SWF also has its own duplicate `PickupNotificationWidget`; current mod behavior now mirrors the same suppression there so checkpoint reloads do not revive the disabled pickup icons through the menu-side controller path.
 
 Notes on NPC watcher indicators
 - The white overhead watcher dot/icon is driven by `NpcStateWidget` via `state_mc.watcher_mc`.
@@ -280,9 +295,16 @@ Notes on inverted watch HUD visibility
 - Current mod behavior inverts that condition so they animate in during Q Lens, animate back out when Q Lens closes, and initialize in the hidden/off-screen state to avoid a first-frame flash.
 - That inversion is now controlled by `MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY`; setting it to `false` restores the vanilla show-when-not-aiming / hide-while-aiming behavior for the overridden watch-cluster widgets listed above.
 
+Notes on Q Lens no-valid-gadget banner
+- The center/Q Lens reticle controller is `knt.hud.gadgets.QLensWidgetReticle`.
+- Vanilla behavior shows `noGadget_mc` when `invalidGadgetsForTarget === true` and the reticle is not in the "reticle only" empty-slot state.
+- Current mod behavior ports `QLensWidgetReticle` into `src/` and hard-hides `noGadget_mc` unconditionally so the no-valid-gadget / no-instinct banner never appears below the reticle.
+
 Notes on weapon reticle
 - `WeaponReticleWidget` can appear to lose the idle aiming reticle if `ironsight_inner_mc` is left at a low/default alpha while the widened firing state still animates it back on.
 - Current mod behavior explicitly restores `m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 1` during reticle setup and when `shouldShowReticle(true, ...)` is called.
+- The under-crosshair warning area in `WeaponReticleWidget` is `m_view.warning_mc` / `m_reticle.warning_mc`, used by the reticle warning notification path.
+- Current mod behavior now kills and hides that warning UI unconditionally via a shared helper, so checkpoint reloads or alternate restore paths should not resurrect the no-instinct style banner below the crosshair.
 
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.

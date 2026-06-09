@@ -166,6 +166,10 @@ package knt.hud.buttonprompts
          {
             this.onSetData(this.m_data);
          }
+         else if(!param1)
+         {
+            this.showResourceType(false,-1);
+         }
       }
       
       public function onSetData(param1:Object) : void
@@ -198,6 +202,7 @@ package knt.hud.buttonprompts
             default:
                this.setStateSelected(param1);
          }
+         this.syncResourceIconSuppression();
          this.m_eState = param1.eState;
       }
       
@@ -536,7 +541,7 @@ package knt.hud.buttonprompts
             this.releaseAllPromptInstances();
          }
          this.showCollectibleIcon(param1.bIsCollectible ? true : false);
-         if(param1.eResourceType != -1)
+         if(param1.eResourceType != -1 && !this.shouldSuppressResourceTypeIcon(param1))
          {
             this.showResourceType(true,param1.eResourceType);
          }
@@ -656,7 +661,7 @@ package knt.hud.buttonprompts
          this.m_view.collapsed_mc.outline_mc.alpha = 1;
          this.m_view.collapsed_mc.fill_mc.alpha = 0.7;
          MenuUtils.setColor(this.m_view.collapsed_mc.fill_mc,MenuConstantsKnt.COLOR_GREY_LIGHT);
-         if(data.eResourceType == -1)
+         if(data.eResourceType == -1 || this.shouldSuppressResourceTypeIcon(data))
          {
             this.m_view.collapsed_mc.visible = true;
             this.showResourceType(false,-1);
@@ -741,6 +746,7 @@ package knt.hud.buttonprompts
          {
             return;
          }
+         this.syncResourceIconSuppression();
          this.m_view.collapsed_mc.visible = false;
          this.m_view.collapsed_mc.alpha = 0;
          this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
@@ -781,7 +787,7 @@ package knt.hud.buttonprompts
       
       private function showResourceType(param1:Boolean, param2:int, param3:Boolean = false) : void
       {
-         if(param1 != this.m_isResourcePickUpPrompt)
+         if(param1 != this.m_isResourcePickUpPrompt || param1 && param2 != this.m_resourceTypeShown)
          {
             this.m_view.resource_icon_mc.visible = param1;
             this.m_view.promptHolder_mc.x = param1 ? RESOURCE_SHOWN_XPOS_OFFSET : 0;
@@ -795,22 +801,45 @@ package knt.hud.buttonprompts
             this.m_view.shadows_mc.x = param1 ? RESOURCE_SHOWN_XPOS_OFFSET : 0;
             if(param1)
             {
-               if(param2 != this.m_resourceTypeShown)
+               if(param2 == PLAYER_RESOURCETYPE_CHEMICAL)
                {
-                  if(param2 == PLAYER_RESOURCETYPE_CHEMICAL)
-                  {
-                     this.m_view.resource_icon_mc.chemical_icon_mc.visible = true;
-                     this.m_view.resource_icon_mc.electrical_icon_mc.visible = false;
-                  }
-                  else if(param2 == PLAYER_RESOURCETYPE_ELECTRICAL)
-                  {
-                     this.m_view.resource_icon_mc.chemical_icon_mc.visible = false;
-                     this.m_view.resource_icon_mc.electrical_icon_mc.visible = true;
-                  }
+                  this.m_view.resource_icon_mc.chemical_icon_mc.visible = true;
+                  this.m_view.resource_icon_mc.electrical_icon_mc.visible = false;
                }
+               else if(param2 == PLAYER_RESOURCETYPE_ELECTRICAL)
+               {
+                  this.m_view.resource_icon_mc.chemical_icon_mc.visible = false;
+                  this.m_view.resource_icon_mc.electrical_icon_mc.visible = true;
+               }
+            }
+            else
+            {
+               this.m_view.resource_icon_mc.chemical_icon_mc.visible = false;
+               this.m_view.resource_icon_mc.electrical_icon_mc.visible = false;
             }
             this.m_resourceTypeShown = param2;
             this.m_isResourcePickUpPrompt = param1;
+         }
+      }
+
+      private function shouldSuppressResourceTypeIcon(param1:Object) : Boolean
+      {
+         if(param1 == null || param1.eResourceType == -1)
+         {
+            return false;
+         }
+         if(MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS)
+         {
+            return false;
+         }
+         return param1.isEnabled === false || param1.eBlockedStatus === BLOCKED_STATUS_BLOCKED || param1.eBlockedStatus === BLOCKED_STATUS_CANBEUNBLOCKED;
+      }
+
+      private function syncResourceIconSuppression() : void
+      {
+         if(this.shouldSuppressResourceTypeIcon(this.m_data))
+         {
+            this.showResourceType(false,-1);
          }
       }
       
