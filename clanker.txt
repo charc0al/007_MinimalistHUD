@@ -300,6 +300,8 @@ Notes on weapon reticle
 - Current mod behavior explicitly restores `m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 1` during reticle setup and when `shouldShowReticle(true, ...)` is called.
 - The under-crosshair warning area in `WeaponReticleWidget` is `m_view.warning_mc` / `m_reticle.warning_mc`, used by the reticle warning notification path.
 - A prior attempt to suppress the no-instinct warning through `WeaponReticleWidget` was reverted after failing to affect the actual in-game prompt.
+- `MenuConstantsKnt.DOT_CROSSHAIR` now provides a dot-only weapon aiming mode, defaulting to `false`.
+- With `DOT_CROSSHAIR == true`, `WeaponReticleWidget` reuses `m_view.holstered_crosshair_mc` as the only visible center marker even while aiming, hides the normal weapon reticle container, and keeps the existing target-size scaling and illegal-target holstered color behavior.
 
 Notes on no-agency / no-instinct warning
 - Prior attempts to suppress the no-instinct warning through `QLensWidgetReticle`, `WeaponReticleWidget`, and `NPCCombatPromptsWidget` were all reverted after the user confirmed they did not target the actual in-game warning.

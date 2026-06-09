@@ -243,6 +243,8 @@ package knt.common.menu
 
       public static const SHOW_AGENCY_UNAVAILABLE_NOTIFICATION:Boolean = false;
 
+      public static const DOT_CROSSHAIR:Boolean = false;
+
       public static const VANILLA_Q_WATCH_DISPLAY:Boolean = false;
       
       public function MenuConstantsKnt()

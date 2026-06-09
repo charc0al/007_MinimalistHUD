@@ -276,7 +276,8 @@ package knt.hud.weapons
          {
             this.hasTarget(this.m_hasTarget,this.m_canLethalForceBeUsedOnTarget);
          }
-         if(!this.m_shouldShowReticle)
+         this.refreshCrosshairMode();
+         if(!this.m_shouldShowReticle && !MenuConstantsKnt.DOT_CROSSHAIR)
          {
             this.pulsateWarning(false);
             this.m_reticle.visible = false;
@@ -545,10 +546,7 @@ package knt.hud.weapons
                   this.m_outOfAmmoNotificationActive = false;
                   MenuUtils.removeColor(this.m_reticle.ironsight_mc,true);
                }
-               if(!this.m_shouldShowReticle)
-               {
-                  this.m_view.holstered_crosshair_mc.visible = true;
-               }
+               this.refreshCrosshairMode();
             }
          }
          this.m_previousAmmoRemaining = param1;
@@ -671,6 +669,16 @@ package knt.hud.weapons
       public function shouldShowReticle(param1:Boolean, param2:Boolean) : void
       {
          this.m_shouldShowReticle = param1;
+         if(MenuConstantsKnt.DOT_CROSSHAIR)
+         {
+            if(!this.m_reloadingNotificationActive)
+            {
+               this.pulsateWarning(false);
+            }
+            this.m_view.reload_prompt_mc.visible = false;
+            this.refreshCrosshairMode();
+            return;
+         }
          if(param1)
          {
             this.setIllegalStateReticle();
@@ -722,6 +730,16 @@ package knt.hud.weapons
          }
          this.m_hasTarget = param1;
          this.m_canLethalForceBeUsedOnTarget = param2;
+         if(MenuConstantsKnt.DOT_CROSSHAIR)
+         {
+            if(!this.m_outOfAmmoNotificationActive)
+            {
+               this.setIllegalStateHolstered();
+               this.m_view.holstered_crosshair_mc.scaleX = this.m_view.holstered_crosshair_mc.scaleY = this.m_hasTarget ? 1.4 : 0.7;
+            }
+            this.refreshCrosshairMode();
+            return;
+         }
          if(this.m_shouldShowReticle)
          {
             if(!this.m_outOfAmmoNotificationActive)
@@ -753,9 +771,42 @@ package knt.hud.weapons
       public function updateCanLethalForceBeUsed(param1:Boolean) : void
       {
          this.m_canLethalForceBeUsedOnTarget = param1;
+         if(MenuConstantsKnt.DOT_CROSSHAIR)
+         {
+            this.setIllegalStateHolstered();
+            this.refreshCrosshairMode();
+            return;
+         }
          if(this.m_hasTarget && this.m_shouldShowReticle)
          {
             this.setIllegalStateReticle();
+         }
+      }
+
+      private function refreshCrosshairMode() : void
+      {
+         if(!this.m_reticle)
+         {
+            return;
+         }
+         if(MenuConstantsKnt.DOT_CROSSHAIR)
+         {
+            this.m_reticle.visible = false;
+            if(this.m_outOfAmmoNotificationActive)
+            {
+               this.m_view.holstered_crosshair_mc.visible = false;
+            }
+            else
+            {
+               this.m_view.holstered_crosshair_mc.visible = true;
+               this.m_view.holstered_crosshair_mc.scaleX = this.m_view.holstered_crosshair_mc.scaleY = this.m_hasTarget ? 1.4 : 0.7;
+            }
+         }
+         else if(!this.m_shouldShowReticle)
+         {
+            this.m_reticle.visible = false;
+            this.m_view.holstered_crosshair_mc.visible = this.m_outOfAmmoNotificationActive ? false : true;
+            this.m_view.holstered_crosshair_mc.scaleX = this.m_view.holstered_crosshair_mc.scaleY = this.m_hasTarget ? 1.4 : 0.7;
          }
       }
       
