@@ -136,12 +136,10 @@ package knt.hud.weapons
          this.m_view.spread_test_mc.visible = false;
          this.m_buttonPrompts = new Vector.<ButtonPromptImage>();
          this.m_view.reload_progressbar_mc.bg_mc.alpha = 0.4;
-         this.hideWarningUi();
       }
       
       public function onSetData(param1:Object) : void
       {
-         this.hideWarningUi();
          if(this.m_maximumAgency != param1.AgencyData.maximumAgency || this.m_currentAgency != param1.AgencyData.currentAgency)
          {
             this.m_maximumAgency = param1.AgencyData.maximumAgency;
@@ -251,9 +249,11 @@ package knt.hud.weapons
          KntHudUtils.addOutline(this.m_reticle.illegal_mc);
          this.m_reticle.warning_mc.visible = false;
          this.m_reticle.reload_prompt_mc.visible = false;
-         this.hideWarningUi();
+         this.m_view.reload_prompt_mc.visible = false;
+         this.m_view.warning_mc.alpha = 0;
          this.m_view.warning_mc.y = param3 + 46;
          Animate.kill(this.m_view.reload_progressbar_mc.bar_mc);
+         this.m_view.reload_progressbar_mc.visible = false;
          this.m_view.reload_progressbar_mc.y = this.m_view.warning_mc.y + 12;
          this.m_reticle.ammo_mc.visible = SHOW_RADIAL_AMMO || SHOW_SPREAD_RING || SHOW_AGENCY_BAR;
          this.m_reticle.ammo_mc.spread_circle_container_mc.alpha = 0;
@@ -355,7 +355,6 @@ package knt.hud.weapons
             this.m_previousAmmoRemaining = param1;
             this.m_ammoInClip = param2;
             this.m_previousType = this.m_currentType;
-            this.hideWarningUi();
             return;
          }
          if(this.m_currentType != this.m_previousType || this.m_ammoInClip != param2 || this.m_ammoDotArray.length == 0)
@@ -560,7 +559,8 @@ package knt.hud.weapons
          var fReloadDuration:Number = param1;
          if(!SHOW_RELOAD_UI)
          {
-            this.hideWarningUi();
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
             return;
          }
          if(!this.m_reloadingNotificationActive)
@@ -597,7 +597,8 @@ package knt.hud.weapons
       {
          if(!SHOW_RELOAD_UI)
          {
-            this.hideWarningUi();
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
             return;
          }
          if(this.m_reloadingNotificationActive)
@@ -620,7 +621,8 @@ package knt.hud.weapons
       {
          if(!SHOW_RELOAD_UI)
          {
-            this.hideWarningUi();
+            this.m_view.reload_prompt_mc.visible = false;
+            this.m_view.warning_mc.alpha = 0;
             return;
          }
          MenuUtils.setupText(this.m_view.warning_mc.reload_txt,param1,18,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
@@ -642,14 +644,14 @@ package knt.hud.weapons
          if(!SHOW_RELOAD_UI)
          {
             this.m_warningPulsating = false;
-            this.hideWarningUi();
+            this.m_view.warning_mc.alpha = 0;
             return;
          }
-         this.hideWarningUi();
+         Animate.kill(this.m_view.warning_mc);
+         this.m_view.warning_mc.alpha = 0;
          if(start)
          {
             this.m_view.warning_mc.alpha = 1;
-            this.m_view.warning_mc.visible = true;
             Animate.delay(this.m_view.warning_mc,0.2,function():void
             {
                m_view.warning_mc.alpha = 0;
@@ -991,7 +993,6 @@ package knt.hud.weapons
                }
             }
          }
-         this.hideWarningUi();
          this.visible = param1;
       }
       
@@ -1007,22 +1008,6 @@ package knt.hud.weapons
          this.m_view.spread_test_mc.visible = param1;
       }
 
-      private function hideWarningUi() : void
-      {
-         Animate.kill(this.m_view.warning_mc);
-         Animate.kill(this.m_view.reload_progressbar_mc.bar_mc);
-         this.m_view.warning_mc.visible = false;
-         this.m_view.warning_mc.alpha = 0;
-         this.m_view.reload_prompt_mc.visible = false;
-         this.m_view.reload_progressbar_mc.visible = false;
-         if(this.m_reticle)
-         {
-            this.m_reticle.warning_mc.visible = false;
-            this.m_reticle.warning_mc.alpha = 0;
-            this.m_reticle.reload_prompt_mc.visible = false;
-            this.m_reticle.reload_prompt_mc.alpha = 0;
-         }
-      }
    }
 }
 

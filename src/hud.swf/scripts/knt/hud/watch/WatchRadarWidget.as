@@ -36,21 +36,21 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchRadarWidgetView();
-         if(MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY)
-         {
-            this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
-            this.m_view.x = BASE_X_OFFSET - 180;
-            this.m_view.y = 100;
-            this.m_view.alpha = 0;
-            this.m_isAimingWatch = true;
-         }
-         else
+         if(MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY)
          {
             this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
             this.m_view.x = BASE_X_OFFSET;
             this.m_view.y = 0;
             this.m_view.alpha = 1;
             this.m_isAimingWatch = false;
+         }
+         else
+         {
+            this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
+            this.m_view.x = BASE_X_OFFSET - 180;
+            this.m_view.y = 100;
+            this.m_view.alpha = 0;
+            this.m_isAimingWatch = true;
          }
          addChild(this.m_view);
          this.m_targetsArray = new Array();
@@ -81,7 +81,7 @@ package knt.hud.watch
             this.m_QlensGodMode = false;
             this.m_QlensRegular = true;
          }
-          if((MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY ? Boolean(param1.IsAimingWatch) : !Boolean(param1.IsAimingWatch)))
+          if((MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY ? !Boolean(param1.IsAimingWatch) : Boolean(param1.IsAimingWatch)))
           {
              if(this.m_isAimingWatch)
              {

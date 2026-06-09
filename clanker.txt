@@ -135,7 +135,7 @@ Changes made so far
 - Center watch chemical/electrical resource dials and watch danger/trespass triangle now follow the same inverted Q Lens show/hide behavior:
   `src/hud.swf/scripts/knt/hud/watch/WatchGadgetResourcesWidget.as`
   `src/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
-- The inverted Q-watch/Q Lens watch-cluster behavior is now controlled by a shared global `MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY` flag, defaulting to `true`:
+- The inverted Q-watch/Q Lens watch-cluster behavior is now controlled by a shared global `MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY` flag, defaulting to `false`:
   `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
   `src/hud.swf/scripts/knt/hud/agency/AgencyWidget.as`
   `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
@@ -144,8 +144,6 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Triangulation radar was copied into `src/` and also inverted for Q Lens visibility so its target-direction widget can be overridden locally:
   `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
-- Q Lens reticle "no valid gadget" banner under the center reticle is now ported into `src/` and hard-hidden unconditionally:
-  `src/hud.swf/scripts/knt/hud/gadgets/QLensWidgetReticle.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.
@@ -293,18 +291,19 @@ Notes on inverted watch HUD visibility
   `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
 - Vanilla behavior hid these watch widgets while aiming the watch / Q Lens by animating them off-screen toward the lower-left corner and early-returning while hidden.
 - Current mod behavior inverts that condition so they animate in during Q Lens, animate back out when Q Lens closes, and initialize in the hidden/off-screen state to avoid a first-frame flash.
-- That inversion is now controlled by `MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY`; setting it to `false` restores the vanilla show-when-not-aiming / hide-while-aiming behavior for the overridden watch-cluster widgets listed above.
-
-Notes on Q Lens no-valid-gadget banner
-- The center/Q Lens reticle controller is `knt.hud.gadgets.QLensWidgetReticle`.
-- Vanilla behavior shows `noGadget_mc` when `invalidGadgetsForTarget === true` and the reticle is not in the "reticle only" empty-slot state.
-- Current mod behavior ports `QLensWidgetReticle` into `src/` and hard-hides `noGadget_mc` unconditionally so the no-valid-gadget / no-instinct banner never appears below the reticle.
+- That inversion is now controlled by `MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY`; leaving it at `false` keeps the inverted behavior as the safe default, while setting it to `true` restores the vanilla show-when-not-aiming / hide-while-aiming behavior for the overridden watch-cluster widgets listed above.
+- A follow-up attempt to fold `AgencySelectorWidget` into the shared watch-visibility flag was reverted after it broke the normal 3-prompt confront widget by hiding the selector during regular gameplay.
+- `AgencySelectorWidget` should keep its own vanilla watch hide/show logic; only the dedicated lower-left watch-cluster widgets should use `MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY`.
 
 Notes on weapon reticle
 - `WeaponReticleWidget` can appear to lose the idle aiming reticle if `ironsight_inner_mc` is left at a low/default alpha while the widened firing state still animates it back on.
 - Current mod behavior explicitly restores `m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 1` during reticle setup and when `shouldShowReticle(true, ...)` is called.
 - The under-crosshair warning area in `WeaponReticleWidget` is `m_view.warning_mc` / `m_reticle.warning_mc`, used by the reticle warning notification path.
-- Current mod behavior now kills and hides that warning UI unconditionally via a shared helper, so checkpoint reloads or alternate restore paths should not resurrect the no-instinct style banner below the crosshair.
+- A prior attempt to suppress the no-instinct warning through `WeaponReticleWidget` was reverted after failing to affect the actual in-game prompt.
+
+Notes on no-agency / no-instinct warning
+- Prior attempts to suppress the no-instinct warning through `QLensWidgetReticle`, `WeaponReticleWidget`, and `NPCCombatPromptsWidget` were all reverted after the user confirmed they did not target the actual in-game warning.
+- There is currently no confirmed owner for that warning in the repo notes.
 
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.

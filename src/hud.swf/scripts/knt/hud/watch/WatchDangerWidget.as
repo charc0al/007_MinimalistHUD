@@ -68,21 +68,21 @@ package knt.hud.watch
          this.m_view.hidden_mc.visible = false;
          this.m_view.hidden_mc.desc_mc.visible = false;
          this.m_view.hidden_mc.desc_mc.bg_mc.alpha = 0.6;
-         if(MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY)
-         {
-            this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
-            this.m_view.x = BASE_X_OFFSET - 180;
-            this.m_view.y = 100;
-            this.m_view.alpha = 0;
-            this.m_isAimingWatch = true;
-         }
-         else
+         if(MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY)
          {
             this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
             this.m_view.x = BASE_X_OFFSET;
             this.m_view.y = 0;
             this.m_view.alpha = 1;
             this.m_isAimingWatch = false;
+         }
+         else
+         {
+            this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
+            this.m_view.x = BASE_X_OFFSET - 180;
+            this.m_view.y = 100;
+            this.m_view.alpha = 0;
+            this.m_isAimingWatch = true;
          }
          addChild(this.m_view);
       }
@@ -106,7 +106,7 @@ package knt.hud.watch
             this.m_view.warning_bg_mc.visible = true;
             this.m_triangulationModeHidden = false;
          }
-          if((MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY ? Boolean(param1.commonData.isAimingWatch) : !Boolean(param1.commonData.isAimingWatch)))
+          if((MenuConstantsKnt.VANILLA_Q_WATCH_DISPLAY ? !Boolean(param1.commonData.isAimingWatch) : Boolean(param1.commonData.isAimingWatch)))
           {
              if(this.m_isAimingWatch)
              {

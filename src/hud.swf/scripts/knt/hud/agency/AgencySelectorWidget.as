@@ -122,10 +122,24 @@ package knt.hud.agency
                m_ishiddenDueToNoInstinctMovesAvailable = false;
                m_agencyEntriesInstantiated = true;
                Animate.kill(m_view);
-               Animate.to(m_view,0.2,0,{
-                  "y":0,
-                  "alpha":1
-               },Animate.ExpoOut);
+               if(data.commonData.isAimingWatch)
+               {
+                  m_view.y = 200;
+                  m_view.scaleX = 1.2;
+                  m_view.scaleY = 1.2;
+                  m_view.alpha = 0;
+                  m_isAimingWatch = true;
+               }
+               else
+               {
+                  Animate.to(m_view,0.2,0,{
+                     "y":0,
+                     "scaleX":1,
+                     "scaleY":1,
+                     "alpha":1
+                  },Animate.ExpoOut);
+                  m_isAimingWatch = false;
+               }
             }
          });
          ts.addChunk(function():void
@@ -385,7 +399,7 @@ package knt.hud.agency
          });
          this.m_ishiddenDueToNoInstinctMovesAvailable = true;
       }
-      
+
       private function hideFrameDecorations() : void
       {
          this.m_view.frame_mc.visible = false;

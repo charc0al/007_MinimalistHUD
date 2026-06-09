@@ -241,7 +241,7 @@ package knt.common.menu
 
       public static const SHOW_PICKUP_NOTIFICATIONS:Boolean = false;
 
-      public static const INVERT_Q_WATCH_DISPLAY:Boolean = true;
+      public static const VANILLA_Q_WATCH_DISPLAY:Boolean = false;
       
       public function MenuConstantsKnt()
       {
