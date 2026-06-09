@@ -144,6 +144,8 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Triangulation radar was copied into `src/` and also inverted for Q Lens visibility so its target-direction widget can be overridden locally:
   `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
+- Triangulation radar now also uses the same left shift as the other watch-circle HUD widgets and is scaled down an extra 5% to better match the smaller Q-watch cluster:
+  `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
 
 What the top-screen duplicate indicator was
 - It is not the watch widget.

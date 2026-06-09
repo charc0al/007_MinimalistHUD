@@ -48,11 +48,13 @@ package knt.hud.watch
       
       private static const GRADIENT_BG_PULSE_SPEED:Number = 3;
       
-      private static const BASE_SCALE:Number = 0.75;
+      private static const BASE_SCALE:Number = 0.7125;
       
       private static const AIMING_SCALE:Number = BASE_SCALE * 1.3;
       
-      private static const HIDDEN_X_OFFSET:Number = -180;
+      private static const BASE_X_OFFSET:Number = -45;
+      
+      private static const HIDDEN_X_OFFSET:Number = BASE_X_OFFSET - 180;
       
       private static const HIDDEN_Y_OFFSET:Number = 100;
       
@@ -139,7 +141,7 @@ package knt.hud.watch
          {
             this.m_view.visible = false;
             this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
-            this.m_view.x = 0;
+            this.m_view.x = BASE_X_OFFSET;
             this.m_view.y = 0;
             this.m_view.alpha = 1;
             this.m_isAimingWatch = false;
@@ -192,7 +194,7 @@ package knt.hud.watch
                {
                   Animate.kill(this.m_view);
                   Animate.to(this.m_view,0.2,0,{
-                     "x":0,
+                     "x":BASE_X_OFFSET,
                      "y":0,
                      "scaleX":BASE_SCALE,
                      "scaleY":BASE_SCALE,
