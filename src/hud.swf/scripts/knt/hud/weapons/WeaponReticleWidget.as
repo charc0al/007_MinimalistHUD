@@ -791,7 +791,7 @@ package knt.hud.weapons
          }
          if(MenuConstantsKnt.DOT_CROSSHAIR)
          {
-            this.m_reticle.visible = false;
+            this.applyDotCrosshairReticleState();
             if(this.m_outOfAmmoNotificationActive)
             {
                this.m_view.holstered_crosshair_mc.visible = false;
@@ -864,14 +864,40 @@ package knt.hud.weapons
       
       private function fadeInBoundaries() : void
       {
+         if(MenuConstantsKnt.DOT_CROSSHAIR)
+         {
+            this.applyDotCrosshairReticleState();
+            return;
+         }
          Animate.kill(this.m_reticle.ironsight_mc.ironsight_inner_mc);
          Animate.to(this.m_reticle.ironsight_mc.ironsight_inner_mc,1,0,{"alpha":1},Animate.ExpoOut);
       }
       
       private function fadeOutBoundaries() : void
       {
+         if(MenuConstantsKnt.DOT_CROSSHAIR)
+         {
+            this.applyDotCrosshairReticleState();
+            return;
+         }
          Animate.kill(this.m_reticle.ironsight_mc.ironsight_inner_mc);
          Animate.to(this.m_reticle.ironsight_mc.ironsight_inner_mc,1,0,{"alpha":0.6},Animate.ExpoOut);
+      }
+
+      private function applyDotCrosshairReticleState() : void
+      {
+         this.m_reticle.visible = false;
+         this.m_reticle.crosshair_mc.visible = false;
+         this.m_reticle.illegal_mc.visible = false;
+         if(this.m_reticle.posts_mc)
+         {
+            this.m_reticle.posts_mc.alpha = 0;
+         }
+         this.m_reticle.ironsight_mc.alpha = 0;
+         this.m_reticle.ironsight_mc.ironsight_inner_mc.alpha = 0;
+         Animate.kill(this.m_reticle.ironsight_mc.ironsight_inner_mc);
+         Animate.kill(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_0.inner_mc);
+         Animate.kill(this.m_reticle.ironsight_mc.ironsight_inner_mc.ironsight_mc_1.inner_mc);
       }
       
       private function setIllegalStateReticle() : void
