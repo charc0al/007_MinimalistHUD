@@ -3,6 +3,7 @@ package knt.hud.watch
    import glacier.common.Animate;
    import glacier.common.BaseControl;
    import glacier.common.TaskletSequencer;
+   import knt.common.menu.MenuConstantsKnt;
    import knt.hud.*;
    
    public class WatchGadgetResourcesWidget extends BaseControl
@@ -48,10 +49,22 @@ package knt.hud.watch
       {
          super();
          this.m_view = new WatchGadgetResourcesWidgetView();
-         this.m_view.x = AIMING_X_OFFSET;
-         this.m_view.y = 100;
-         this.m_view.scaleX = this.m_view.scaleY = 1.3;
-         this.m_view.alpha = 0;
+         if(MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY)
+         {
+            this.m_view.x = AIMING_X_OFFSET;
+            this.m_view.y = 100;
+            this.m_view.scaleX = this.m_view.scaleY = 1.3;
+            this.m_view.alpha = 0;
+            this.m_isAimingWatch = true;
+         }
+         else
+         {
+            this.m_view.x = BASE_X_OFFSET;
+            this.m_view.y = 0;
+            this.m_view.scaleX = this.m_view.scaleY = 1;
+            this.m_view.alpha = 1;
+            this.m_isAimingWatch = false;
+         }
          this.m_electric = new WatchGadgetResourceDialWidget();
          this.m_electric.setParentClass(this);
          this.m_electric.x = ELECTRIC_X_OFFSET;
@@ -84,7 +97,7 @@ package knt.hud.watch
                m_view.visible = true;
                m_triangulationModeHidden = false;
             }
-             if(data.isAimingWatch)
+             if((MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY ? Boolean(data.isAimingWatch) : !Boolean(data.isAimingWatch)))
              {
                 if(m_isAimingWatch)
                 {

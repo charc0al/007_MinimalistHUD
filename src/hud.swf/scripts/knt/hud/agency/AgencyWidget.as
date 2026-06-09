@@ -37,11 +37,22 @@ package knt.hud.agency
          super();
          this.m_view = new AgencyWidgetView();
          addChild(this.m_view);
-         this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
-         this.m_view.x = -180;
-         this.m_view.y = 100;
-         this.m_view.alpha = 0;
-         this.m_isAimingWatch = true;
+         if(MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY)
+         {
+            this.m_view.scaleX = this.m_view.scaleY = AIMING_SCALE;
+            this.m_view.x = -180;
+            this.m_view.y = 100;
+            this.m_view.alpha = 0;
+            this.m_isAimingWatch = true;
+         }
+         else
+         {
+            this.m_view.scaleX = this.m_view.scaleY = BASE_SCALE;
+            this.m_view.x = 0;
+            this.m_view.y = 0;
+            this.m_view.alpha = 1;
+            this.m_isAimingWatch = false;
+         }
          this.m_view.dropshadow_mc.alpha = 0.4;
          this.showQuickFlare(false);
          this.showFullBarGlow(false);
@@ -117,7 +128,7 @@ package knt.hud.agency
             Animate.to(this.m_view.bars_mc.bar_bg_mc.outline_bg_mc,0.2,0,{"alpha":0.4},Animate.ExpoOut);
             this.m_isGreyedOutDueToSocial = true;
          }
-          if(param1.isAimingWatch)
+          if((MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY ? Boolean(param1.isAimingWatch) : !Boolean(param1.isAimingWatch)))
           {
              if(this.m_isAimingWatch)
              {

@@ -126,6 +126,13 @@ Changes made so far
 - Center watch chemical/electrical resource dials and watch danger/trespass triangle now follow the same inverted Q Lens show/hide behavior:
   `src/hud.swf/scripts/knt/hud/watch/WatchGadgetResourcesWidget.as`
   `src/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
+- The inverted Q-watch/Q Lens watch-cluster behavior is now controlled by a shared global `MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY` flag, defaulting to `true`:
+  `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+  `src/hud.swf/scripts/knt/hud/agency/AgencyWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchRadarWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchGadgetResourcesWidget.as`
+  `src/hud.swf/scripts/knt/hud/watch/WatchDangerWidget.as`
 - Triangulation radar was copied into `src/` and also inverted for Q Lens visibility so its target-direction widget can be overridden locally:
   `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
 
@@ -271,6 +278,7 @@ Notes on inverted watch HUD visibility
   `src/hud.swf/scripts/knt/hud/watch/WatchTriangulationRadarWidget.as`
 - Vanilla behavior hid these watch widgets while aiming the watch / Q Lens by animating them off-screen toward the lower-left corner and early-returning while hidden.
 - Current mod behavior inverts that condition so they animate in during Q Lens, animate back out when Q Lens closes, and initialize in the hidden/off-screen state to avoid a first-frame flash.
+- That inversion is now controlled by `MenuConstantsKnt.INVERT_Q_WATCH_DISPLAY`; setting it to `false` restores the vanilla show-when-not-aiming / hide-while-aiming behavior for the overridden watch-cluster widgets listed above.
 
 Notes on weapon reticle
 - `WeaponReticleWidget` can appear to lose the idle aiming reticle if `ironsight_inner_mc` is left at a low/default alpha while the widened firing state still animates it back on.

@@ -240,6 +240,8 @@ package knt.common.menu
       public static const SHOW_MELEE_ATTACK_WIDGET:Boolean = false;
 
       public static const SHOW_PICKUP_NOTIFICATIONS:Boolean = false;
+
+      public static const INVERT_Q_WATCH_DISPLAY:Boolean = true;
       
       public function MenuConstantsKnt()
       {
