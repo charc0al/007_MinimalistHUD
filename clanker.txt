@@ -111,6 +111,14 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/weapons/WeaponWidget.as`
 - Melee combat counter/parry and dodge/sidestep indicators disabled:
   `src/hud.swf/scripts/knt/hud/melee/MeleeAttackWidget.as`
+- Melee combat counter/parry and dodge/sidestep indicators now keep the vanilla logic behind a global `MenuConstantsKnt.SHOW_MELEE_ATTACK_WIDGET` feature flag, defaulting to hidden:
+  `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+  `src/hud.swf/scripts/knt/hud/melee/MeleeAttackWidget.as`
+- Ammo / chemical / electrical pickup popups now keep the vanilla logic behind a global `MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS` feature flag, defaulting to hidden:
+  `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+  `src/hud.swf/scripts/knt/hud/notifications/PickupNotificationWidget.as`
+- Weapon HUD disabled-state handling now also hides/restores the ESP discharge prompt container, so the ESP prompt no longer remains visible when the rest of the weapon widget is hidden:
+  `src/hud.swf/scripts/knt/hud/weapons/WeaponWidget.as`
 - Lower-left watch/focus/radar HUD behavior relative to Q Lens was inverted while preserving the existing off-screen animation path:
   `src/hud.swf/scripts/knt/hud/agency/AgencyWidget.as`
   `src/hud.swf/scripts/knt/hud/watch/WatchBaseWidget.as`
@@ -224,11 +232,13 @@ Notes on melee counter / dodge indicators
 - Its embedded view clips are `parry_mc`, `perfect_parry_mc`, `parry_success_mc`, and `unblockable_mc` on `MeleeAttackWidgetView`.
 - Vanilla behavior animates those clips for normal/parry/perfect-parry windows plus sidestep/unblockable windows and counter success feedback.
 - Current mod behavior suppresses the widget at the controller layer by killing any active melee indicator animations in `onSetData()` and keeping both the root widget and inner view hidden.
+- That suppression is now controlled by the global `MenuConstantsKnt.SHOW_MELEE_ATTACK_WIDGET` flag, which currently defaults to `false`.
 
 Notes on pickup popups
 - The right-side ammo / chemical / electrical pickup popup is driven by `knt.hud.notifications.PickupNotificationWidget`.
 - Vanilla behavior raises entries for `Ammo.Amount` and `Resource.Amount`, with resource type variants for ammo, electrical, and chemical pickups.
 - Current mod behavior ports `PickupNotificationWidget` into `src/` and suppresses it entirely by clearing/hiding active entries in `onSetData()` instead of raising new notifications.
+- That suppression is now controlled by the global `MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS` flag, which currently defaults to `false`.
 
 Notes on NPC watcher indicators
 - The white overhead watcher dot/icon is driven by `NpcStateWidget` via `state_mc.watcher_mc`.
@@ -248,6 +258,7 @@ Notes on weapon ammo bar
 - The leftover arc/separator visuals next to the removed ammo bar were `gradient_lines_mc`; current mod behavior keeps those hidden as well.
 - When the widget was changed from dim-on-disabled to hidden-on-disabled, using `m_view.visible = false` caused an incomplete restore path where ammo digits returned but some icon elements did not.
 - Current mod behavior now hides the disabled weapon HUD via root `alpha = 0` instead of root visibility, and restores via alpha as well.
+- That disabled-state alpha handling now also includes `super_special_prompt_container_mc`, which fixes the ESP discharge prompt lingering on-screen while the rest of the weapon HUD is hidden.
 
 Notes on inverted watch HUD visibility
 - The lower-left watch cluster is split across multiple widgets, not one shared controller.
@@ -268,6 +279,7 @@ Notes on weapon reticle
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.
 - If a HUD element still appears, search `src_vanilla/` for the controller first, then port only the needed file into `src/`.
+- There is currently no duplicated `src/menu.swf/.../knt/common/menu/MenuConstantsKnt.as` in this repo to mirror HUD-side feature-flag additions into; only the HUD-side `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as` override exists.
 
 Notes on menu-side objective notifications
 - The menu SWF also contains duplicate objective-notification classes that can override or outlive gameplay-side HUD changes: `knt.hud.objectives.ObjectivesNotificationWidget` and `ObjectivesNotificationItemWidget`.

@@ -62,11 +62,50 @@ package knt.hud.notifications
       
       public function onSetData(param1:Object) : void
       {
+         if(!MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS)
+         {
+            this.hideAllNotifications();
+            return;
+         }
+         if(param1 == null)
+         {
+            return;
+         }
+         if(param1.Ammo.Amount > 0 || param1.Resource.Amount > 0)
+         {
+            this.visible = true;
+            this.alpha = 1;
+            this.m_container.visible = true;
+            this.m_container.alpha = 1;
+            if(param1.Ammo.Amount > 0)
+            {
+               this.ShowNotification({
+                  "Type":1,
+                  "Amount":param1.Ammo.Amount
+               });
+            }
+            if(param1.Resource.Amount > 0)
+            {
+               this.ShowNotification({
+                  "Type":param1.Resource.Type,
+                  "Amount":param1.Resource.Amount
+               });
+            }
+            return;
+         }
          this.hideAllNotifications();
       }
       
       override public function onSetVisible(param1:Boolean) : void
       {
+         if(MenuConstantsKnt.SHOW_PICKUP_NOTIFICATIONS)
+         {
+            this.visible = param1;
+            this.alpha = param1 ? 1 : 0;
+            this.m_container.visible = param1;
+            this.m_container.alpha = param1 ? 1 : 0;
+            return;
+         }
          this.hideAllNotifications();
       }
       

@@ -2,6 +2,7 @@ package knt.hud.melee
 {
    import glacier.common.Animate;
    import glacier.common.BaseControl;
+   import knt.common.menu.MenuConstantsKnt;
    import knt.hud.*;
    
    public class MeleeAttackWidget extends BaseControl
@@ -42,9 +43,71 @@ package knt.hud.melee
       
       public function onSetData(param1:Object) : void
       {
-         this.killAllExceptSuccess();
-         this.killParrySuccess();
-         this.hideWidget();
+         var parryDelay:Number;
+         var perfectParryDelay:Number;
+         var data:Object = param1;
+         if(!MenuConstantsKnt.SHOW_MELEE_ATTACK_WIDGET)
+         {
+            this.killAllExceptSuccess();
+            this.killParrySuccess();
+            this.hideWidget();
+            return;
+         }
+         this.showWidget();
+         if(data.type == undefined)
+         {
+            return;
+         }
+         if(data.type == this.ATTACK_INTERRUPTED)
+         {
+            this.killAllExceptSuccess();
+         }
+         if(data.type == this.COUNTER_SIDESTEP)
+         {
+            this.killAllExceptSuccess();
+         }
+         if(data.type == this.COUNTER_PARRY)
+         {
+            this.killAllExceptSuccess();
+            Animate.fromTo(this.m_view.parry_success_mc,0.4,0,{"frames":0},{"frames":7},Animate.ExpoOut,function():void
+            {
+               m_view.parry_success_mc.gotoAndStop(0);
+            });
+         }
+         parryDelay = 0;
+         perfectParryDelay = 0;
+         if(data.type == this.ATTACK_NORMAL && !this.m_isParry)
+         {
+            parryDelay = data.attackToImpactDuration - data.parryWindowDuration;
+            Animate.fromTo(this.m_view.parry_mc,data.parryWindowDuration,parryDelay,{"frames":0},{"frames":60},Animate.Linear,function():void
+            {
+               m_view.parry_mc.gotoAndStop(0);
+               m_isParry = false;
+            });
+            this.m_isParry = true;
+         }
+         if(data.type == this.ATTACK_PERFECT && !this.m_isPerfectParry)
+         {
+            parryDelay = data.attackToImpactDuration - data.parryWindowDuration;
+            perfectParryDelay = data.attackToImpactDuration - data.perfectParryWindowDuration;
+            Animate.fromTo(this.m_view.parry_mc,data.parryWindowDuration,parryDelay,{"frames":0},{"frames":60},Animate.Linear);
+            Animate.fromTo(this.m_view.perfect_parry_mc,data.perfectParryWindowDuration,perfectParryDelay,{"frames":0},{"frames":60},Animate.Linear,function():void
+            {
+               m_view.parry_mc.gotoAndStop(0);
+               m_view.perfect_parry_mc.gotoAndStop(0);
+               m_isPerfectParry = false;
+            });
+            this.m_isPerfectParry = true;
+         }
+         if(data.type == this.ATTACK_SIDESTEP && !this.m_isUnblockable || data.type == this.ATTACK_SIDESTEPGRAB && !this.m_isUnblockable)
+         {
+            Animate.fromTo(this.m_view.unblockable_mc,data.attackToImpactDuration,0,{"frames":0},{"frames":60},Animate.Linear,function():void
+            {
+               m_view.unblockable_mc.gotoAndStop(0);
+               m_isUnblockable = false;
+            });
+            this.m_isUnblockable = true;
+         }
       }
       
       private function killAllExceptSuccess() : void
@@ -72,6 +135,14 @@ package knt.hud.melee
          this.alpha = 0;
          this.m_view.visible = false;
          this.m_view.alpha = 0;
+      }
+
+      private function showWidget() : void
+      {
+         this.visible = true;
+         this.alpha = 1;
+         this.m_view.visible = true;
+         this.m_view.alpha = 1;
       }
       
       private function getType(param1:int) : String

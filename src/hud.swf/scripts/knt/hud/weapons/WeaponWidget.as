@@ -160,12 +160,15 @@ package knt.hud.weapons
          this.m_view.ammo_icon_container_mc.visible = false;
          this.m_view.prompt_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.special_prompt_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
+         this.m_view.super_special_prompt_container_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.ammo_bar.numb_mc.filters = [new DropShadowFilter(4,29,0,0.3,4,4,0.4,1)];
          this.m_view.ammo_info_mc.visible = false;
          this.m_view.prompt_container_mc.alpha = 0.6;
          this.m_view.special_prompt_container_mc.alpha = 0.6;
+         this.m_view.super_special_prompt_container_mc.alpha = 0.6;
          this.m_view.prompt_container_mc.visible = false;
          this.m_view.special_prompt_container_mc.visible = false;
+         this.m_view.super_special_prompt_container_mc.visible = false;
          this.m_view.x = HUD_OFFSET_X;
          this.m_view.y = HUD_OFFSET_Y;
          addChild(this.m_view);
@@ -648,6 +651,7 @@ package knt.hud.weapons
                   this.m_view.super_special_prompt_container_mc.addChild(this.m_ESPPrompt);
                   this.m_ESPPromptInstantiated = true;
                }
+               this.m_view.super_special_prompt_container_mc.visible = true;
                if(this.m_ESPPromptInstantiated)
                {
                   if(data.bIsAiming != this.m_isPlayerAiming)
@@ -810,6 +814,7 @@ package knt.hud.weapons
             this.m_view.special_container_mc.alpha = 0;
             this.m_view.prompt_container_mc.alpha = 0;
             this.m_view.special_prompt_container_mc.alpha = 0;
+            this.m_view.super_special_prompt_container_mc.alpha = 0;
             this.m_view.gadget_resource_icon_container_mc.alpha = 0;
             this.m_view.ammo_icon_container_mc.alpha = 0;
             this.m_view.ammo_info_mc.alpha = 0;
@@ -823,6 +828,7 @@ package knt.hud.weapons
             this.m_view.special_container_mc.alpha = 0.4;
             this.m_view.prompt_container_mc.alpha = 0.6;
             this.m_view.special_prompt_container_mc.alpha = 0.6;
+            this.m_view.super_special_prompt_container_mc.alpha = 0.6;
             this.m_view.gadget_resource_icon_container_mc.alpha = 1;
             this.m_view.ammo_icon_container_mc.alpha = 1;
             this.m_view.ammo_info_mc.alpha = 1;
@@ -1150,6 +1156,7 @@ package knt.hud.weapons
          {
             this.m_view.super_special_prompt_container_mc.removeChildAt(0);
          }
+         this.m_view.super_special_prompt_container_mc.visible = false;
          this.m_ESPPrompt = null;
          this.m_ESPPromptIsEnabled = false;
          this.m_ESPPromptPressed = false;
