@@ -303,7 +303,9 @@ Notes on weapon reticle
 
 Notes on no-agency / no-instinct warning
 - Prior attempts to suppress the no-instinct warning through `QLensWidgetReticle`, `WeaponReticleWidget`, and `NPCCombatPromptsWidget` were all reverted after the user confirmed they did not target the actual in-game warning.
-- There is currently no confirmed owner for that warning in the repo notes.
+- The confirmed owner for the centered agency/no-instinct style warning is `knt.hud.notifications.AgencyUnavailableNotificationWidget`, which uses `AgencyUnavailableNotificationWidgetView`.
+- Current mod behavior ports `src/hud.swf/scripts/knt/hud/notifications/AgencyUnavailableNotificationWidget.as` into `src/` and adds `MenuConstantsKnt.SHOW_AGENCY_UNAVAILABLE_NOTIFICATION`, defaulting to `false`.
+- With that flag left at `false`, the widget suppresses only `REASON_INSUFFICIENT_AGENCY` and `REASON_COOLING_DOWN`, while still allowing `REASON_WATCHER_NEARBY` and `REASON_TARGET_TOO_CLOSE` to display.
 
 Testing notes
 - The agent did not run the game. Rebuild/import and verify in-game after changes.
