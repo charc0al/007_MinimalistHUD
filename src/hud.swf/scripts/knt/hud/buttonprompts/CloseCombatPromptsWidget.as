@@ -1,6 +1,9 @@
 package knt.hud.buttonprompts
 {
+   import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
+   import flash.display.Sprite;
    import flash.text.TextField;
    import glacier.basic.ButtonPromptImage;
    import glacier.common.Animate;
@@ -18,6 +21,10 @@ package knt.hud.buttonprompts
       
       private static const PROMPT_SCALE_MULTIPLIER:Number = 0.8;
       
+      private static const HIDDEN_BUTTON_ART_CLIPS:Array = ["bg_mc","background_mc","back_mc","glow_mc","glow01_mc","glow02_mc","glow03_mc","anim_mc","flare_mc","fill_mc","gradient_mc","highlight_mc","pulse_mc","outline_mc","ring_mc","circle_mc","circle1_mc","circle2_mc","circle3_mc"];
+      
+      private static const PRESERVED_BUTTON_ART_CLIPS:Array = ["promptHolder_mc","hold_mc","tap_mc"];
+      
       private const MAX_PROMPTS:int = 6;
       
       private var m_view:CloseCombatPromptsWidgetView;
@@ -27,6 +34,10 @@ package knt.hud.buttonprompts
       private var m_notUsedClips:Vector.<MovieClip>;
       
       private var m_textFields:Vector.<TextField>;
+      
+      private var m_minimalTakedownView:Sprite;
+      
+      private var m_minimalTakedownPrompts:Vector.<ButtonPromptImage>;
       
       private var m_takedown:Boolean = false;
       
@@ -39,6 +50,7 @@ package knt.hud.buttonprompts
          this.m_buttonClips = new Vector.<MovieClip>();
          this.m_notUsedClips = new Vector.<MovieClip>();
          this.m_textFields = new Vector.<TextField>();
+         this.m_minimalTakedownPrompts = new Vector.<ButtonPromptImage>();
          super();
          this.m_view = new CloseCombatPromptsWidgetView();
          addChild(this.m_view);
@@ -54,6 +66,7 @@ package knt.hud.buttonprompts
             _loc3_.prompt.platform = ControlsMain.getControllerType();
             _loc3_.visible = false;
             _loc4_.visible = false;
+            this.hidePromptClipDecoration(_loc3_);
             this.m_buttonClips.push(_loc3_);
             this.m_textFields.push(_loc4_);
             if(_loc2_ < 4)
@@ -62,6 +75,7 @@ package knt.hud.buttonprompts
                if(_loc5_ != null)
                {
                   _loc5_.visible = false;
+                  this.hidePromptClipDecoration(_loc5_);
                   this.m_notUsedClips.push(_loc5_);
                }
             }
@@ -73,6 +87,11 @@ package knt.hud.buttonprompts
          this.m_view.combo_mc.alpha = 0;
          this.m_view.visible = false;
          this.m_view.alpha = 0;
+         this.m_minimalTakedownView = new Sprite();
+         this.m_minimalTakedownView.visible = false;
+         this.m_minimalTakedownView.alpha = 0;
+         addChild(this.m_minimalTakedownView);
+         this.initializeMinimalTakedownView();
       }
       
       public function onSetData(param1:Object) : void
@@ -89,6 +108,10 @@ package knt.hud.buttonprompts
             Animate.to(this.m_view,0.2,0,{"alpha":0},Animate.Linear,function():void
             {
                m_view.visible = false;
+            });
+            Animate.to(this.m_minimalTakedownView,0.2,0,{"alpha":0},Animate.Linear,function():void
+            {
+               m_minimalTakedownView.visible = false;
             });
             Animate.kill(this.m_view.combo_mc.outline_mc);
             return;
@@ -157,8 +180,21 @@ package knt.hud.buttonprompts
          {
             this.m_view.additional_mc.visible = false;
          }
-         this.m_view.visible = true;
-         Animate.to(this.m_view,0.2,0,{"alpha":1},Animate.Linear);
+         if(this.m_takedown)
+         {
+            this.updateMinimalTakedownView(elements);
+            this.m_view.visible = false;
+            this.m_view.alpha = 0;
+            this.m_minimalTakedownView.visible = true;
+            Animate.to(this.m_minimalTakedownView,0.2,0,{"alpha":1},Animate.Linear);
+         }
+         else
+         {
+            this.m_minimalTakedownView.visible = false;
+            this.m_minimalTakedownView.alpha = 0;
+            this.m_view.visible = true;
+            Animate.to(this.m_view,0.2,0,{"alpha":1},Animate.Linear);
+         }
       }
       
       private function comboButtonBlink(param1:Boolean) : void
@@ -166,6 +202,53 @@ package knt.hud.buttonprompts
          Animate.kill(this.m_view.combo_mc.outline_mc);
          this.m_view.combo_mc.outline_mc.visible = false;
          this.m_view.combo_mc.outline_mc.alpha = 0;
+      }
+
+      private function initializeMinimalTakedownView() : void
+      {
+         var promptImage:ButtonPromptImage = null;
+         var i:int = 0;
+         while(i < 2)
+         {
+            promptImage = new ButtonPromptImage();
+            promptImage.visible = false;
+            this.m_minimalTakedownView.addChild(promptImage);
+            this.m_minimalTakedownPrompts.push(promptImage);
+            i++;
+         }
+      }
+
+      private function updateMinimalTakedownView(param1:Array) : void
+      {
+         var promptData:Object = null;
+         var promptElement:Object = null;
+         var promptImage:ButtonPromptImage = null;
+         var i:int = 0;
+         while(i < this.m_minimalTakedownPrompts.length)
+         {
+            promptImage = this.m_minimalTakedownPrompts[i];
+            promptImage.visible = false;
+            if(param1 != null && i < param1.length && param1[i] != null && param1[i].prompt != null && param1[i].prompt.aElements != null && param1[i].prompt.aElements.length > 0)
+            {
+               promptData = param1[i].prompt;
+               promptElement = promptData.aElements[0];
+               promptImage.platform = promptData.controllerType;
+               promptImage.scaleX = promptImage.scaleY = (promptImage.platform == "key" ? 0.8 : 1) * PROMPT_SCALE_MULTIPLIER;
+               promptImage.x = i == 0 ? -22 : 22;
+               promptImage.y = 0;
+               if(promptImage.platform == "key" || promptElement.iconId == -1)
+               {
+                  promptImage.customKey = promptElement.keyGlyph;
+               }
+               else
+               {
+                  promptImage.button = promptElement.iconId;
+               }
+               MenuUtils.addColorFilter(promptImage,[MenuConstantsKnt.COLOR_MATRIX_INVERTED]);
+               promptImage.visible = true;
+            }
+            i++;
+         }
       }
       
       private function showActionButton(param1:int, param2:Object, param3:Boolean, param4:Boolean = false) : void
@@ -176,6 +259,7 @@ package knt.hud.buttonprompts
          var _loc7_:MovieClip = this.m_buttonClips[param1];
          var _loc8_:TextField = this.m_textFields[param1];
          _loc7_.visible = true;
+         this.hidePromptClipDecoration(_loc7_);
          _loc7_.promptHolder_mc.alpha = _loc8_.alpha = _loc7_.hold_mc.alpha = 1;
          if(Boolean(param2.isEnabled) && Boolean(param2.isValid))
          {
@@ -228,6 +312,78 @@ package knt.hud.buttonprompts
                _loc7_.hold_mc.visible = false;
             }
          }
+      }
+      
+      private function hidePromptClipDecoration(param1:MovieClip) : void
+      {
+         if(param1 == null)
+         {
+            return;
+         }
+         this.hidePromptClipDecorationRecursive(param1);
+      }
+      
+      private function hidePromptClipDecorationRecursive(param1:DisplayObjectContainer) : void
+      {
+         var child:DisplayObject = null;
+         var childName:String = null;
+         var i:int = 0;
+         if(param1 == null)
+         {
+            return;
+         }
+         while(i < param1.numChildren)
+         {
+            child = param1.getChildAt(i);
+            childName = child.name != null ? child.name : "";
+            if(this.shouldHidePromptDecoration(childName))
+            {
+               child.visible = false;
+               if("alpha" in child)
+               {
+                  child.alpha = 0;
+               }
+            }
+            else if(child is DisplayObjectContainer && !this.shouldPreservePromptDecoration(childName))
+            {
+               this.hidePromptClipDecorationRecursive(child as DisplayObjectContainer);
+            }
+            i++;
+         }
+      }
+      
+      private function shouldHidePromptDecoration(param1:String) : Boolean
+      {
+         var clipName:String = null;
+         if(param1 == null || param1 == "")
+         {
+            return false;
+         }
+         for each(clipName in HIDDEN_BUTTON_ART_CLIPS)
+         {
+            if(param1 == clipName)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+      
+      private function shouldPreservePromptDecoration(param1:String) : Boolean
+      {
+         var clipName:String = null;
+         if(param1 == null || param1 == "")
+         {
+            return false;
+         }
+         for each(clipName in PRESERVED_BUTTON_ART_CLIPS)
+         {
+            if(param1 == clipName)
+            {
+               return true;
+            }
+         }
+         return false;
       }
       
       private function getTitleStrings(param1:Array) : String

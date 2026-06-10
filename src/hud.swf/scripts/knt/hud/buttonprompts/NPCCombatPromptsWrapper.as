@@ -9,6 +9,12 @@ package knt.hud.buttonprompts
    public class NPCCombatPromptsWrapper extends BaseControl
    {
       
+      private static const TYPE_SILENT_TAKEDOWN:int = 1;
+      
+      private static const TYPE_MELEE_FINISHER:int = 2;
+      
+      private static const TYPE_FAKE_SURRENDER_MELEE_FINISHER:int = 14;
+      
       private var m_aPrompts:Vector.<NPCCombatPromptsWidget>;
       
       private var m_promptsContainer:Sprite;
@@ -73,6 +79,7 @@ package knt.hud.buttonprompts
          var _loc10_:Object = null;
          var _loc11_:Object = null;
          var _loc12_:int = 0;
+         var takedownOnlyFaceButtons:Boolean = false;
          if(param1.id && param1.id == "distance" && param1.isActice == undefined)
          {
             return;
@@ -90,6 +97,7 @@ package knt.hud.buttonprompts
          var _loc6_:int = 0;
          var _loc7_:String = ControlsMain.getControllerType();
          this.m_nowShowingFaceButtonArrangement = this.m_enableFaceButtonArrangement && (_loc7_ == CommonUtils.CONTROLLER_TYPE_PS4 || _loc7_ == CommonUtils.CONTROLLER_TYPE_PS5 || _loc7_ == CommonUtils.CONTROLLER_TYPE_XBOXONE || _loc7_ == CommonUtils.CONTROLLER_TYPE_XBOXSERIESX || _loc7_ == CommonUtils.CONTROLLER_TYPE_PC);
+         takedownOnlyFaceButtons = this.isTakedownFaceButtonPromptSet(param1,_loc7_);
          _loc3_ = 0;
          while(_loc3_ < param1.m_prompts.length)
          {
@@ -119,6 +127,10 @@ package knt.hud.buttonprompts
          }
          this.m_promptsContainer.visible = true;
          this.m_nowShowingFaceButtonArrangement = this.m_nowShowingFaceButtonArrangement && _loc5_ > 1;
+         if(takedownOnlyFaceButtons)
+         {
+            this.m_nowShowingFaceButtonArrangement = false;
+         }
          var _loc8_:int = 0;
          while(_loc8_ < 4)
          {
@@ -272,6 +284,31 @@ package knt.hud.buttonprompts
       public function set forceFaceButtonArrangement(param1:Boolean) : void
       {
          this.m_enableFaceButtonArrangement = param1;
+      }
+      
+      private function isTakedownFaceButtonPromptSet(param1:Object, param2:String) : Boolean
+      {
+         var prompt:Object = null;
+         if(param1 == null || param1.m_prompts == null || !param1.m_prompts.length)
+         {
+            return false;
+         }
+         if(!(param2 == CommonUtils.CONTROLLER_TYPE_PS4 || param2 == CommonUtils.CONTROLLER_TYPE_PS5 || param2 == CommonUtils.CONTROLLER_TYPE_XBOXONE || param2 == CommonUtils.CONTROLLER_TYPE_XBOXSERIESX || param2 == CommonUtils.CONTROLLER_TYPE_PC))
+         {
+            return false;
+         }
+         for each(prompt in param1.m_prompts)
+         {
+            if(prompt == null)
+            {
+               continue;
+            }
+            if(prompt.m_promptType == TYPE_SILENT_TAKEDOWN || prompt.m_promptType == TYPE_MELEE_FINISHER || prompt.m_promptType == TYPE_FAKE_SURRENDER_MELEE_FINISHER)
+            {
+               return true;
+            }
+         }
+         return false;
       }
    }
 }

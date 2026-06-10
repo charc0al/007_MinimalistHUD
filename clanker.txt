@@ -67,6 +67,10 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
 - Slam / combat-rush NPC combat prompt hidden:
   `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+- Close-combat gamepad takedown prompt now bypasses the stock embedded takedown art entirely while takedown is active, hiding the vanilla close-combat widget and rendering a minimal overlay with only the two prompt icons from the live prompt data:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
+- Controller takedown / melee-finisher grouped combat prompts were later traced to `NPCCombatPromptsWrapper` using its 4-slot face-button arrangement with `ConfrontationPromptsNotUsedPrompt` empty markers; current mod behavior now disables that face-button arrangement for takedown/finisher prompt types so the extra empty circles do not render:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWrapper.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
   `src/hud.swf/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Objectives watch gating now also clamps the root control and inner container visibility, which should make checkpoint reloads less likely to resurrect the vanilla top-left list while not aiming the watch:
