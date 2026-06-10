@@ -197,6 +197,21 @@ Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
 - Close-combat prompt ring/outline behavior exposed in script is in `CloseCombatPromptsWidget` via `combo_mc` / `combo_mc.outline_mc`.
 - If circles still remain after testing, the remainder is likely baked into the prompt symbol art or `ButtonPromptImage` rendering rather than a separate controller toggle.
+- The currently working keyboard takedown cleanup came from the `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as` override:
+  it hides takedown title text and removes the vanilla `promptBackground(BACK_TAKEDOWN)` behavior by forcing `button_mc.anim_mc` off instead of letting the vanilla red takedown background animate.
+- Keyboard and controller do not actually follow the same full visual path:
+  keyboard takedowns still use `NPCCombatPromptsWidget`, but controller takedowns also pass through controller-specific prompt rendering in `glacier.basic.ButtonPromptImage` and, for some cases, controller-specific layout in `NPCCombatPromptsWrapper`.
+- Current working theory for controller takedown circles:
+  the large circle that encompasses both controller prompts is not the per-button icon art but the higher-level combo presentation in `NPCCombatPromptsWidget` (`button_mc.combo_mc` plus `combo_shadow_mc`) used when `aElements.length > 1`.
+- Current mod behavior now suppresses that combo layer specifically for takedown-style multi-button prompts (`TYPE_SILENT_TAKEDOWN`, `TYPE_MELEE_FINISHER`, `TYPE_FAKE_SURRENDER_MELEE_FINISHER`) while keeping the two prompt glyphs visible:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+- Non-working findings from failed controller takedown experiments:
+  hiding `CloseCombatPromptsWidget.combo_mc`, `combo_txt`, and `combo_mc.outline_mc` did not remove the controller red rings;
+  recursively hiding likely decoration clip names inside `CloseCombatPromptsWidget` button clips did not remove the controller red rings;
+  replacing `CloseCombatPromptsWidget` takedown display with a minimal two-icon overlay did not remove the controller red rings, which implies that widget was not the actual owner for the tested prompt;
+  disabling the 4-slot face-button arrangement / empty markers in `NPCCombatPromptsWrapper` removed the empty controller circles but did not remove the large red circles around the actual takedown buttons;
+  disabling `ButtonPromptsWrapper` spacing icons did not remove the big red circles for fake-surrender finisher prompts;
+  attempts to strip likely ring/background/glow descendants from `NPCCombatPromptsWidget` prompt slots and from `glacier.basic.ButtonPromptImage` were not confirmed to solve the controller red-circle issue and were reverted.
 
 Notes on direction arrows
 - `AttentionGainWidget` was already overridden and now hard-hides the wedge-based attention indicators in `onSetData()`.

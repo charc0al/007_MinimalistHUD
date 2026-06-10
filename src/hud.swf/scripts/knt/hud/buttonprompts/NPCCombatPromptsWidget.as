@@ -389,10 +389,10 @@ package knt.hud.buttonprompts
          }
          if(param1.aElements.length > 1)
          {
-            this.m_view.button_mc.combo_mc.visible = true;
+            this.m_view.button_mc.combo_mc.visible = !this.isTakedownPromptType(param3);
             this.m_view.button_mc.comboagency_mc.visible = false;
             this.m_view.button_mc.shadows_mc.prompt_shadow_mc.visible = false;
-            this.m_view.button_mc.shadows_mc.combo_shadow_mc.visible = true;
+            this.m_view.button_mc.shadows_mc.combo_shadow_mc.visible = !this.isTakedownPromptType(param3);
             this.m_promptBackCanBeAligned = false;
             if(param3 == TYPE_MELEE_FINISHER)
             {
@@ -423,6 +423,13 @@ package knt.hud.buttonprompts
                this.m_view.button_mc.combo_mc.scaleX = this.m_view.button_mc.combo_mc.scaleY = 1;
                this.m_view.button_mc.combo_mc.x = 0;
                this.m_view.button_mc.shadows_mc.combo_shadow_mc.rotation = 0;
+            }
+            if(this.isTakedownPromptType(param3))
+            {
+               this.m_view.button_mc.combo_mc.visible = false;
+               this.m_view.button_mc.combo_mc.alpha = 0;
+               this.m_view.button_mc.shadows_mc.combo_shadow_mc.visible = false;
+               this.m_view.button_mc.shadows_mc.prompt_shadow_mc.visible = true;
             }
             this.promptBackground(BACK_NONE);
          }
