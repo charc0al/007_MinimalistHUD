@@ -71,6 +71,12 @@ Changes made so far
   `src/hud.swf/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - Controller takedown / melee-finisher grouped combat prompts were later traced to `NPCCombatPromptsWrapper` using its 4-slot face-button arrangement with `ConfrontationPromptsNotUsedPrompt` empty markers; current mod behavior now disables that face-button arrangement for takedown/finisher prompt types so the extra empty circles do not render:
   `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWrapper.as`
+- The remaining controller takedown / melee-finisher red button rings were then traced one layer deeper into `NPCCombatPromptsWidget` prompt-slot art; current mod behavior now recursively strips likely ring/background/glow decoration from `prompt1_mc` / `prompt2_mc` for takedown/finisher prompt types while preserving the actual prompt glyph holders and hold indicators:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/NPCCombatPromptsWidget.as`
+- Fake-surrender finisher prompts also use the separate `MeleeFinisherPrompt` -> `ButtonPromptsWrapper` path rather than `NPCCombatPromptsWidget`; current mod behavior now disables the wrapper's spacing-icon art so only the actual prompt glyphs remain there as well:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptsWrapper.as`
+- The stubborn large red controller circles were finally traced past the takedown widgets into the shared `glacier.basic.ButtonPromptImage` renderer itself; current mod behavior now recursively suppresses likely controller-only ring/background/glow descendants on `button_mc` after controller button/action frame changes, while leaving keyboard prompt text paths alone:
+  `src/hud.swf/scripts/glacier/basic/ButtonPromptImage.as`
 - Top-left objectives widget now only shows while aiming the watch/QLens and is scaled to `0.85`:
   `src/hud.swf/scripts/knt/hud/objectives/ObjectivesWidget.as`
 - Objectives watch gating now also clamps the root control and inner container visibility, which should make checkpoint reloads less likely to resurrect the vanilla top-left list while not aiming the watch:

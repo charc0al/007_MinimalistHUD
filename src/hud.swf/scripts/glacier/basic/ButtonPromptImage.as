@@ -1,5 +1,7 @@
 package glacier.basic
 {
+   import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
    import glacier.common.BaseControl;
@@ -12,6 +14,10 @@ package glacier.basic
    
    public class ButtonPromptImage extends BaseControl
    {
+      
+      private static const HIDDEN_CONTROLLER_DECORATION_CLIPS:Array = ["bg_mc","background_mc","back_mc","glow_mc","glow01_mc","glow02_mc","glow03_mc","anim_mc","flare_mc","fill_mc","gradient_mc","highlight_mc","pulse_mc","outline_mc","ring_mc","circle_mc","circle1_mc","circle2_mc","circle3_mc"];
+      
+      private static const PRESERVED_CONTROLLER_DECORATION_CLIPS:Array = ["key_txt","button_txt"];
       
       private static var s_pool:ObjectPool = new ObjectPool(ButtonPromptImage,20);
       
@@ -124,6 +130,7 @@ package glacier.basic
             }
          }
          this.applyOpenVROffset();
+         this.suppressControllerDecoration();
       }
       
       public function set action(param1:String) : void
@@ -183,6 +190,7 @@ package glacier.basic
             }
          }
          this.applyOpenVROffset();
+         this.suppressControllerDecoration();
       }
       
       public function set customKey(param1:String) : void
@@ -238,6 +246,78 @@ package glacier.basic
             this.m_view.button_mc.button_txt.y = -Math.floor((this.m_view.button_mc.button_txt.textHeight + this.TEXTFIELD_MARGIN) / 2);
          }
          this.resetOpenVROffset();
+      }
+
+      private function suppressControllerDecoration() : void
+      {
+         if(this.m_platform == "key" || this.m_view == null || this.m_view.button_mc == null)
+         {
+            return;
+         }
+         this.suppressControllerDecorationRecursive(this.m_view.button_mc);
+      }
+
+      private function suppressControllerDecorationRecursive(param1:DisplayObjectContainer) : void
+      {
+         var child:DisplayObject = null;
+         var childName:String = null;
+         var i:int = 0;
+         if(param1 == null)
+         {
+            return;
+         }
+         while(i < param1.numChildren)
+         {
+            child = param1.getChildAt(i);
+            childName = child.name != null ? child.name : "";
+            if(this.shouldHideControllerDecoration(childName))
+            {
+               child.visible = false;
+               if("alpha" in child)
+               {
+                  child.alpha = 0;
+               }
+            }
+            else if(child is DisplayObjectContainer && !this.shouldPreserveControllerDecoration(childName))
+            {
+               this.suppressControllerDecorationRecursive(child as DisplayObjectContainer);
+            }
+            i++;
+         }
+      }
+
+      private function shouldHideControllerDecoration(param1:String) : Boolean
+      {
+         var clipName:String = null;
+         if(param1 == null || param1 == "")
+         {
+            return false;
+         }
+         for each(clipName in HIDDEN_CONTROLLER_DECORATION_CLIPS)
+         {
+            if(param1 == clipName)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+
+      private function shouldPreserveControllerDecoration(param1:String) : Boolean
+      {
+         var clipName:String = null;
+         if(param1 == null || param1 == "")
+         {
+            return false;
+         }
+         for each(clipName in PRESERVED_CONTROLLER_DECORATION_CLIPS)
+         {
+            if(param1 == clipName)
+            {
+               return true;
+            }
+         }
+         return false;
       }
       
       private function applyOpenVROffset() : void

@@ -1,5 +1,7 @@
 package knt.hud.buttonprompts
 {
+   import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
    import flash.display.MovieClip;
    import flash.filters.DropShadowFilter;
    import glacier.basic.ButtonPromptImage;
@@ -89,6 +91,10 @@ package knt.hud.buttonprompts
       private static const PERF_PARRY_PREBUFFER:Number = 0.01;
       
       private static const SHOW_PROMPT_HIGHLIGHTS:Boolean = false;
+
+      private static const HIDDEN_PROMPT_SLOT_CLIPS:Array = ["bg_mc","background_mc","back_mc","glow_mc","glow01_mc","glow02_mc","glow03_mc","anim_mc","flare_mc","fill_mc","gradient_mc","highlight_mc","pulse_mc","outline_mc","ring_mc","circle_mc","circle1_mc","circle2_mc","circle3_mc"];
+      
+      private static const PRESERVED_PROMPT_SLOT_CLIPS:Array = ["promptHolder_mc","hold_mc","hold_arrow_mc","tap_mc"];
       
       private const PROMPTS_PER_COMBO:int = 2;
       
@@ -293,6 +299,10 @@ package knt.hud.buttonprompts
                      }
                      _loc15_.hold_mc.visible = false;
                      _loc15_.hold_arrow_mc.visible = false;
+                  }
+                  if(this.isTakedownPromptType(param3))
+                  {
+                     this.hidePromptSlotDecoration(_loc15_);
                   }
                   _loc15_.visible = true;
                   if(param5)
@@ -502,6 +512,78 @@ package knt.hud.buttonprompts
       private function isTakedownPromptType(param1:int) : Boolean
       {
          return param1 == TYPE_SILENT_TAKEDOWN || param1 == TYPE_MELEE_FINISHER || param1 == TYPE_FAKE_SURRENDER_MELEE_FINISHER;
+      }
+
+      private function hidePromptSlotDecoration(param1:MovieClip) : void
+      {
+         if(param1 == null)
+         {
+            return;
+         }
+         this.hidePromptSlotDecorationRecursive(param1);
+      }
+
+      private function hidePromptSlotDecorationRecursive(param1:DisplayObjectContainer) : void
+      {
+         var child:DisplayObject = null;
+         var childName:String = null;
+         var i:int = 0;
+         if(param1 == null)
+         {
+            return;
+         }
+         while(i < param1.numChildren)
+         {
+            child = param1.getChildAt(i);
+            childName = child.name != null ? child.name : "";
+            if(this.shouldHidePromptSlotDecoration(childName))
+            {
+               child.visible = false;
+               if("alpha" in child)
+               {
+                  child.alpha = 0;
+               }
+            }
+            else if(child is DisplayObjectContainer && !this.shouldPreservePromptSlotDecoration(childName))
+            {
+               this.hidePromptSlotDecorationRecursive(child as DisplayObjectContainer);
+            }
+            i++;
+         }
+      }
+
+      private function shouldHidePromptSlotDecoration(param1:String) : Boolean
+      {
+         var clipName:String = null;
+         if(param1 == null || param1 == "")
+         {
+            return false;
+         }
+         for each(clipName in HIDDEN_PROMPT_SLOT_CLIPS)
+         {
+            if(param1 == clipName)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
+
+      private function shouldPreservePromptSlotDecoration(param1:String) : Boolean
+      {
+         var clipName:String = null;
+         if(param1 == null || param1 == "")
+         {
+            return false;
+         }
+         for each(clipName in PRESERVED_PROMPT_SLOT_CLIPS)
+         {
+            if(param1 == clipName)
+            {
+               return true;
+            }
+         }
+         return false;
       }
       
       public function setPromptAlignment(param1:String) : void

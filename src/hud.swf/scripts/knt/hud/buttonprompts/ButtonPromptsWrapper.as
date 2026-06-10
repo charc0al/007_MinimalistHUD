@@ -10,6 +10,8 @@ package knt.hud.buttonprompts
    public class ButtonPromptsWrapper extends Sprite
    {
       
+      private static const SHOW_SPACING_ICONS:Boolean = false;
+      
       private var m_buttonPrompts:Vector.<ButtonPromptImage>;
       
       private var m_buttonPromptSpacingIcons:Vector.<ButtonPromptSpacingImage>;
@@ -62,17 +64,20 @@ package knt.hud.buttonprompts
             if(_loc2_ + 1 < _loc4_.length)
             {
                _loc5_ += _loc7_.width + this.m_spacingAmount;
-               if(_loc3_ >= this.m_buttonPromptSpacingIcons.length)
+               if(SHOW_SPACING_ICONS)
                {
-                  _loc10_ = ButtonPromptSpacingImage.AcquireInstance();
-                  this.m_buttonPromptSpacingIcons.push(_loc10_);
-                  addChild(_loc10_);
+                  if(_loc3_ >= this.m_buttonPromptSpacingIcons.length)
+                  {
+                     _loc10_ = ButtonPromptSpacingImage.AcquireInstance();
+                     this.m_buttonPromptSpacingIcons.push(_loc10_);
+                     addChild(_loc10_);
+                  }
+                  _loc9_ = this.m_buttonPromptSpacingIcons[_loc3_];
+                  _loc9_.x = _loc5_ - _loc7_.width / 2 - this.m_spacingAmount / 2;
+                  _loc9_.y = 40;
+                  _loc9_.visible = true;
+                  _loc3_++;
                }
-               _loc9_ = this.m_buttonPromptSpacingIcons[_loc3_];
-               _loc9_.x = _loc5_ - _loc7_.width / 2 - this.m_spacingAmount / 2;
-               _loc9_.y = 40;
-               _loc9_.visible = true;
-               _loc3_++;
             }
             _loc2_++;
          }
