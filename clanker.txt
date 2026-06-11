@@ -407,3 +407,19 @@ Notes on FFDec duplicate script warning
   FFDec still imports successfully
   `sync_sources_to_gfx.ps1` still exits successfully
   `build_all.ps1` still completes successfully
+
+Notes on build/deploy wrapper
+- `build_all_yolo.ps1` is a wrapper around `build_all.ps1` for local deploy testing.
+- Default game base path is:
+  `C:\Games\007 First Light`
+- Default behavior:
+  delete `chunk0patch272.rpkg` from `<game path>\Runtime`
+  run `.\build_all.ps1`
+  copy `release\chunk0patch272.rpkg` into `<game path>\Runtime`
+  do not launch the game
+- Normal usage:
+  `.\build_all_yolo.ps1`
+- Launch the game after deploy:
+  `.\build_all_yolo.ps1 -LaunchGame`
+- Override the game install path:
+  `.\build_all_yolo.ps1 -GameBasePath "D:\Games\007 First Light"`

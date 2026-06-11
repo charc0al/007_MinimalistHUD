@@ -14,7 +14,7 @@ package knt.common.menu
 
       public static const FORCE_PROMPTS_PS4:Boolean = false;
 
-      public static const FORCE_PROMPTS_PS5:Boolean = false;
+      public static const FORCE_PROMPTS_PS5:Boolean = true;
 
       public static const FORCE_PROMPTS_XBOXONE:Boolean = false;
 
