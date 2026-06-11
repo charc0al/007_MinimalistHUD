@@ -94,10 +94,11 @@ package glacier.basic
       
       public function set platform(param1:String) : void
       {
-         if(this.m_platform != param1)
+         var _loc2_:String = ControlsMain.applyForcedControllerType(param1);
+         if(this.m_platform != _loc2_)
          {
-            this.m_platform = param1;
-            CommonUtils.gotoFrameLabelAndStop(this.m_view,param1);
+            this.m_platform = _loc2_;
+            CommonUtils.gotoFrameLabelAndStop(this.m_view,this.getFrameLabelForPlatform(_loc2_));
          }
       }
       
@@ -256,6 +257,18 @@ package glacier.basic
             }
          }
          this.m_view.y = 0;
+      }
+
+      private function getFrameLabelForPlatform(param1:String) : String
+      {
+         switch(param1)
+         {
+            case CommonUtils.CONTROLLER_TYPE_SWITCHPRO:
+            case CommonUtils.CONTROLLER_TYPE_SWITCHJOYCON:
+               return "nsp";
+            default:
+               return param1;
+         }
       }
       
       private function resetOpenVROffset() : void

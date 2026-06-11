@@ -11,6 +11,18 @@ package knt.common.menu
       public static const DOT_CROSSHAIR:Boolean = true;
 
       public static const VANILLA_Q_WATCH_DISPLAY:Boolean = false;
+
+      public static const FORCE_PROMPTS_PS4:Boolean = false;
+
+      public static const FORCE_PROMPTS_PS5:Boolean = false;
+
+      public static const FORCE_PROMPTS_XBOXONE:Boolean = false;
+
+      public static const FORCE_PROMPTS_XBOXSERIESX:Boolean = false;
+
+      public static const FORCE_PROMPTS_SWITCHPRO:Boolean = false;
+
+      public static const FORCE_PROMPTS_SWITCHJOYCON:Boolean = false;
 	  
       public static var BaseWidth:int = 1920;
       
@@ -217,6 +229,35 @@ package knt.common.menu
       public static var FontColorHudResourceChemical:String = ColorString(COLOR_HUD_RESOURCE_CHEMICAL);
       
       public static var FontColorAgency:String = ColorString(COLOR_AGENCY);
+
+      public static function GetForcedControllerPromptType() : String
+      {
+         if(FORCE_PROMPTS_PS4)
+         {
+            return "ps4";
+         }
+         if(FORCE_PROMPTS_PS5)
+         {
+            return "ps5";
+         }
+         if(FORCE_PROMPTS_XBOXONE)
+         {
+            return "xboxone";
+         }
+         if(FORCE_PROMPTS_XBOXSERIESX)
+         {
+            return "xboxseriesx";
+         }
+         if(FORCE_PROMPTS_SWITCHPRO)
+         {
+            return "nspro";
+         }
+         if(FORCE_PROMPTS_SWITCHJOYCON)
+         {
+            return "nsjc";
+         }
+         return "";
+      }
       
       public static const FONT_TYPE_LIGHT:String = "$light";
       
