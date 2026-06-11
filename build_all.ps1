@@ -1,3 +1,7 @@
+param(
+    [switch]$SkipSourceSync
+)
+
 $ErrorActionPreference = "Stop"
 
 Set-StrictMode -Version Latest
@@ -11,6 +15,7 @@ $releaseRoot = Join-Path $projectRoot "release"
 $finalPatchPath = Join-Path $releaseRoot "chunk0patch272.rpkg"
 $postRebuildDelaySeconds = 5
 $rebuiltWaitTimeoutSeconds = 120
+$sourceSyncScriptPath = Join-Path $projectRoot "sync_sources_to_gfx.ps1"
 
 function Write-Step {
     param([string]$Message)
@@ -185,6 +190,19 @@ $swfRoots = @(
     (Join-Path $projectRoot "src\hud.swf"),
     (Join-Path $projectRoot "src\menu.swf")
 )
+
+if (-not $SkipSourceSync) {
+    if (-not (Test-Path -LiteralPath $sourceSyncScriptPath)) {
+        throw "Source sync script not found: '$sourceSyncScriptPath'."
+    }
+
+    Write-Step "Syncing ActionScript sources into GFX files"
+    & $sourceSyncScriptPath
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Source sync failed with exit code $LASTEXITCODE."
+    }
+}
 
 if (-not (Test-Path -LiteralPath $releaseRoot)) {
     New-Item -ItemType Directory -Path $releaseRoot | Out-Null

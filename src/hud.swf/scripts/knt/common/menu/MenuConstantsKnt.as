@@ -2,7 +2,16 @@ package knt.common.menu
 {
    public class MenuConstantsKnt
    {
-      
+      public static const SHOW_MELEE_ATTACK_WIDGET:Boolean = false;
+
+      public static const SHOW_PICKUP_NOTIFICATIONS:Boolean = false;
+
+      public static const SHOW_AGENCY_UNAVAILABLE_NOTIFICATION:Boolean = false;
+
+      public static const DOT_CROSSHAIR:Boolean = true;
+
+      public static const VANILLA_Q_WATCH_DISPLAY:Boolean = false;
+	  
       public static var BaseWidth:int = 1920;
       
       public static var BaseHeight:int = 1080;
@@ -236,16 +245,6 @@ package knt.common.menu
       public static const COLOR_MATRIX_RED:Array = [1,0,0,0,0,0,0.05098039215686274,0,0,0,0,0,0.07058823529411765,0,0,0,0,0,1,0];
       
       public static const COLOR_MATRIX_GREY:Array = [0.75,0,0,0,0,0,0.75,0,0,0,0,0,0.75,0,0,0,0,0,1,0];
-
-      public static const SHOW_MELEE_ATTACK_WIDGET:Boolean = false;
-
-      public static const SHOW_PICKUP_NOTIFICATIONS:Boolean = false;
-
-      public static const SHOW_AGENCY_UNAVAILABLE_NOTIFICATION:Boolean = false;
-
-      public static const DOT_CROSSHAIR:Boolean = false;
-
-      public static const VANILLA_Q_WATCH_DISPLAY:Boolean = false;
       
       public function MenuConstantsKnt()
       {

@@ -1,4 +1,4 @@
-MinimalistHUD project notes for future Codex agents
+Immersive HUD Project Notes
 
 Project structure
 - `src/` contains the modded source set used for rebuilding/importing, split by SWF:
