@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$rpkgToolRoot = Join-Path $projectRoot "RPKGTool"
+$rpkgToolRoot = Join-Path $projectRoot "tools\rpkg-cli"
 $rebuildSourceRoot = Join-Path $projectRoot "rebuild"
 $rebuildOutputRoot = Join-Path $projectRoot "rebuild_output"
 $rebuildGfxfTargetRoot = Join-Path $rebuildSourceRoot "chunk0\GFXF"

@@ -352,3 +352,58 @@ Notes on nuclear tutorial suppression
   `src/menu.swf/scripts/knt/hud/objectives/ObjectivesNotificationItemWidget.as`
   `src/menu.swf/scripts/knt/hud/objectives/ObjectivesNotificationWidget.as`
 - This is intentionally broader than the prior `0.5` scale treatment and will also suppress non-tutorial center notifications that share those controller paths.
+
+Build / tooling notes
+- Tool binaries are not part of source control and now live under `tools/`.
+- Current layout:
+  `tools/ffdec/` for JPEXS / FFDec CLI
+  `tools/rpkg-cli/` for the RPKG CLI payload used by rebuild/repack steps
+- `build_all.ps1` is now the normal full build entry point.
+- Default `build_all.ps1` flow:
+  run `sync_sources_to_gfx.ps1`
+  import `src/hud.swf/scripts/...` into `src/hud.swf/gfx/.../01262EED9D687969.GFXF.GFX`
+  import `src/menu.swf/scripts/...` into `src/menu.swf/gfx/.../01A837AF55107DEC.GFXF.GFX`
+  rebuild GFXF payloads with `rpkg-cli.exe`
+  generate `release/chunk0patch272.rpkg`
+- Old repack-only behavior is still available with:
+  `.\build_all.ps1 -SkipSourceSync`
+
+Notes on source sync automation
+- `sync_sources_to_gfx.ps1` is the new ActionScript import step.
+- It uses FFDec CLI `-importScript` directly against the extracted `.GFX` binaries.
+- Normal usage:
+  `.\sync_sources_to_gfx.ps1`
+- Single-target usage:
+  `.\sync_sources_to_gfx.ps1 -Target hud`
+  `.\sync_sources_to_gfx.ps1 -Target menu`
+- This script updates the embedded script content inside the `.GFX` files only; it does not rebuild the final patch by itself.
+
+Notes on tool bootstrap
+- `bootstrap_tools.cmd` is the convenience entry point for restoring the ignored tool payloads.
+- It wraps `bootstrap_tools.ps1`.
+- Normal usage:
+  `bootstrap_tools.cmd`
+- Reinstall / overwrite existing tools:
+  `bootstrap_tools.cmd -Force`
+- Current bootstrap behavior:
+  installs FFDec from the pinned public release URL into `tools/ffdec`
+  installs the First Light RPKG CLI into `tools/rpkg-cli`
+- The exact First Light RPKG CLI build currently used by this repo is `first-light-d819b38-rpkg-cli.zip`.
+- There was no confirmed stable public release URL for that exact branch build during automation work, so `bootstrap_tools.ps1` currently defaults to the local cached archive path:
+  `Z:\Code\RPKGTool\downloaded-builds\first-light-d819b38-rpkg-cli.zip`
+- If a stable direct URL for that CLI zip is available later, bootstrap can be pointed at it with:
+  `bootstrap_tools.cmd -RpkgCliUrl "https://..."`
+
+Notes on FFDec duplicate script warning
+- FFDec prints this warning during HUD script import/export:
+  `WARNING: Duplicate scriptpack path found (knt.hud.agency.AgencySelectorWidget)!`
+- This duplicate does not come from `src/`; `src/hud.swf/scripts/knt/hud/agency/AgencySelectorWidget.as` exists only once locally.
+- The duplicate exists inside the embedded HUD `.GFX` binary itself.
+- Full export of the HUD `.GFX` produced both:
+  `AgencySelectorWidget.as`
+  `AgencySelectorWidget_2.as`
+- Those two exported files were checked and are byte-identical, so this appears to be a harmless duplication in the original asset rather than two different implementations.
+- Current observed behavior:
+  FFDec still imports successfully
+  `sync_sources_to_gfx.ps1` still exits successfully
+  `build_all.ps1` still completes successfully
