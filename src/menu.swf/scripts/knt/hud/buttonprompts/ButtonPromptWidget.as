@@ -11,6 +11,7 @@ package knt.hud.buttonprompts
    import glacier.common.menu.MenuUtils;
    import knt.common.hud.KntHudUtils;
    import knt.common.menu.MenuConstantsKnt;
+   import knt.hud.objectives.ObjectivesMarkerWidget;
    import knt.hud.*;
    
    public class ButtonPromptWidget extends BaseControl
@@ -578,20 +579,28 @@ package knt.hud.buttonprompts
          this.m_view.shadows_mc.description_shadow_mc.visible = false;
          this.m_view.title_mc.title_txt.y = -15;
          this.m_view.shadows_mc.title_shadow_mc.y = 0;
-         this.m_view.collapsed_mc.outline_mc.alpha = 1;
-         this.m_view.collapsed_mc.fill_mc.alpha = 1;
-         MenuUtils.setColor(this.m_view.collapsed_mc.fill_mc,MenuConstantsKnt.COLOR_WHITE);
-         this.m_view.collapsed_mc.visible = true;
-         Animate.to(this.m_view.collapsed_mc,0.1,0,{
-            "scaleX":1.6,
-            "scaleY":1.6
-         },Animate.ExpoOut,function():void
+         if(ObjectivesMarkerWidget.s_isAimingWatchGlobal)
          {
-            Animate.to(m_view.collapsed_mc,0.2,0,{
-               "scaleX":1.2,
-               "scaleY":1.2
-            },Animate.BackOut);
-         });
+            this.m_view.collapsed_mc.outline_mc.alpha = 1;
+            this.m_view.collapsed_mc.fill_mc.alpha = 1;
+            MenuUtils.setColor(this.m_view.collapsed_mc.fill_mc,MenuConstantsKnt.COLOR_WHITE);
+            this.m_view.collapsed_mc.visible = true;
+            Animate.to(this.m_view.collapsed_mc,0.1,0,{
+               "scaleX":1.6,
+               "scaleY":1.6
+            },Animate.ExpoOut,function():void
+            {
+               Animate.to(m_view.collapsed_mc,0.2,0,{
+                  "scaleX":1.2,
+                  "scaleY":1.2
+               },Animate.BackOut);
+            });
+         }
+         else
+         {
+            this.m_view.collapsed_mc.visible = false;
+            this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
+         }
          this.showCollectibleIcon(false);
          this.showResourceType(false,-1);
       }
@@ -661,7 +670,7 @@ package knt.hud.buttonprompts
          this.m_view.collapsed_mc.outline_mc.alpha = 1;
          this.m_view.collapsed_mc.fill_mc.alpha = 0.7;
          MenuUtils.setColor(this.m_view.collapsed_mc.fill_mc,MenuConstantsKnt.COLOR_GREY_LIGHT);
-         if(data.eResourceType == -1 || this.shouldSuppressResourceTypeIcon(data))
+         if((data.eResourceType == -1 || this.shouldSuppressResourceTypeIcon(data)) && ObjectivesMarkerWidget.s_isAimingWatchGlobal)
          {
             this.m_view.collapsed_mc.visible = true;
             this.showResourceType(false,-1);
@@ -686,6 +695,12 @@ package knt.hud.buttonprompts
                   "scaleY":1
                },Animate.BackOut);
             }
+         }
+         else if(data.eResourceType == -1 || this.shouldSuppressResourceTypeIcon(data))
+         {
+            this.showResourceType(false,-1);
+            this.m_view.collapsed_mc.visible = false;
+            this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
          }
          else
          {
@@ -747,9 +762,12 @@ package knt.hud.buttonprompts
             return;
          }
          this.syncResourceIconSuppression();
-         this.m_view.collapsed_mc.visible = false;
-         this.m_view.collapsed_mc.alpha = 0;
-         this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
+         if(!this.shouldShowCollapsedPromptInQLens())
+         {
+            this.m_view.collapsed_mc.visible = false;
+            this.m_view.collapsed_mc.alpha = 0;
+            this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
+         }
          _loc2_ = 0;
          while(_loc2_ < this.m_promptInstances.length)
          {
@@ -841,6 +859,11 @@ package knt.hud.buttonprompts
          {
             this.showResourceType(false,-1);
          }
+      }
+
+      private function shouldShowCollapsedPromptInQLens() : Boolean
+      {
+         return ObjectivesMarkerWidget.s_isAimingWatchGlobal && this.m_data != null && this.m_data.eResourceType == -1 && (this.m_eState == STATE_AVAILABLE || this.m_eState == STATE_COLLAPSED);
       }
       
       public function doesInputDataMatch(param1:Array) : Boolean

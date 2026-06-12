@@ -6,6 +6,7 @@ package knt.hud.attentiongain
    import glacier.common.BaseControl;
    import glacier.common.menu.MenuUtils;
    import knt.common.menu.MenuConstantsKnt;
+   import knt.hud.objectives.ObjectivesMarkerWidget;
    import knt.hud.*;
    
    public class AttentionGainWidget extends BaseControl
@@ -51,11 +52,60 @@ package knt.hud.attentiongain
       
       public function onSetData(param1:Array) : void
       {
-         this.hideAllWedges();
+         var _loc2_:Object = null;
+         var _loc3_:AttentionGainWidgetView = null;
+         var _loc4_:int = 0;
+         if(!ObjectivesMarkerWidget.s_isAimingWatchGlobal)
+         {
+            this.hideAllWedges();
+            return;
+         }
+         this.m_wedgeContainer.visible = true;
+         this.m_wedgeContainer.alpha = 1;
+         while(param1.length > this.m_aWedges.length)
+         {
+            this.m_aWedges.push(this.addNewWedge());
+         }
+         this.i = 0;
+         while(this.i < param1.length)
+         {
+            _loc2_ = param1[this.i];
+            _loc3_ = this.m_aWedges[this.i].iWedge;
+            _loc3_.visible = true;
+            this.m_aWedges[this.i].activated = true;
+            _loc3_.rotation = -_loc2_.m_angle;
+            if(_loc2_.m_attention > 0)
+            {
+               if(_loc2_.m_prevAttention < 1 && _loc2_.m_attention >= 1)
+               {
+                  this.playFullAttentionAnim(_loc3_,this.i);
+               }
+               else if(_loc2_.m_attention < 1)
+               {
+                  _loc4_ = this.attentionToWedgeFrame(_loc2_.m_attention,_loc2_.m_identificationThresholdToReact,_loc2_.m_identificationThresholdToInvestigate);
+                  _loc3_.wedge_mc.yellow_mc.gotoAndStop(_loc4_);
+                  _loc3_.wedge_mc.white_mc.gotoAndStop(_loc4_);
+                  _loc3_.wedge_mc.bg_mc.gotoAndStop(_loc4_);
+               }
+            }
+            ++this.i;
+         }
+         while(this.i < this.m_aWedges.length)
+         {
+            this.m_aWedges[this.i].iWedge.visible = false;
+            ++this.i;
+         }
       }
       
       private function playFullAttentionAnim(param1:AttentionGainWidgetView, param2:int) : void
       {
+         var iWedge:AttentionGainWidgetView = param1;
+         var index:int = param2;
+         Animate.fromTo(iWedge.wedge_mc.yellow_mc,0.8,0,{"frames":123},{"frames":165},Animate.Linear);
+         Animate.fromTo(iWedge.wedge_mc.white_mc,0.8,0,{"frames":123},{"frames":165},Animate.Linear);
+         Animate.fromTo(iWedge.wedge_mc.bg_mc,0.8,0,{"frames":123},{"frames":165},Animate.Linear,function():void
+         {
+         });
       }
       
       private function attentionToWedgeFrame(param1:Number, param2:Number, param3:Number) : int
