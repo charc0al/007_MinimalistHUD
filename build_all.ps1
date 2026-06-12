@@ -184,12 +184,27 @@ function Clear-TargetGfxfFiles {
         }
 }
 
-$rpkgCliPath = Get-RpkgCliPath -ToolRoot $rpkgToolRoot
+function Get-SwfRoots {
+    param([string]$SourceRoot)
 
-$swfRoots = @(
-    (Join-Path $projectRoot "src\hud.swf"),
-    (Join-Path $projectRoot "src\menu.swf")
-)
+    $swfRoots = @(
+        Get-ChildItem -LiteralPath $SourceRoot -Directory -Filter "*.swf" |
+        Where-Object {
+            Test-Path -LiteralPath (Join-Path $_.FullName "gfx\GFXF\chunk0.rpkg")
+        } |
+        Sort-Object Name |
+        Select-Object -ExpandProperty FullName
+    )
+
+    if ($swfRoots.Count -eq 0) {
+        throw "No SWF roots with gfx payloads were found under '$SourceRoot'."
+    }
+
+    return $swfRoots
+}
+
+$rpkgCliPath = Get-RpkgCliPath -ToolRoot $rpkgToolRoot
+$swfRoots = @(Get-SwfRoots -SourceRoot (Join-Path $projectRoot "src"))
 
 if (-not $SkipSourceSync) {
     if (-not (Test-Path -LiteralPath $sourceSyncScriptPath)) {
