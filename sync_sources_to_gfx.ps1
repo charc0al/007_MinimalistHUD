@@ -1,5 +1,4 @@
 param(
-    [ValidateSet("all", "hud", "menu")]
     [string]$Target = "all"
 )
 
@@ -93,23 +92,47 @@ function Sync-ScriptsIntoGfx {
     }
 }
 
+function Get-SwfTargets {
+    param([string]$SourceRoot)
+
+    $targets = @()
+    $swfRoots = Get-ChildItem -LiteralPath $SourceRoot -Directory -Filter "*.swf" | Sort-Object Name
+    foreach ($swfRoot in $swfRoots) {
+        $gfxRoot = Join-Path $swfRoot.FullName "gfx\GFXF\chunk0.rpkg"
+        $scriptsRoot = Join-Path $swfRoot.FullName "scripts"
+        if (-not (Test-Path -LiteralPath $gfxRoot) -or -not (Test-Path -LiteralPath $scriptsRoot)) {
+            continue
+        }
+
+        $gfxFile = Get-ChildItem -LiteralPath $gfxRoot -Recurse -File -Filter "*.GFX" | Select-Object -First 1
+        if ($null -eq $gfxFile) {
+            continue
+        }
+
+        $targets += @{
+            Name = [System.IO.Path]::GetFileNameWithoutExtension($swfRoot.Name)
+            SwfName = $swfRoot.Name
+            GfxPath = $gfxFile.FullName
+            ScriptsPath = $scriptsRoot
+        }
+    }
+
+    if ($targets.Count -eq 0) {
+        throw "No SWF targets with both scripts and GFX payloads were found under '$SourceRoot'."
+    }
+
+    return $targets
+}
+
 $ffdecCliPath = Get-FfdecCliPath -Root $projectRoot
 
-$targets = @(
-    @{
-        Name = "hud"
-        GfxPath = Join-Path $projectRoot "src\hud.swf\gfx\GFXF\chunk0.rpkg\01262EED9D687969.GFXF\01262EED9D687969.GFXF.GFX"
-        ScriptsPath = Join-Path $projectRoot "src\hud.swf\scripts"
-    },
-    @{
-        Name = "menu"
-        GfxPath = Join-Path $projectRoot "src\menu.swf\gfx\GFXF\chunk0.rpkg\01A837AF55107DEC.GFXF\01A837AF55107DEC.GFXF.GFX"
-        ScriptsPath = Join-Path $projectRoot "src\menu.swf\scripts"
-    }
-)
+$targets = @(Get-SwfTargets -SourceRoot (Join-Path $projectRoot "src"))
 
 if ($Target -ne "all") {
-    $targets = @($targets | Where-Object { $_.Name -eq $Target })
+    $targets = @($targets | Where-Object { $_.Name -eq $Target -or $_.SwfName -eq $Target -or $_.SwfName -eq ($Target + ".swf") })
+    if ($targets.Count -eq 0) {
+        throw "Unknown sync target '$Target'. Available targets: $((Get-SwfTargets -SourceRoot (Join-Path $projectRoot "src") | ForEach-Object { $_.Name }) -join ', ')"
+    }
 }
 
 foreach ($targetInfo in $targets) {
