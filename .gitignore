@@ -1,7 +1,13 @@
-*.dds
+src/*.dds
 src_vanilla
 RPKGTool/
 *.zip
 src_menu_vanilla/
 src/rpkg/GFXF/chunk0.rpkg/01A837AF55107DEC.GFXF/GFXF.rebuilt/01A837AF55107DEC.GFXF
 tools/
+src/knt.basic.swf/gfx/GFXF/chunk0.rpkg/01ED9810BECDC7AC.GFXF/*.dds
+src/menu.swf/gfx/GFXF/chunk0.rpkg/01A837AF55107DEC.GFXF/*.dds
+src/hud.swf/gfx/GFXF/chunk0.rpkg/01262EED9D687969.GFXF/*.dds
+src/glacier.hud.swf/gfx/GFXF/chunk0.rpkg/013D376EA2DB755C.GFXF/*.dds
+src/glacier.common.swf/gfx/GFXF/chunk0.rpkg/01708F6A4E00CD0E.GFXF/*.dds
+src/glacier.basic.swf/gfx/GFXF/chunk0.rpkg/015B563EE32DBD84.GFXF/*.dds
