@@ -1,5 +1,6 @@
 param(
-    [switch]$SkipSourceSync
+    [switch]$SkipSourceSync,
+    [switch]$IncludeAssetOnlySwfs
 )
 
 $ErrorActionPreference = "Stop"
@@ -178,19 +179,24 @@ function Clear-TargetGfxfFiles {
         throw "Destination GFXF directory not found: '$DestinationRoot'."
     }
 
-    Get-ChildItem -LiteralPath $DestinationRoot -File -Filter "*.GFXF" |
+    Get-ChildItem -LiteralPath $DestinationRoot -Recurse -File -Filter "*.GFXF" |
         ForEach-Object {
             Remove-Item -LiteralPath $_.FullName -Force
         }
 }
 
 function Get-SwfRoots {
-    param([string]$SourceRoot)
+    param(
+        [string]$SourceRoot,
+        [switch]$IncludeAssetOnly
+    )
 
     $swfRoots = @(
         Get-ChildItem -LiteralPath $SourceRoot -Directory -Filter "*.swf" |
         Where-Object {
-            Test-Path -LiteralPath (Join-Path $_.FullName "gfx\GFXF\chunk0.rpkg")
+            $hasGfx = Test-Path -LiteralPath (Join-Path $_.FullName "gfx\GFXF\chunk0.rpkg")
+            $hasScripts = Test-Path -LiteralPath (Join-Path $_.FullName "scripts")
+            $hasGfx -and ($IncludeAssetOnly -or $hasScripts)
         } |
         Sort-Object Name |
         Select-Object -ExpandProperty FullName
@@ -204,7 +210,7 @@ function Get-SwfRoots {
 }
 
 $rpkgCliPath = Get-RpkgCliPath -ToolRoot $rpkgToolRoot
-$swfRoots = @(Get-SwfRoots -SourceRoot (Join-Path $projectRoot "src"))
+$swfRoots = @(Get-SwfRoots -SourceRoot (Join-Path $projectRoot "src") -IncludeAssetOnly:$IncludeAssetOnlySwfs)
 
 if (-not $SkipSourceSync) {
     if (-not (Test-Path -LiteralPath $sourceSyncScriptPath)) {

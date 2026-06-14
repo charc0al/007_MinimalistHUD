@@ -100,7 +100,9 @@ function Get-SwfTargets {
     foreach ($swfRoot in $swfRoots) {
         $gfxRoot = Join-Path $swfRoot.FullName "gfx\GFXF\chunk0.rpkg"
         $scriptsRoot = Join-Path $swfRoot.FullName "scripts"
-        if (-not (Test-Path -LiteralPath $gfxRoot) -or -not (Test-Path -LiteralPath $scriptsRoot)) {
+        $hasGfx = Test-Path -LiteralPath $gfxRoot
+        $hasScripts = Test-Path -LiteralPath $scriptsRoot
+        if (-not $hasGfx -or -not $hasScripts) {
             continue
         }
 
