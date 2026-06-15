@@ -215,6 +215,8 @@ Notes on standard button prompts
 - Current mod behavior adds `VANILLA_TEXT_PROMPTS`, defaulting to `false`, which disables the shared `sStatus` line plus its `blocked_mc` / `illegal_mc` / `unblocked_mc` badge treatment so prompts render like a plain title without the under-title warning/exclamation presentation.
 - Current mod behavior adds `DEBUG_PROMPT_METADATA`, defaulting to `false`, which appends a compact payload summary to the shared prompt title:
   `[BS:<blockedStatus> LEG:<0|1> RES:<resourceType> PT:<promptType>]`
+- Current mod behavior adds `CRUSH_BUTTON_PROMPTS`, defaulting to `false`.
+- With `CRUSH_BUTTON_PROMPTS == true`, when a shared interaction prompt has a gray uppercase header/description, that header text is promoted into the main white prompt text position and the original gray header line is hidden, so action words like `Swap` no longer display separately.
 - Useful non-agility prompt payload fields already visible in shared script include:
   `eBlockedStatus`
   `bIsLegal`
@@ -230,6 +232,9 @@ Notes on standard button prompts
 - The fix was to keep the new hide helpers (`applyAgilityTextVisibility` and pickup text suppression) hide-only, so they never explicitly restore visibility from previously cached field text.
 - Another regression was introduced where fully hidden agility prompts could inherit the previous prompt's glyph/text because the early-return hide path did not clear existing prompt instances.
 - The fix was to make the full-hide agility path explicitly release prompt instances and hide all prompt UI before returning.
+- A later regression in `CRUSH_BUTTON_PROMPTS` caused item-name label text to appear from far away in the same cases where vanilla would only show the out-of-range interaction indicator circle.
+- The cause was the crush logic reusing `sDescription` / header text during `ButtonPromptWidget`'s `STATE_COLLAPSED` path, which is the shared out-of-range/collapsed interaction state.
+- The fix was to limit the crush behavior to the normal selected/in-range state only and leave the collapsed/out-of-range state uncrushed.
 - Checkpoint-reload inconsistency during this work was traced to the menu-side duplicate `ButtonPromptWidget` still running older logic while the HUD-side widget had the new prompt suppression behavior.
 - Current mod behavior now mirrors the same agility/text/debug/pickup suppression logic into the menu-side duplicate `ButtonPromptWidget`.
 - The repo now also contains a mirrored overridden `MenuConstantsKnt` for menu SWF:

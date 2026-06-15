@@ -12,14 +12,16 @@ package knt.common.menu
 
       public static const VANILLA_TEXT_PROMPTS:Boolean = false;
 
-      public static const DEBUG_AGILITY_TYPES:Boolean = true;
+      public static const DEBUG_AGILITY_TYPES:Boolean = false;
 
       public static const DEBUG_PROMPT_METADATA:Boolean = false;
 
-      public static const DOT_CROSSHAIR:Boolean = false;
+      public static const CRUSH_BUTTON_PROMPTS:Boolean = true;
+
+      public static const DOT_CROSSHAIR:Boolean = true;
 
       public static const VANILLA_Q_WATCH_DISPLAY:Boolean = false;
-	  
+      
       public static var BaseWidth:int = 1920;
       
       public static var BaseHeight:int = 1080;

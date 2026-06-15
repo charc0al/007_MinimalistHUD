@@ -232,6 +232,7 @@ package knt.hud.buttonprompts
       private function setStateSelected(param1:Object) : void
       {
          var agilityDebugPrefix:String = null;
+         var crushedPromptTitle:String = null;
          var promptDebugSuffix:String = null;
          var _loc12_:String = null;
          var _loc13_:Boolean = false;
@@ -301,6 +302,11 @@ package knt.hud.buttonprompts
             {
                _loc6_ += promptDebugSuffix;
             }
+         }
+         crushedPromptTitle = this.getCrushedPromptTitle(param1);
+         if(crushedPromptTitle != "")
+         {
+            _loc6_ = crushedPromptTitle;
          }
          if(param1.aElements.length > 0)
          {
@@ -382,6 +388,7 @@ package knt.hud.buttonprompts
             this.m_view.shadows_mc.title_shadow_mc.y = 0;
          }
          this.applyAgilityTextVisibility(param1);
+         this.applyCrushedPromptVisibility(crushedPromptTitle);
          this.applySuppressedPickupPromptTextVisibility(param1);
          if(_loc8_)
          {
@@ -876,6 +883,19 @@ package knt.hud.buttonprompts
          return MenuConstantsKnt.VANILLA_TEXT_PROMPTS;
       }
 
+      private function getCrushedPromptTitle(param1:Object) : String
+      {
+         if(!MenuConstantsKnt.CRUSH_BUTTON_PROMPTS)
+         {
+            return "";
+         }
+         if(param1 == null || param1.sDescription == null || param1.sDescription == "" || param1.sDescription == " ")
+         {
+            return "";
+         }
+         return String(param1.sDescription);
+      }
+
       private function shouldHideAgilityPromptCompletely(param1:Object) : Boolean
       {
          if(param1 == null || MenuConstantsKnt.SHOW_AGILITY_VANILLA)
@@ -918,6 +938,21 @@ package knt.hud.buttonprompts
             this.m_view.title_mc.illegal_mc.visible = false;
             this.m_view.title_mc.unblocked_mc.visible = false;
          }
+      }
+
+      private function applyCrushedPromptVisibility(param1:String) : void
+      {
+         if(param1 == "")
+         {
+            return;
+         }
+         this.m_view.title_mc.description_txt.visible = false;
+         this.m_view.shadows_mc.description_shadow_mc.visible = false;
+         this.m_view.title_mc.status_txt.visible = false;
+         this.m_view.shadows_mc.status_shadow_mc.visible = false;
+         this.m_view.title_mc.blocked_mc.visible = false;
+         this.m_view.title_mc.illegal_mc.visible = false;
+         this.m_view.title_mc.unblocked_mc.visible = false;
       }
 
       private function applySuppressedPickupPromptTextVisibility(param1:Object) : void
