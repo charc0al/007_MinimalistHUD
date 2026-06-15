@@ -232,6 +232,7 @@ package knt.hud.buttonprompts
       private function setStateSelected(param1:Object) : void
       {
          var agilityDebugPrefix:String = null;
+         var promptDebugSuffix:String = null;
          var _loc12_:String = null;
          var _loc13_:Boolean = false;
          var _loc14_:ButtonPromptImage = null;
@@ -293,6 +294,14 @@ package knt.hud.buttonprompts
             agilityDebugPrefix = "[AG:" + param1.eAgilityType + "] ";
             _loc6_ = agilityDebugPrefix + _loc6_;
          }
+         if(MenuConstantsKnt.DEBUG_PROMPT_METADATA)
+         {
+            promptDebugSuffix = this.getPromptDebugSuffix(param1);
+            if(promptDebugSuffix != "")
+            {
+               _loc6_ += promptDebugSuffix;
+            }
+         }
          if(param1.aElements.length > 0)
          {
             this.m_iconId = param1.aElements[0].iconId;
@@ -340,10 +349,10 @@ package knt.hud.buttonprompts
          {
             _loc11_ = param1.sStatus;
          }
-         this.m_view.title_mc.blocked_mc.visible = _loc2_ && param1.eAgilityType != AGILITY_TYPE_SWAP_COVER && !_loc4_ && !this.m_isAgencyPrompt && _loc11_ != "";
-         this.m_view.title_mc.illegal_mc.visible = _loc4_ && !this.m_isAgencyPrompt;
-         this.m_view.title_mc.unblocked_mc.visible = _loc3_ && param1.eAgilityType != AGILITY_TYPE_SWAP_COVER && !_loc4_ && !this.m_isAgencyPrompt;
-         if((_loc11_ != "" || _loc2_ || _loc3_ || _loc4_) && param1.eAgilityType != AGILITY_TYPE_SWAP_COVER)
+         this.m_view.title_mc.blocked_mc.visible = this.shouldShowVanillaPromptStatus(param1) && _loc2_ && param1.eAgilityType != AGILITY_TYPE_SWAP_COVER && !_loc4_ && !this.m_isAgencyPrompt && _loc11_ != "";
+         this.m_view.title_mc.illegal_mc.visible = this.shouldShowVanillaPromptStatus(param1) && _loc4_ && !this.m_isAgencyPrompt;
+         this.m_view.title_mc.unblocked_mc.visible = this.shouldShowVanillaPromptStatus(param1) && _loc3_ && param1.eAgilityType != AGILITY_TYPE_SWAP_COVER && !_loc4_ && !this.m_isAgencyPrompt;
+         if(this.shouldShowVanillaPromptStatus(param1) && (_loc11_ != "" || _loc2_ || _loc3_ || _loc4_) && param1.eAgilityType != AGILITY_TYPE_SWAP_COVER)
          {
             if(_loc11_ == "")
             {
@@ -596,6 +605,10 @@ package knt.hud.buttonprompts
          {
             title = "[AG:" + data.eAgilityType + "] " + title;
          }
+         if(MenuConstantsKnt.DEBUG_PROMPT_METADATA)
+         {
+            title += this.getPromptDebugSuffix(data);
+         }
          this.releaseAllPromptInstances();
          this.m_view.title_mc.blocked_mc.visible = false;
          this.m_view.title_mc.illegal_mc.visible = false;
@@ -641,10 +654,14 @@ package knt.hud.buttonprompts
          {
             title = "[AG:" + data.eAgilityType + "] " + title;
          }
+         if(MenuConstantsKnt.DEBUG_PROMPT_METADATA)
+         {
+            title += this.getPromptDebugSuffix(data);
+         }
          MenuUtils.setupText(this.m_view.title_mc.title_txt,title,21,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorWhite);
          this.m_view.shadows_mc.title_shadow_mc.width = this.m_view.title_mc.title_txt.textWidth + TITLE_SHADOW_EXTRA_WIDTH;
          this.m_view.shadows_mc.title_shadow_mc.x = this.m_view.title_mc.title_txt.x + this.m_view.title_mc.title_txt.textWidth / 2;
-         if(data.sStatus != null && data.sStatus != "" && title != "" && title != " ")
+         if(this.shouldShowVanillaPromptStatus(data) && data.sStatus != null && data.sStatus != "" && title != "" && title != " ")
          {
             MenuUtils.setupText(this.m_view.title_mc.status_txt,data.sStatus,18,MenuConstantsKnt.FONT_TYPE_NORMAL,MenuConstantsKnt.FontColorWhite);
             this.m_view.title_mc.status_txt.visible = true;
@@ -854,6 +871,11 @@ package knt.hud.buttonprompts
          }
       }
 
+      private function shouldShowVanillaPromptStatus(param1:Object) : Boolean
+      {
+         return MenuConstantsKnt.VANILLA_TEXT_PROMPTS;
+      }
+
       private function shouldHideAgilityPromptCompletely(param1:Object) : Boolean
       {
          if(param1 == null || MenuConstantsKnt.SHOW_AGILITY_VANILLA)
@@ -913,6 +935,23 @@ package knt.hud.buttonprompts
          this.m_view.title_mc.blocked_mc.visible = false;
          this.m_view.title_mc.illegal_mc.visible = false;
          this.m_view.title_mc.unblocked_mc.visible = false;
+      }
+
+      private function getPromptDebugSuffix(param1:Object) : String
+      {
+         var blockedStatus:* = null;
+         var legalState:* = null;
+         var resourceType:* = null;
+         var promptType:* = null;
+         if(param1 == null)
+         {
+            return "";
+         }
+         blockedStatus = param1.eBlockedStatus != null ? param1.eBlockedStatus : "?";
+         legalState = param1.bIsLegal !== false ? 1 : 0;
+         resourceType = param1.eResourceType != null ? param1.eResourceType : "?";
+         promptType = param1.sPromptType != null ? param1.sPromptType : "?";
+         return " [BS:" + blockedStatus + " LEG:" + legalState + " RES:" + resourceType + " PT:" + promptType + "]";
       }
       
       public function doesInputDataMatch(param1:Array) : Boolean

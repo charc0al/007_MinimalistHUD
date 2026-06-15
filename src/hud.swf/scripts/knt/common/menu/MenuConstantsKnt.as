@@ -10,7 +10,11 @@ package knt.common.menu
 
       public static const SHOW_AGILITY_VANILLA:Boolean = false;
 
+      public static const VANILLA_TEXT_PROMPTS:Boolean = false;
+
       public static const DEBUG_AGILITY_TYPES:Boolean = true;
+
+      public static const DEBUG_PROMPT_METADATA:Boolean = false;
 
       public static const DOT_CROSSHAIR:Boolean = false;
 
