@@ -178,6 +178,23 @@ package knt.hud.buttonprompts
          this.visible = true;
          if(this.shouldHideAgilityPromptCompletely(param1))
          {
+            this.releaseAllPromptInstances();
+            this.m_view.combo_mc.visible = false;
+            this.m_view.shadows_mc.combo_shadow_mc.visible = false;
+            this.m_view.hold_mc.visible = false;
+            this.m_view.hold_arrow_mc.visible = false;
+            this.m_view.title_mc.title_txt.visible = false;
+            this.m_view.title_mc.status_txt.visible = false;
+            this.m_view.title_mc.description_txt.visible = false;
+            this.m_view.title_mc.blocked_mc.visible = false;
+            this.m_view.title_mc.illegal_mc.visible = false;
+            this.m_view.title_mc.unblocked_mc.visible = false;
+            this.m_view.shadows_mc.prompt_shadow_mc.visible = false;
+            this.m_view.shadows_mc.title_shadow_mc.visible = false;
+            this.m_view.shadows_mc.status_shadow_mc.visible = false;
+            this.m_view.shadows_mc.description_shadow_mc.visible = false;
+            this.showCollectibleIcon(false);
+            this.showResourceType(false,-1);
             this.setStateNotAvailable(param1);
             return;
          }
@@ -356,6 +373,7 @@ package knt.hud.buttonprompts
             this.m_view.shadows_mc.title_shadow_mc.y = 0;
          }
          this.applyAgilityTextVisibility(param1);
+         this.applySuppressedPickupPromptTextVisibility(param1);
          if(_loc8_)
          {
             this.m_nextPromptInstanceIndex = 0;
@@ -600,6 +618,7 @@ package knt.hud.buttonprompts
          this.showCollectibleIcon(false);
          this.showResourceType(false,-1);
          this.applyAgilityTextVisibility(data);
+         this.applySuppressedPickupPromptTextVisibility(data);
       }
       
       private function setStateCollapsed(param1:Object) : void
@@ -695,6 +714,7 @@ package knt.hud.buttonprompts
          }
          this.showCollectibleIcon(false);
          this.applyAgilityTextVisibility(data);
+         this.applySuppressedPickupPromptTextVisibility(data);
       }
       
       private function setStateNotAvailable(param1:Object) : void
@@ -864,19 +884,35 @@ package knt.hud.buttonprompts
 
       private function applyAgilityTextVisibility(param1:Object) : void
       {
-         var showText:Boolean = !this.shouldHideAgilityText(param1);
-         this.m_view.title_mc.title_txt.visible = showText && this.m_view.title_mc.title_txt.text != "";
-         this.m_view.title_mc.status_txt.visible = showText && this.m_view.title_mc.status_txt.text != "";
-         this.m_view.title_mc.description_txt.visible = showText && this.m_view.title_mc.description_txt.text != "";
-         this.m_view.shadows_mc.title_shadow_mc.visible = this.m_view.title_mc.title_txt.visible;
-         this.m_view.shadows_mc.status_shadow_mc.visible = this.m_view.title_mc.status_txt.visible;
-         this.m_view.shadows_mc.description_shadow_mc.visible = this.m_view.title_mc.description_txt.visible;
-         if(!showText)
+         if(this.shouldHideAgilityText(param1))
          {
+            this.m_view.title_mc.title_txt.visible = false;
+            this.m_view.title_mc.status_txt.visible = false;
+            this.m_view.title_mc.description_txt.visible = false;
+            this.m_view.shadows_mc.title_shadow_mc.visible = false;
+            this.m_view.shadows_mc.status_shadow_mc.visible = false;
+            this.m_view.shadows_mc.description_shadow_mc.visible = false;
             this.m_view.title_mc.blocked_mc.visible = false;
             this.m_view.title_mc.illegal_mc.visible = false;
             this.m_view.title_mc.unblocked_mc.visible = false;
          }
+      }
+
+      private function applySuppressedPickupPromptTextVisibility(param1:Object) : void
+      {
+         if(!this.shouldSuppressResourceTypeIcon(param1))
+         {
+            return;
+         }
+         this.m_view.title_mc.title_txt.visible = false;
+         this.m_view.title_mc.status_txt.visible = false;
+         this.m_view.title_mc.description_txt.visible = false;
+         this.m_view.shadows_mc.title_shadow_mc.visible = false;
+         this.m_view.shadows_mc.status_shadow_mc.visible = false;
+         this.m_view.shadows_mc.description_shadow_mc.visible = false;
+         this.m_view.title_mc.blocked_mc.visible = false;
+         this.m_view.title_mc.illegal_mc.visible = false;
+         this.m_view.title_mc.unblocked_mc.visible = false;
       }
       
       public function doesInputDataMatch(param1:Array) : Boolean
