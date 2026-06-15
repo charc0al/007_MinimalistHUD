@@ -175,6 +175,12 @@ package knt.hud.buttonprompts
       public function onSetData(param1:Object) : void
       {
          this.m_data = param1;
+         this.visible = true;
+         if(this.shouldHideAgilityPromptCompletely(param1))
+         {
+            this.setStateNotAvailable(param1);
+            return;
+         }
          this.m_view.combo_mc.visible = false;
          this.m_view.shadows_mc.combo_shadow_mc.visible = false;
          switch(param1.eState)
@@ -208,6 +214,7 @@ package knt.hud.buttonprompts
       
       private function setStateSelected(param1:Object) : void
       {
+         var agilityDebugPrefix:String = null;
          var _loc12_:String = null;
          var _loc13_:Boolean = false;
          var _loc14_:ButtonPromptImage = null;
@@ -263,6 +270,11 @@ package knt.hud.buttonprompts
          if(this.m_debugIsActive)
          {
             _loc6_ = this.m_debugText;
+         }
+         if(MenuConstantsKnt.DEBUG_AGILITY_TYPES && param1.eAgilityType != 0)
+         {
+            agilityDebugPrefix = "[AG:" + param1.eAgilityType + "] ";
+            _loc6_ = agilityDebugPrefix + _loc6_;
          }
          if(param1.aElements.length > 0)
          {
@@ -343,6 +355,7 @@ package knt.hud.buttonprompts
             this.m_view.title_mc.title_txt.y = -15;
             this.m_view.shadows_mc.title_shadow_mc.y = 0;
          }
+         this.applyAgilityTextVisibility(param1);
          if(_loc8_)
          {
             this.m_nextPromptInstanceIndex = 0;
@@ -561,6 +574,10 @@ package knt.hud.buttonprompts
          {
             title = this.m_debugText;
          }
+         if(MenuConstantsKnt.DEBUG_AGILITY_TYPES && data.eAgilityType != 0)
+         {
+            title = "[AG:" + data.eAgilityType + "] " + title;
+         }
          this.releaseAllPromptInstances();
          this.m_view.title_mc.blocked_mc.visible = false;
          this.m_view.title_mc.illegal_mc.visible = false;
@@ -582,6 +599,7 @@ package knt.hud.buttonprompts
          this.m_view.collapsed_mc.scaleX = this.m_view.collapsed_mc.scaleY = 0;
          this.showCollectibleIcon(false);
          this.showResourceType(false,-1);
+         this.applyAgilityTextVisibility(data);
       }
       
       private function setStateCollapsed(param1:Object) : void
@@ -599,6 +617,10 @@ package knt.hud.buttonprompts
          if(this.m_debugIsActive)
          {
             title = this.m_debugText;
+         }
+         if(MenuConstantsKnt.DEBUG_AGILITY_TYPES && data.eAgilityType != 0)
+         {
+            title = "[AG:" + data.eAgilityType + "] " + title;
          }
          MenuUtils.setupText(this.m_view.title_mc.title_txt,title,21,MenuConstantsKnt.FONT_TYPE_MEDIUM,MenuConstantsKnt.FontColorWhite);
          this.m_view.shadows_mc.title_shadow_mc.width = this.m_view.title_mc.title_txt.textWidth + TITLE_SHADOW_EXTRA_WIDTH;
@@ -672,6 +694,7 @@ package knt.hud.buttonprompts
             }
          }
          this.showCollectibleIcon(false);
+         this.applyAgilityTextVisibility(data);
       }
       
       private function setStateNotAvailable(param1:Object) : void
@@ -808,6 +831,51 @@ package knt.hud.buttonprompts
          if(this.shouldSuppressResourceTypeIcon(this.m_data))
          {
             this.showResourceType(false,-1);
+         }
+      }
+
+      private function shouldHideAgilityPromptCompletely(param1:Object) : Boolean
+      {
+         if(param1 == null || MenuConstantsKnt.SHOW_AGILITY_VANILLA)
+         {
+            return false;
+         }
+         return param1.eAgilityType == 24;
+      }
+
+      private function shouldHideAgilityText(param1:Object) : Boolean
+      {
+         if(param1 == null || MenuConstantsKnt.SHOW_AGILITY_VANILLA)
+         {
+            return false;
+         }
+         switch(param1.eAgilityType)
+         {
+            case 3:
+            case 4:
+            case 8:
+            case 23:
+            case 25:
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      private function applyAgilityTextVisibility(param1:Object) : void
+      {
+         var showText:Boolean = !this.shouldHideAgilityText(param1);
+         this.m_view.title_mc.title_txt.visible = showText && this.m_view.title_mc.title_txt.text != "";
+         this.m_view.title_mc.status_txt.visible = showText && this.m_view.title_mc.status_txt.text != "";
+         this.m_view.title_mc.description_txt.visible = showText && this.m_view.title_mc.description_txt.text != "";
+         this.m_view.shadows_mc.title_shadow_mc.visible = this.m_view.title_mc.title_txt.visible;
+         this.m_view.shadows_mc.status_shadow_mc.visible = this.m_view.title_mc.status_txt.visible;
+         this.m_view.shadows_mc.description_shadow_mc.visible = this.m_view.title_mc.description_txt.visible;
+         if(!showText)
+         {
+            this.m_view.title_mc.blocked_mc.visible = false;
+            this.m_view.title_mc.illegal_mc.visible = false;
+            this.m_view.title_mc.unblocked_mc.visible = false;
          }
       }
       
