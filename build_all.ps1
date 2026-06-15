@@ -17,6 +17,7 @@ $finalPatchPath = Join-Path $releaseRoot "chunk0patch272.rpkg"
 $postRebuildDelaySeconds = 5
 $rebuiltWaitTimeoutSeconds = 120
 $sourceSyncScriptPath = Join-Path $projectRoot "sync_sources_to_gfx.ps1"
+$menuConstantsSyncScriptPath = Join-Path $projectRoot "sync_menu_constants.ps1"
 
 function Write-Step {
     param([string]$Message)
@@ -211,6 +212,17 @@ function Get-SwfRoots {
 
 $rpkgCliPath = Get-RpkgCliPath -ToolRoot $rpkgToolRoot
 $swfRoots = @(Get-SwfRoots -SourceRoot (Join-Path $projectRoot "src") -IncludeAssetOnly:$IncludeAssetOnlySwfs)
+
+if (-not (Test-Path -LiteralPath $menuConstantsSyncScriptPath)) {
+    throw "Menu constants sync script not found: '$menuConstantsSyncScriptPath'."
+}
+
+Write-Step "Syncing generated menu constants"
+& $menuConstantsSyncScriptPath
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Menu constants sync failed with exit code $LASTEXITCODE."
+}
 
 if (-not $SkipSourceSync) {
     if (-not (Test-Path -LiteralPath $sourceSyncScriptPath)) {

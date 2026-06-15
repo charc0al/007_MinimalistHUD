@@ -7,6 +7,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$menuConstantsSyncScriptPath = Join-Path $projectRoot "sync_menu_constants.ps1"
 
 function Write-Step {
     param([string]$Message)
@@ -127,6 +128,17 @@ function Get-SwfTargets {
 }
 
 $ffdecCliPath = Get-FfdecCliPath -Root $projectRoot
+
+if (-not (Test-Path -LiteralPath $menuConstantsSyncScriptPath)) {
+    throw "Menu constants sync script not found: '$menuConstantsSyncScriptPath'."
+}
+
+Write-Step "Syncing generated menu constants"
+& $menuConstantsSyncScriptPath
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Menu constants sync failed with exit code $LASTEXITCODE."
+}
 
 $targets = @(Get-SwfTargets -SourceRoot (Join-Path $projectRoot "src"))
 

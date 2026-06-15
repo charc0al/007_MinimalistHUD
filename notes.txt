@@ -59,6 +59,14 @@ Changes made so far
   `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Menu SWF also contains a duplicate vanilla `knt.hud.buttonprompts.ButtonPromptWidget`; current mod behavior now mirrors the forced inversion / `0.8` scale / per-frame restyling there as well:
   `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Shared interaction prompts now support agility-specific suppression and debug labeling through global flags:
+  `src/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+  `src/menu.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- Shared interaction prompts now suppress the title / status / description text as well when `SHOW_PICKUP_NOTIFICATIONS` is `false` and the prompt is only showing the dimmed disabled pickup-style button glyph:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
 - Close-combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
   `src/hud.swf/scripts/knt/hud/buttonprompts/CloseCombatPromptsWidget.as`
 - NPC combat prompt icons now use the same inverted black/white treatment and reduced prompt scale:
@@ -192,6 +200,44 @@ Notes on standard button prompts
 - The `Shift + LMB` style slam-into-enemy prompt appears to be `TYPE_COMBAT_RUSH` in `NPCCombatPromptsWidget`; current mod behavior suppresses that prompt at the `onSetData()` gate.
 - The chemical/electrical resource side icons in `ButtonPromptWidget` were a separate path from the right-side pickup popup controller.
 - Current mod behavior now suppresses those shared prompt resource icons whenever they would be shown in the disabled/blocked state and `SHOW_PICKUP_NOTIFICATIONS` is `false`, and also fixes a stale-state bug where `showResourceType()` did not refresh when the icon stayed conceptually "shown" but its resource subtype or disabled state changed.
+- Current mod behavior now also suppresses the shared prompt title / status / description text in that same disabled pickup-resource case, leaving only the dimmed button glyph visible.
+- The shared prompt payload includes `eAgilityType`, which is the clearest script-visible classifier found so far for traversal/agility prompts before control bindings are resolved to a specific glyph.
+- Confirmed named `eAgilityType` values exposed in `ButtonPromptWidget` are:
+  `5` = `AGILITY_TYPE_VAULT_ATTACK`
+  `23` = `AGILITY_TYPE_ITEM_QUICK_THROW`
+  `26` = `AGILITY_TYPE_SWAP_COVER`
+- Non-agility prompt payloads manually assembled in local script currently set `eAgilityType = 0`, for example in `AgencySelectorWidgetEntry` and `WeaponWidget`.
+- Current mod behavior adds `SHOW_AGILITY_VANILLA`, defaulting to `false`.
+- With `SHOW_AGILITY_VANILLA == false`:
+  `eAgilityType == 24` is fully hidden, including prompt glyph and text.
+  `eAgilityType` values `3`, `4`, `8`, `23`, and `25` hide prompt text while leaving the glyph visible.
+- Current mod behavior adds `DEBUG_AGILITY_TYPES`, defaulting to `true`, which prefixes shared interaction prompt titles with `[AG:n]` for nonzero `eAgilityType` values.
+- Current mod behavior adds `VANILLA_TEXT_PROMPTS`, defaulting to `false`, which disables the shared `sStatus` line plus its `blocked_mc` / `illegal_mc` / `unblocked_mc` badge treatment so prompts render like a plain title without the under-title warning/exclamation presentation.
+- Current mod behavior adds `DEBUG_PROMPT_METADATA`, defaulting to `false`, which appends a compact payload summary to the shared prompt title:
+  `[BS:<blockedStatus> LEG:<0|1> RES:<resourceType> PT:<promptType>]`
+- Useful non-agility prompt payload fields already visible in shared script include:
+  `eBlockedStatus`
+  `bIsLegal`
+  `eResourceType`
+  `sPromptType`
+  `sDescription`
+  `bIsCollectible`
+  `eAggressionLevel`
+- These debug / suppression behaviors are now mirrored in both overridden shared prompt classes:
+  `src/hud.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+  `src/menu.swf/scripts/knt/hud/buttonprompts/ButtonPromptWidget.as`
+- A regression was introduced during this work where stale title text could be resurrected from cached text-field contents when a later prompt lacked a header.
+- The fix was to keep the new hide helpers (`applyAgilityTextVisibility` and pickup text suppression) hide-only, so they never explicitly restore visibility from previously cached field text.
+- Another regression was introduced where fully hidden agility prompts could inherit the previous prompt's glyph/text because the early-return hide path did not clear existing prompt instances.
+- The fix was to make the full-hide agility path explicitly release prompt instances and hide all prompt UI before returning.
+- Checkpoint-reload inconsistency during this work was traced to the menu-side duplicate `ButtonPromptWidget` still running older logic while the HUD-side widget had the new prompt suppression behavior.
+- Current mod behavior now mirrors the same agility/text/debug/pickup suppression logic into the menu-side duplicate `ButtonPromptWidget`.
+- The repo now also contains a mirrored overridden `MenuConstantsKnt` for menu SWF:
+  `src/menu.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+- Vanilla exports contain both HUD-side and menu-side `MenuConstantsKnt` classes:
+  `src_vanilla/hud.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+  `src_vanilla/menu.swf/scripts/knt/common/menu/MenuConstantsKnt.as`
+- Vanilla HUD and menu `ButtonPromptWidget` classes are very similar but not byte-identical; they differ slightly in prompt highlight gating and some resource/collapsed-state handling, so future shared prompt changes should continue to consider both SWFs.
 
 Notes on takedown/throw prompt circles
 - Silent takedown / melee finisher prompt background is driven by `NPCCombatPromptsWidget.promptBackground()` through `button_mc.anim_mc`.
